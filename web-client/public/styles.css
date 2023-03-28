@@ -1,0 +1,269 @@
+h1 {
+  text-align: center;
+  font-family: monospace;
+  font-style: normal;
+}
+
+.cardform {
+  outline-style: solid;
+  border-radius: 5px;
+  text-align: center;
+  background-color: rgb(67, 62, 62);
+  padding: 25px;
+  margin: auto;
+  width: 25%;
+}
+
+.iselnavbar {
+  background-color: #333;
+  overflow: hidden;
+  height: 40px;
+  text-align: center;
+}
+
+.iselGroupRight {
+  float: right;
+}
+.iselGroupLeft {
+  float: left;
+}
+
+.createUserDiv {
+  padding: 20px;
+  text-align: center;
+}
+
+.createUserLink {
+  border-radius: 5px;
+  padding: 10px;
+  color:black;
+  background-color: #f2f2f2;
+  font-size: 17px;
+  font-family: monospace;
+  font-style: normal;
+  text-decoration: none;
+}
+
+/* Style the links inside the navigation bar */
+.iselLink {
+  float: left;
+  color: #f2f2f2;
+  vertical-align: middle;
+  padding: 10px 10px;
+  /* First Center Alignment - Second Distance between buttons*/
+  text-decoration: none;
+  font-size: 17px;
+  font-family: monospace;
+  font-style: normal;
+}
+
+label {
+  font-family: monospace;
+  font-style: normal;
+  font-size: large;
+  display: block;
+  padding: 5px;
+}
+
+input {
+  font-family: monospace;
+  font-style: normal;
+}
+
+img {
+  outline-style: solid;
+  outline-color: red;
+  width: 250px;
+  height: 250px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5%;
+}
+
+.shipBoardEasy {
+  display: grid;
+  margin: auto;
+  grid-gap: 0px;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: repeat(11, 1fr);
+
+  height: 500px;
+  width: 500px;
+}
+.shipBoardNormal {
+  display: grid;
+  margin: auto;
+  grid-gap: 0px;
+  grid-template-columns: repeat(16, 1fr);
+  grid-template-rows: repeat(16, 1fr);
+
+  height: 500px;
+  width: 500px;
+}
+.shipBoardHard {
+  display: grid;
+  margin: auto;
+  grid-gap: 0px;
+  grid-template-columns: repeat(21, 1fr);
+  grid-template-rows: repeat(21, 1fr);
+
+  height: 500px;
+  width: 500px;
+}
+
+.shipSquare {
+  border: 2px solid gray;
+  background-color: #585858;
+}
+
+/* === Grid coloring classes === */
+
+.label{
+  background-color: transparent;
+  color: white;
+  font-family: monospace;
+  font-style: normal;
+  font-size: 30px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.hit {
+  background-color: red;
+}
+
+.water {
+  background-color: aqua;
+}
+
+.active-ship{
+  background-color: green;
+}
+
+.blank {
+  background-color: #585858;
+}
+
+.hover {
+  background-color: darkgrey;
+}
+
+/* =========================== */
+
+.rotateBtn{
+  margin: auto;
+  text-align: center;
+  padding-bottom: 20px;
+}
+.rotateBtn button{
+  background-color:gray;
+  color: white;
+  font-size: 20px;
+}
+
+.buttonLobby{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.myButtonLobby{
+  height: 50px;
+  width: 200px;
+  font-size: 20px;
+  font-family: monospace;
+  font-style: normal;
+  background-color: #333;
+  color: white;
+  border-color: white;
+}
+
+.loginError{
+  color: white;
+  background-color: red;
+  font-size: 50px;
+  text-align: center;
+}
+
+.rankingsTable{
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+  border: 1px solid;
+  border-collapse: collapse;
+  border-color: white;
+  width: 50%;
+}
+
+.tableHead{
+  text-align: center;
+  border-bottom: 1px solid;
+  border-color: white;
+  background-color: #333;
+  padding: 15px;
+  color: lightgray;
+  font-size: large;
+}
+
+.tableCell{
+  text-align: center;
+  border-bottom: 1px solid; 
+  padding: 15px;
+  border-color: white;
+  background-color: gray;
+  color: #333;
+  font-size: large;
+}
+
+.h2Class{
+  text-align: center;
+  font-family: monospace;
+  font-style: normal;
+}
+
+input[type=submit]{
+  border: black;
+  width: 50%;
+  height: 30px;
+  background-color: #585858;
+  font-size: large;
+  color:white;
+  border: 1px solid black;
+  border-radius: 1px;
+}
+
+.row{
+  display: flex;
+}
+
+.col{
+  flex: 50%;
+}
+
+.selectClass{
+  width: 150px;
+  height: 30px;
+  text-align:center;
+  background-color: gray;
+  color: #f2f2f2;
+  border-color: black;
+ 
+}
+
+.placeFleetButton{
+  margin: auto;
+  text-align: center;
+  padding-top: 20px;
+}
+.placeFleetButton button{
+  margin: auto;
+  border: black;
+  width: 150px;
+  height: 30px;
+  background-color: #585858;
+  font-size: large;
+  color:white;
+  border: 1px solid black;
+  border-radius: 1px;
+}
