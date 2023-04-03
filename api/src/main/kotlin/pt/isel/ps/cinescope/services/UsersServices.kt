@@ -21,4 +21,22 @@ class UsersServices(val passwordEncoder: Encoder) {
         return User(name, email, encodedPassword, UUID.randomUUID(), UserState.Active)
     }
 
+    fun deleteUser(id :Int?) {
+
+    }
+
+    fun editUser(name: String?, email: String?,password: String?) {
+
+        if(name.isNullOrBlank() || email.isNullOrBlank() || password.isNullOrBlank()) {
+            throw BadRequestException("Info to edit cannot be empty")
+        }
+
+    }
+
+    fun login() {
+
+    }
+
+
+
 }
