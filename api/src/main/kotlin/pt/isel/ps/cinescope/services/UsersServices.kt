@@ -19,10 +19,14 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
         return transactionManager.run { it.userRepository.getUserById(id) }
     }
 
-    fun createUser(name: String?, email: String?, password: String): Int? {
+    fun createUser(name: String?, email: String?, password: String?): Int? {
 
         if(name.isNullOrBlank() || email.isNullOrBlank()) {
             throw BadRequestException("Name Or Email not provided")
+        }
+
+        if(password.isNullOrBlank()){
+            throw BadRequestException("Password not provided or not valid")
         }
 
         val encodedPassword = passwordEncoder.encodeInfo(password)
