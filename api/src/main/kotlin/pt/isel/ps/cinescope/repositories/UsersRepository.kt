@@ -11,6 +11,7 @@ interface UsersRepository {
     fun removeUser(id: Int)
     fun getUserByEmail(email: String): User?
     fun getUserIdByToken(token: UUID): Int?
+    fun updateUserInfo(user: User)
 
     fun getUserByToken(token: String): User?
 }
