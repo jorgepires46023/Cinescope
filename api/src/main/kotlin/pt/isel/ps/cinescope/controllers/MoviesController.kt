@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.ps.cinescope.controllers.models.MoviesModel
+import pt.isel.ps.cinescope.controllers.models.SeriesModel
 
 @RestController
 class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.ADD_MOVIE)
     fun addMovie(@PathVariable id: String, @RequestBody info: MoviesModel.AddInputModel): ResponseEntity<*>{
-        val movie = moviesServices.addMovieToList(id, info.listid)
+        val movie = moviesServices.addMovieToList(id, info.listid, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -22,7 +23,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.CHANGE_STATE)
     fun changeMovieState(@PathVariable id: String, @RequestBody info: MoviesModel.ChangeStateModel): ResponseEntity<*>{
-        val movie = moviesServices.changeState(id, info.state)
+        val movie = moviesServices.changeState(id, info.state, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -39,8 +40,8 @@ class MoviesController(val moviesServices: MoviesServices) {
     }
 
     @GetMapping(Movies.GET_LIST)
-    fun getMoviesList(@PathVariable id: Int): ResponseEntity<*>{
-        val list = moviesServices.getList(id)
+    fun getMoviesList(@PathVariable id: Int, @RequestBody info: MoviesModel.ListModel): ResponseEntity<*>{
+        val list = moviesServices.getList(id, info.userid)
 
         return ResponseEntity
             .status(200)
