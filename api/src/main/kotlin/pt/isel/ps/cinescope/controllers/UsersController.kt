@@ -3,8 +3,6 @@ package pt.isel.ps.cinescope.controllers
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.cinescope.controllers.models.LoginInputModel
-import pt.isel.ps.cinescope.controllers.models.UpdateUserInputModel
-import pt.isel.ps.cinescope.controllers.models.UserIdInputModel
 import pt.isel.ps.cinescope.controllers.models.UserInputModel
 import pt.isel.ps.cinescope.services.UsersServices
 
@@ -21,8 +19,8 @@ class UsersController(val usersService: UsersServices) {
     }
 
     @PutMapping(Users.DELETE_USER)
-    fun removeUser(@RequestBody info: UserIdInputModel): ResponseEntity<*> {
-        val user = usersService.removeUser(info.userId)
+    fun removeUser(@PathVariable id: Int): ResponseEntity<*> {
+        val user = usersService.removeUser(id)
 
         return ResponseEntity
             .status(200)
@@ -30,8 +28,8 @@ class UsersController(val usersService: UsersServices) {
     }
 
     @PutMapping(Users.UPDATE_USER)
-    fun editUser(@RequestBody info: UpdateUserInputModel): ResponseEntity<*> {
-        val user = usersService.editUser(info.userId, info.name, info.email, info.password)
+    fun editUser(@RequestBody info: UserInputModel, @PathVariable id: Int): ResponseEntity<*> {
+        val user = usersService.editUser(id, info.name, info.email, info.password)
 
         return ResponseEntity
             .status(200)
@@ -39,8 +37,8 @@ class UsersController(val usersService: UsersServices) {
     }
 
     @GetMapping(Users.GET_USER_INFO)
-    fun getUserInfo(@RequestBody info: UserIdInputModel): ResponseEntity<*> {
-        val user = usersService.getUserById(info.userId)
+    fun getUserInfo(@PathVariable id: Int): ResponseEntity<*> {
+        val user = usersService.getUserById(id)
 
         return ResponseEntity
             .status(200)
@@ -57,7 +55,7 @@ class UsersController(val usersService: UsersServices) {
     }
 
     @GetMapping(Users.GET_USER_LISTS)
-    fun getUserLists(@RequestBody info: UserIdInputModel): ResponseEntity<*> {
+    fun getUserLists(@PathVariable id: Int): ResponseEntity<*> {
         val user = "Waiting Services"//TODO usersService.getUserLists(info.id)
 
         return ResponseEntity
