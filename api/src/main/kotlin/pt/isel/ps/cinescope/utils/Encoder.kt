@@ -4,6 +4,6 @@ interface Encoder {
 
     fun encodeInfo(info: String): String
 
-    fun validateInfo(info: String, encodedInfo: String): Boolean
+    fun validateInfo(info: String, encodedInfo: String?): Boolean
 
 }

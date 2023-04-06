@@ -3,7 +3,6 @@ package pt.isel.ps.cinescope.services
 import org.springframework.stereotype.Component
 import pt.isel.ps.cinescope.domain.User
 import pt.isel.ps.cinescope.domain.UserState
-import pt.isel.ps.cinescope.domain.validatePassword
 import pt.isel.ps.cinescope.repositories.TransactionManager
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
 import pt.isel.ps.cinescope.services.exceptions.NotFoundException
@@ -16,7 +15,7 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
 
     fun getUserById(id: Int?): User? {
         if (id == null) throw BadRequestException("Id cannot be null")
-        return transactionManager.run { it.userRepository.getUserById(id) }
+        return transactionManager.run { it.userRepository.getUserById(id)?: throw NotFoundException("User not Found") }
     }
 
     fun createUser(name: String?, email: String?, password: String?): Int? {
@@ -57,7 +56,7 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
     }
 
     fun getUserByToken(token: UUID?): User? {
-        if(token == null) throw BadRequestException("Id cannot be null")
+        if(token == null) throw BadRequestException("Token cannot be null")
 
         return transactionManager.run { it.userRepository.getUserByToken(token.toString()) }
     }
@@ -70,7 +69,7 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
 
             val user = it.userRepository.getUserByEmail(email) ?: throw NotFoundException("User doesn't exist")
 
-            if(validatePassword(user.password, password)) {
+            if(passwordEncoder.validateInfo(password, user.password)) {
                 return@run user
             }
             throw UnauthorizedException("Unauthorized")

@@ -1,6 +1,7 @@
 package pt.isel.ps.cinescope.utils
 
 import org.springframework.stereotype.Component
+import pt.isel.ps.cinescope.services.exceptions.InternalServerErrorException
 import java.security.MessageDigest
 import java.util.Base64
 
@@ -11,7 +12,8 @@ class SHA256Encoder : Encoder {
         return hash(info)
     }
 
-    override fun validateInfo(info: String, encodedInfo: String): Boolean {
+    override fun validateInfo(info: String, encodedInfo: String?): Boolean {//TODO("Rever exception lançada")
+        if (encodedInfo.isNullOrBlank()) throw InternalServerErrorException("Something went wrong validating the password")
         return encodedInfo == hash(info)
     }
 

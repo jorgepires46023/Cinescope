@@ -6,9 +6,9 @@ import pt.isel.ps.cinescope.domain.User
 import pt.isel.ps.cinescope.repositories.UsersRepository
 import java.util.*
 
-class JdbiUsersRepository (private val handle: Handle): UsersRepository {
+class  JdbiUsersRepository (private val handle: Handle): UsersRepository {
     override fun getUserById(id: Int): User? =
-        handle.createQuery("select userid as id, name, email from cinescope.users where userid = :id")
+        handle.createQuery("select userid as id, name, email, token, password, state from cinescope.users where userid = :id")
             .bind("id", id)
             .mapTo(User::class.java)
             .singleOrNull()
@@ -57,7 +57,7 @@ class JdbiUsersRepository (private val handle: Handle): UsersRepository {
     }
 
     override fun getUserByToken(token: String): User? =
-        handle.createQuery("select userid as id, name from cinescope.users " +
+        handle.createQuery("select userid as id, name, email, token, password, state from cinescope.users " +
                 "where token = :token")
             .bind("token", token)
             .mapTo(User::class.java)

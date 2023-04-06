@@ -27,6 +27,8 @@ dependencies {
 	implementation("org.postgresql:postgresql:42.5.4")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-webflux")
+	testImplementation(kotlin("test"))
 }
 
 tasks.withType<KotlinCompile> {
