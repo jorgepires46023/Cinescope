@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.ps.cinescope.controllers.models.MoviesModel
-import pt.isel.ps.cinescope.controllers.models.SeriesModel
 
 @RestController
 class MoviesController(val moviesServices: MoviesServices) {
