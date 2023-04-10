@@ -3,13 +3,14 @@ package pt.isel.ps.cinescope.controllers
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.cinescope.controllers.models.SeriesModel
+import pt.isel.ps.cinescope.services.SeriesServices
 
 @RestController
-class SeriesController(val seriesServices: seriesServices) {
+class SeriesController(val seriesServices: SeriesServices) {
 
     @PostMapping(Series.ADD_SERIE)
-    fun addSerie(@PathVariable id: String, @RequestBody info: SeriesModel.AddInputModel): ResponseEntity<*> {
-        val serie = seriesServices.addSerieToList(id, info.listid, info.userid)
+    fun addSeries(@PathVariable id: String, @RequestBody info: SeriesModel.AddInputModel): ResponseEntity<*> {
+        val serie = seriesServices.addSeriesToList(id, info.listid, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -17,7 +18,7 @@ class SeriesController(val seriesServices: seriesServices) {
     }
 
     @PostMapping(Series.CHANGE_STATE)
-    fun changeSerieState(@PathVariable id: String, @RequestBody info: SeriesModel.ChangeStateModel): ResponseEntity<*>{
+    fun changeSeriesState(@PathVariable id: String, @RequestBody info: SeriesModel.ChangeStateModel): ResponseEntity<*>{
         val serie = seriesServices.changeState(id, info.state, info.userid)
 
         return ResponseEntity
@@ -45,7 +46,7 @@ class SeriesController(val seriesServices: seriesServices) {
 
     @GetMapping(Series.GET_WATCHED_EP_LIST)
     fun getWatchedEpList(@PathVariable id: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
-        val list = seriesServices.getWatchedEpList(id, info.userid)
+        val list = "TODO method"//TODO seriesServices.getWatchedEpList(id, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -64,7 +65,7 @@ class SeriesController(val seriesServices: seriesServices) {
 
     @GetMapping(Series.GET_LIST)
     fun getSeriesList(@PathVariable id: Int): ResponseEntity<*>{
-        val list = seriesServices.getList(id)
+        val list = "TODO method" //TODO seriesServices.getList(id)
 
         return ResponseEntity
             .status(200)
