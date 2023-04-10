@@ -14,7 +14,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.ADD_MOVIE)
     fun addMovie(@PathVariable id: String, @RequestBody info: MoviesModel.AddInputModel): ResponseEntity<*>{
-        val movie = moviesServices.addMovieToList(id, info.listid, info.userid)
+        val movie = moviesServices.addMovieToList(movieId = id, info.listid, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -23,7 +23,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.CHANGE_STATE)
     fun changeMovieState(@PathVariable id: String, @RequestBody info: MoviesModel.ChangeStateModel): ResponseEntity<*>{
-        val movie = moviesServices.changeState(id, info.state, info.userid)
+        val movie = moviesServices.changeState(movieId = id, info.state, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -58,8 +58,8 @@ class MoviesController(val moviesServices: MoviesServices) {
     }
 
     @PostMapping(Movies.DELETE_LIST)
-    fun deleteMoviesList(@RequestBody info: MoviesModel.ListModel): ResponseEntity<*>{
-        val list = moviesServices.deleteList(info.userid)
+    fun deleteMoviesList(@PathVariable id: Int, @RequestBody info: MoviesModel.ListModel): ResponseEntity<*>{
+        val list = moviesServices.deleteList(id, info.userid)
 
         return ResponseEntity
             .status(200)

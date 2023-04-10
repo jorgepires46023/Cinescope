@@ -10,7 +10,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
     @PostMapping(Series.ADD_SERIE)
     fun addSeries(@PathVariable id: String, @RequestBody info: SeriesModel.AddInputModel): ResponseEntity<*> {
-        val serie = seriesServices.addSeriesToList(id, info.listid, info.userid)
+        val serie = seriesServices.addSeriesToList(seriesId = id, info.listid, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -19,7 +19,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
     @PostMapping(Series.CHANGE_STATE)
     fun changeSeriesState(@PathVariable id: String, @RequestBody info: SeriesModel.ChangeStateModel): ResponseEntity<*>{
-        val serie = seriesServices.changeState(id, info.state, info.userid)
+        val serie = seriesServices.changeState(seriesId = id, info.state, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -27,8 +27,8 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @PostMapping(Series.ADD_WATCHED_EP)
-    fun addWatchedEpisode(@PathVariable id: String, @PathVariable eid: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
-        val episode = seriesServices.addWatchedEpisode(id, eid, info.userid)
+    fun addWatchedEpisode(@PathVariable id: String, @PathVariable epid: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
+        val episode = seriesServices.addWatchedEpisode(seriesId = id, epid, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -36,8 +36,8 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @PostMapping(Series.REMOVE_WATCHED_EP)
-    fun removeWatchedEpisode(@PathVariable id: String, @PathVariable eid: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
-        val episode = seriesServices.removeWatchedEpisode(id, eid, info.userid)
+    fun removeWatchedEpisode(@PathVariable id: String, @PathVariable epid: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
+        val episode = seriesServices.removeWatchedEpisode(seriesId = id, epid, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -55,7 +55,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
 
     @GetMapping(Series.GET_SERIES_LISTS)
-    fun getMoviesLists(@RequestBody info: SeriesModel.ListModel):ResponseEntity<*>{
+    fun getSeriesLists(@RequestBody info: SeriesModel.ListModel):ResponseEntity<*>{
         val lists = seriesServices.getLists(info.userid)
 
         return ResponseEntity
@@ -82,8 +82,8 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @PostMapping(Series.DELETE_LIST)
-    fun deleteSeriesList(@RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
-        val list = seriesServices.deleteList(info.userid)
+    fun deleteSeriesList(@PathVariable id: Int, @RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
+        val list = seriesServices.deleteList(id, info.userid)
 
         return ResponseEntity
             .status(200)

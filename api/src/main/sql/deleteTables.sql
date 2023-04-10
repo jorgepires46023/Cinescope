@@ -1,0 +1,12 @@
+drop table if exists cinescope.serieList;
+drop table if exists cinescope.seriesLists;
+drop table if exists  watchedEpisodeList;
+drop table if exists cinescope.seriesUserData;
+drop table if exists cinescope.episodesData;
+drop table if exists cinescope.seriesData;
+drop table if exists cinescope.movieList;
+drop table if exists cinescope.moviesLists;
+drop table if exists cinescope.movieUserData;
+drop table if exists cinescope.moviesData;
+drop table if exists cinescope.users;
+drop schema if exists cinescope cascade;
