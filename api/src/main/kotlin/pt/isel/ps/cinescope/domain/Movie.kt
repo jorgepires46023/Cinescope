@@ -1,6 +1,6 @@
 package pt.isel.ps.cinescope.domain
 
-data class Movie(val imdbId: String, val name: String, val img: String)
+data class Movie(val imdbId: String?, val tmdbId: String?, val name: String?, val img: String?)
 
 fun checkMovieState(state: String?):Boolean{
     if(state.isNullOrBlank()) return false

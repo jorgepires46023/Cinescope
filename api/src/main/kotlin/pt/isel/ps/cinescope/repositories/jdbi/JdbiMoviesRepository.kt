@@ -7,6 +7,13 @@ import pt.isel.ps.cinescope.repositories.MoviesRepository
 
 class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
 
+    override fun createList(userId: Int?, name: String) {
+        handle.createUpdate("insert into movieslists(mlid, userId, name) values(DEFAULT, :userId, :name )")
+            .bind("userId", userId)
+            .bind("name", name)
+            .execute()
+    }
+
     override fun getMoviesListById(id: Int?, userId: Int?): List<Movie> {
         return handle.createQuery("select * from moviesLists inner join movieList on movieList.mlid = moviesLists.mlid" +
                                     "inner join moviesdata on moviesdata.mimdbid = movieList.mimdbid" +
