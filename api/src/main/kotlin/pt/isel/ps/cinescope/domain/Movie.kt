@@ -4,11 +4,20 @@ data class Movie(val imdbId: String?, val tmdbId: String?, val name: String?, va
 
 fun checkMovieState(state: String?):Boolean{
     if(state.isNullOrBlank()) return false
-    if(state != MovieState.PTW || state != MovieState.Watched) return false
+    if(state != MovieState.PTW.state || state != MovieState.Watched.state) return false
     return true
 }
 
-object MovieState {
-    const val PTW = "PTW"
-    const val Watched = "Watched"
+enum class MovieState(val state: String) {
+    PTW("PTW"),
+    Watched("Watched");
+
+    companion object {
+        fun fromString(string: String) =
+            when(string) {
+                "PTW" -> PTW
+                "Watched" -> Watched
+                else -> throw IllegalArgumentException("Movie State does not exists")
+            }
+    }
 }

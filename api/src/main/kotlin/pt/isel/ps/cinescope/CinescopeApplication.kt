@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean
 import org.jdbi.v3.core.Jdbi
 import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ps.cinescope.repositories.jdbi.configure
+import pt.isel.ps.cinescope.repositories.jdbi.mappers.MovieStateMapper
 
 @SpringBootApplication
 class CinescopeApplication{
@@ -20,7 +21,9 @@ class CinescopeApplication{
 		val dataSource = PGSimpleDataSource()
 		dataSource.setURL(jdbcUrl)
 
-		return Jdbi.create(dataSource).configure()
+		return Jdbi.create(dataSource)
+			.configure()
+			.registerColumnMapper(MovieStateMapper())
 
 	}
 }

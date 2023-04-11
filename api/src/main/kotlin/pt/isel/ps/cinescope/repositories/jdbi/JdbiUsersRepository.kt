@@ -48,7 +48,7 @@ class  JdbiUsersRepository (private val handle: Handle): UsersRepository {
 
     override fun updateUserInfo(user: User) {
         handle.createUpdate("update cinescope.users set name = :name, email = :email, password = :password " +
-                "where userid = userid")
+                "where userid = :userid")
             .bind("name", user.name)
             .bind("email", user.email)
             .bind("password", user.password)

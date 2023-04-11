@@ -21,4 +21,6 @@ interface MoviesRepository {
 
     fun getMovieFromMovieUserData(movieId: String?, userId: Int?): Movie?
 
+    fun changeState(movieId: String?,userId: Int?, state: MovieState)
+
 }
