@@ -78,5 +78,14 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
             .execute()
     }
 
+    override fun deleteMovieFromList(listId: Int?, movieId: String?, userId: Int?) {
+        handle.createUpdate("delete from cinescope.movieList ml using cinescope.moviesLists mls " +
+                                "where mls.userId = :userId and ml.mlid = :listId and ml.mlid = mls.mlid and ml.mimdbid = :movieId")
+            .bind("userId", userId)
+            .bind("listId", listId)
+            .bind("movieId", movieId)
+            .execute()
+    }
+
 
 }

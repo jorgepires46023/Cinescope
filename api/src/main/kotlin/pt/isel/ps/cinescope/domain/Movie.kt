@@ -18,7 +18,7 @@ enum class MovieState(val state: String) {
             when(string) {
                 "PTW" -> PTW
                 "Watched" -> Watched
-                null -> BadRequestException("Movie State cannot be null")
+                //null -> BadRequestException("Movie State cannot be null")
                 else -> throw IllegalArgumentException("Movie State does not exists")
             }
     }
