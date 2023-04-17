@@ -6,7 +6,7 @@ import pt.isel.ps.cinescope.domain.Series
 import pt.isel.ps.cinescope.domain.SeriesState
 import pt.isel.ps.cinescope.repositories.SeriesRepository
 
-class JbdiSeriesRepository(private val handle: Handle): SeriesRepository {
+class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
 
     override fun createSeriesList(userId: Int?, name: String) {
         handle.createUpdate("insert into cinescope.serieslists(slid, userId, name)values(default, :userId, :name)")
