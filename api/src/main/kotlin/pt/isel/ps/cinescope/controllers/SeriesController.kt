@@ -46,7 +46,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
     @GetMapping(Series.GET_WATCHED_EP_LIST)
     fun getWatchedEpList(@PathVariable id: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
-        val list = "TODO method"//TODO seriesServices.getWatchedEpList(id, info.userid)
+        val list = seriesServices.getWatchedEpList(id, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -64,8 +64,8 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @GetMapping(Series.GET_LIST)
-    fun getSeriesList(@PathVariable id: Int): ResponseEntity<*>{
-        val list = "TODO method" //TODO seriesServices.getList(id)
+    fun getSeriesList(@PathVariable id: Int, @RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
+        val list = seriesServices.getList(id, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -74,7 +74,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
     @PostMapping(Series.CREATE_LIST)
     fun createSeriesList(@RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
-        val list = seriesServices.createList(info.userid)
+        val list = seriesServices.createList(info.userid, info.name)
 
         return ResponseEntity
             .status(200)
@@ -84,6 +84,15 @@ class SeriesController(val seriesServices: SeriesServices) {
     @PostMapping(Series.DELETE_LIST)
     fun deleteSeriesList(@PathVariable id: Int, @RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
         val list = seriesServices.deleteList(id, info.userid)
+
+        return ResponseEntity
+            .status(200)
+            .body(list)
+    }
+
+    @DeleteMapping(Series.DELETE_SERIE_FROM_LIST)
+    fun deleteSerieFromList(@PathVariable id: Int, @PathVariable sid: String?, @RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
+        val list = seriesServices.deleteSeriesFromList(id, seriesId =  sid, info.userid)
 
         return ResponseEntity
             .status(200)
