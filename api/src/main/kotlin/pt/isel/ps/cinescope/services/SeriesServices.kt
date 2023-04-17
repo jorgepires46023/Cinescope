@@ -39,11 +39,11 @@ class SeriesServices(private val transactionManager: TransactionManager) {
         //TODO transactionManager.run { it.seriesRepository.deleteEpisodeFromWatchedList(seriesId, episodeId) }
     }
 
-    fun getWatchedEpList(listId: Int?, userId: Int?){//TODO return
-        if(isNull(listId) || isNull(userId)){
+    fun getWatchedEpList(seriesId: String?, userId: Int?){//TODO return
+        if(isNull(seriesId) || isNull(userId)){
             throw BadRequestException("Missing information to get this list")
         }
-        //transactionManager.run { it.seriesRepository. }
+        //transactionManager.run { it.seriesRepository.getSeriesList(seriesId, userId) }
     }
 
     fun getLists(userId: Int?){//TODO return
