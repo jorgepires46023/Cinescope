@@ -35,7 +35,7 @@ class SeriesController(val seriesServices: SeriesServices) {
             .body(episode)
     }
 
-    @PostMapping(Series.REMOVE_WATCHED_EP)
+    //@PostMapping(Series.REMOVE_WATCHED_EP)
     fun removeWatchedEpisode(@PathVariable id: String, @PathVariable epid: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
         val episode = seriesServices.removeWatchedEpisode(seriesId = id, epid, info.userid)
 

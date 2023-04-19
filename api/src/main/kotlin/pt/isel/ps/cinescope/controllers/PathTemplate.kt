@@ -3,7 +3,7 @@ package pt.isel.ps.cinescope.controllers
 object Users {
     const val CREATE_USER = "/users"                            // Register a new user.
     const val DELETE_USER = "/users/{id}"                       // Deactivate user
-    const val UPDATE_USER = "/users/{id}"                       // Update user
+    //const val UPDATE_USER = "/users/{id}"                       // Update user
     const val GET_USER_INFO = "users/{id}"                      // Gets user info
     const val GET_USER_LISTS = "users/{id}/lists"               // Gets all user lists
     const val LOGIN = "/login"                                  // Logins the user
@@ -23,11 +23,15 @@ object Series{
     const val ADD_SERIE = "/series/{id}/list"                   // Add serie to watchlist/otherlists
     const val CHANGE_STATE = "/series/{id}/state"               // Change state of serie(PTW/WATCHING/WATCHED)
     const val ADD_WATCHED_EP = "series/{id}/ep/{epid}"          // Add episode to list of watched episodes
-    const val REMOVE_WATCHED_EP = "series/{id}/ep/{epid}"       // Remove episode from list of watched episodes
+    //const val REMOVE_WATCHED_EP = "series/{id}/ep/{epid}"       // Remove episode from list of watched episodes
     const val GET_WATCHED_EP_LIST = "series/{id}"               // Get watched episodes list from series
     const val GET_SERIES_LISTS = "/series/lists"                // Gets all lists from user
     const val GET_LIST = "/series/list/{id}"                    // Gets series list
     const val CREATE_LIST = "/series/list"                      // Creates new movie list
     const val DELETE_LIST = "/series/list/{id}"                 // Deletes list
     const val DELETE_SERIE_FROM_LIST ="/list/{id}/serie/{sid}"  // Deletes serie from specific Serie List
+}
+
+object Searches{
+    const val SEARCH_QUERIE = "/search/{query}"                        // Search input on external API
 }

@@ -27,7 +27,7 @@ class UsersController(val usersService: UsersServices) {
             .body(user)
     }
 
-    @PutMapping(Users.UPDATE_USER)
+    //@PutMapping(Users.UPDATE_USER)
     fun editUser(@RequestBody info: UserInputModel, @PathVariable id: Int): ResponseEntity<*> {
         val user = usersService.editUser(id, info.name, info.email, info.password)
 
