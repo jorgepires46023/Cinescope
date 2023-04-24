@@ -35,14 +35,14 @@ create table cinescope.movieList (
 
 create table cinescope.seriesData (
     simdbid varchar(100) primary key,
-    stmdbid varchar(100) NOT NULL,
+    stmdbid varchar(100) UNIQUE NOT NULL,
     name varchar(100) NOT NULL,
     image varchar(100) NOT NULL
 );
 
 create table cinescope.episodesData (
     epimdbid varchar(100) primary key,
-    eptmdbid varchar(100) NOT NULL,
+    stmdbid varchar(100) NOT NULL references cinescope.seriesData(stmdbid),
     name varchar(100) NOT NULL,
     image varchar(100) NOT NULL,
     season int NOT NULL,
