@@ -40,6 +40,11 @@ data class SeriesDetailsOutput(
     val externalIds: ExternalIds?
 )
 
+data class EpisodeDetailOutput(
+    val episodeDetails: EpisodeDetails,
+    val externalIds: ExternalIds?
+)
+
 data class ExternalIds(val imdb_id: String?, val facebook_id: String?, val twitter_id: String?)
 
 data class Creator(val name: String?, val profile_path: String?)

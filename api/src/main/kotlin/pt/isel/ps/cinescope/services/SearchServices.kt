@@ -36,9 +36,11 @@ class SearchServices(val tmdbServices: TmdbService) {
         return tmdbServices.getSeasonDetails(id, seasonNum)
     }
 
-    fun episodeDetails(id: Int?, seasonNum: Int?, epNum: Int?): EpisodeDetails?{
+    fun episodeDetails(id: Int?, seasonNum: Int?, epNum: Int?): EpisodeDetailOutput?{
         if(id == null || seasonNum == null || epNum == null) return null
-        return tmdbServices.getEpisodeDetails(id, seasonNum, epNum)
+        val episodeDetails = tmdbServices.getEpisodeDetails(id, seasonNum, epNum) ?: return null
+        val externalIds = tmdbServices.getEpisodeExternalId(id, seasonNum, epNum) ?: return null
+        return EpisodeDetailOutput(episodeDetails, externalIds)
     }
 
 }

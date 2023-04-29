@@ -43,4 +43,7 @@ class TmdbService {
 
     fun getSeriesExternalId(sid: Int) =
         fetch("tv/$sid/external_ids?$TMDB_API_KEY").bodyToMono<ExternalIds>().block()
+
+    fun getEpisodeExternalId(sid: Int, season: Int, epNum: Int) =
+        fetch("tv/$sid/season/$season/episode/$epNum/external_ids?$TMDB_API_KEY").bodyToMono<ExternalIds>().block()
 }
