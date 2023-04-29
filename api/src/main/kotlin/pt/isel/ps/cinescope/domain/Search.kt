@@ -30,7 +30,8 @@ data class SeriesDetails(
     val id: Int?,
     val name: String?,
     val seasons: Array<Seasons>?,
-    val status: String?
+    val status: String?,
+    val poster_path: String?
 )
 
 data class SeriesDetailsOutput(
@@ -45,9 +46,9 @@ data class Creator(val name: String?, val profile_path: String?)
 
 data class Seasons(val episode_count: Int?, val id: Int?, val name: String?, val season_number: Int?)
 
-data class SeasonDetails(val air_date: String, val episodes: Array<EpisodeDetails>, val season_number: Int?)
+data class SeasonDetails(val air_date: String?, val episodes: Array<EpisodeDetails>?, val season_number: Int?)
 
-data class EpisodeDetails(val air_date: String, val episode_number: Int?, val id: Int?, val name: String?, val overview: String?, val still_path:String?)
+data class EpisodeDetails(val air_date: String?, val episode_number: Int?, val id: Int?, val name: String?, val overview: String?, val still_path:String?)
 
 data class WatchProviders(val id: Int?, val results: CountriesInfo?)
 
