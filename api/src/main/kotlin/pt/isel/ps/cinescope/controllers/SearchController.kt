@@ -16,6 +16,15 @@ class SearchController(val searchServices: SearchServices) {
             .body(search)
     }
 
+    @GetMapping(Searches.MOVIE_DETAILS)
+    fun movieDetails(@PathVariable id: Int): ResponseEntity<*>{
+        val movieDetails = searchServices.movieDetails(id)
+
+        return ResponseEntity
+            .status(200)
+            .body(movieDetails)
+    }
+
     @GetMapping(Searches.SERIE_DETAILS)
     fun serieDetails(@PathVariable id: Int): ResponseEntity<*>{
         val serieDetails = searchServices.serieDetails(id)
