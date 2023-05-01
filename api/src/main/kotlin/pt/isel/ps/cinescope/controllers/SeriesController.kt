@@ -10,7 +10,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
     @PostMapping(Series.ADD_SERIE)
     fun addSeries(@PathVariable id: String, @RequestBody info: SeriesModel.AddInputModel): ResponseEntity<*> {
-        val serie = seriesServices.addSeriesToList(seriesId = id, info.listid, info.userid)
+        val serie = seriesServices.addSeriesToList(id, info.tmdbId, info.listid, info.userid)
 
         return ResponseEntity
             .status(200)
@@ -27,8 +27,8 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @PostMapping(Series.ADD_WATCHED_EP)
-    fun addWatchedEpisode(@PathVariable id: String, @PathVariable epid: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
-        val episode = seriesServices.addWatchedEpisode(seriesId = id, epid, info.userid)
+    fun addWatchedEpisode(@PathVariable id: Int, @PathVariable epid: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
+        val episode = seriesServices.addWatchedEpisode(id, epid,info.episodeNumber, info.seasonNumber, info.userid)
 
         return ResponseEntity
             .status(200)

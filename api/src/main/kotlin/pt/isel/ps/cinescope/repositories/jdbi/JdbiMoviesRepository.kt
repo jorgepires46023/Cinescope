@@ -1,6 +1,7 @@
 package pt.isel.ps.cinescope.repositories.jdbi
 
 import org.jdbi.v3.core.Handle
+import pt.isel.ps.cinescope.domain.ListDetails
 import pt.isel.ps.cinescope.domain.Movie
 import pt.isel.ps.cinescope.domain.MovieState
 import pt.isel.ps.cinescope.repositories.MoviesRepository
@@ -39,7 +40,7 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
             .execute()
     }
 
-    override fun addMovieToUserData(id: Int?, userId: Int?, movie: Movie, state: MovieState) {
+    override fun addMovieToUserData(userId: Int?, movie: Movie, state: MovieState) {
         handle.createUpdate("insert into cinescope.movieuserdata(mimdcid, userId, state) values(:mimdbid, :userId, :state)")
             .bind("mimdbid", movie.imdbId)
             .bind("userId",userId)
@@ -87,5 +88,11 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
             .execute()
     }
 
+    override fun getLists(userId: Int?): List<ListDetails> {
+        return handle.createQuery("select slid as id, name from cinescope.moviesLists where userid = :userId")
+            .bind("userId",userId)
+            .mapTo(ListDetails::class.java)
+            .list()
+    }
 
 }

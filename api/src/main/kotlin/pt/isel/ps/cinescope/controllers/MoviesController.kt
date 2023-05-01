@@ -10,7 +10,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.ADD_MOVIE)
     fun addMovie(@PathVariable id: String, @RequestBody info: MoviesModel.AddInputModel): ResponseEntity<*>{
-        val movie = moviesServices.addMovieToList(movieId = id, info.listid, info.userid)
+        val movie = moviesServices.addMovieToList(info.tmdbId, id, info.listid, info.userid)
 
         return ResponseEntity
             .status(200)

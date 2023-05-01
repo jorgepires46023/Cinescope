@@ -1,19 +1,46 @@
 package pt.isel.ps.cinescope.services
 
 import org.springframework.stereotype.Component
-import pt.isel.ps.cinescope.domain.SeriesState
-import pt.isel.ps.cinescope.domain.checkSeriesState
+import pt.isel.ps.cinescope.domain.*
 import pt.isel.ps.cinescope.repositories.TransactionManager
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
+import pt.isel.ps.cinescope.services.exceptions.NotFoundException
+import pt.isel.ps.cinescope.utils.TmdbService
 import pt.isel.ps.cinescope.utils.isNull
 
 @Component
-class SeriesServices(private val transactionManager: TransactionManager) {
+class SeriesServices(private val transactionManager: TransactionManager, private val tmdbService: TmdbService) {
 
-    fun addSeriesToList(seriesId: String?, listId: Int?, userId: Int?){//TODO return
-        if(isNull(seriesId) || isNull(listId) || isNull(userId)){
+    fun addSeriesToList(imdbSeriesId: String?, tmdbSeriesId: Int?, listId: Int?, userId: Int?) {
+        if(isNull(imdbSeriesId) || isNull(tmdbSeriesId) || isNull(listId) || isNull(userId)){
             throw BadRequestException("Missing information to add series to list")
         }
+
+        transactionManager.run {
+            val series = it.seriesRepository.getSeriesFromSeriesData(imdbSeriesId) ?: run {
+
+                val seriesDetails = if (tmdbSeriesId != null) {
+                    tmdbService.getSerieDetails(tmdbSeriesId)
+                } else {
+                    throw BadRequestException("Tmdb Id cannot be null")
+                }
+
+                val series = Series(imdbSeriesId, seriesDetails?.id, seriesDetails?.name, seriesDetails?.poster_path,null )
+                it.seriesRepository.addSeriesToSeriesData(series)
+                return@run series
+            }
+
+            it.seriesRepository.getSeriesFromSeriesUserData(imdbSeriesId, userId)?: run {
+                it.seriesRepository.addSeriesToSeriesUserData(userId, series, SeriesState.PTW)
+            }
+
+            if (imdbSeriesId != null) {
+                it.seriesRepository.addSeriesToList(listId, userId, imdbSeriesId)
+            } else {
+                throw BadRequestException("Imdb Id cannot be null")
+            }
+        }
+
     }
 
     fun changeState(seriesId: String?, state: String?, userId: Int?){//TODO return
@@ -25,32 +52,56 @@ class SeriesServices(private val transactionManager: TransactionManager) {
         transactionManager.run { it.seriesRepository.changeSeriesState(seriesId, userId, SeriesState.fromString(state)) }
     }
 
-    fun addWatchedEpisode(seriesId: String?, episodeId: String?, userId: Int?){//TODO return
-        if(isNull(seriesId) || isNull(episodeId) || isNull(userId)){
+    fun addWatchedEpisode(tmdbSeriesId: Int?, imdbEpId: String?, epNum: Int?, seasonNum: Int?, userId: Int?){//TODO return
+        if(isNull(tmdbSeriesId) || isNull(epNum) || isNull(seasonNum) || isNull(userId)){
             throw BadRequestException("Missing information to add this watched episode")
         }
-        //TODO transactionManager.run { it.seriesRepository.addEpisodeToWatchedList() }
+        transactionManager.run {
+
+            val episode = it.seriesRepository.getEpisodeFromEpData(imdbEpId) ?: run {
+
+               val episode = if(tmdbSeriesId != null && epNum != null && seasonNum != null) {
+                    val episodeDetails = tmdbService.getEpisodeDetails(tmdbSeriesId, epNum, seasonNum)
+                    val externalEpIds = tmdbService.getEpisodeExternalId(tmdbSeriesId, epNum, seasonNum)
+                    Episode(externalEpIds?.imdb_id, tmdbSeriesId, episodeDetails?.name, episodeDetails?.still_path, seasonNum ,episodeDetails?.episode_number )
+                } else {
+                    throw BadRequestException("Tmdb Id cannot be null")
+                }
+
+                it.seriesRepository.addEpisodeToEpData(episode)
+                return@run episode
+            }
+
+            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(episode.imdbId, userId)?.epListId
+            it.seriesRepository.addEpisodeToWatchedList(epListId, episode.imdbId, userId)
+        }
     }
 
-    fun removeWatchedEpisode(seriesId: String?, episodeId: String?, userId: Int?){//TODO return
-        if(isNull(seriesId) || isNull(episodeId) || isNull(userId)){
+    fun removeWatchedEpisode(seriesId: String?, imdbEpisodeId: String?, userId: Int?){//TODO return
+        if(isNull(seriesId) || isNull(imdbEpisodeId) || isNull(userId)){
             throw BadRequestException("Missing information to remove this watched episode")
         }
-        //TODO transactionManager.run { it.seriesRepository.deleteEpisodeFromWatchedList(seriesId, episodeId) }
+        transactionManager.run {
+            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, userId)?.epListId
+            it.seriesRepository.deleteEpisodeFromWatchedList(epListId, imdbEpisodeId)
+        }
     }
 
-    fun getWatchedEpList(seriesId: String?, userId: Int?){//TODO return
+    fun getWatchedEpList(seriesId: String?, userId: Int?): List<Episode> {
         if(isNull(seriesId) || isNull(userId)){
             throw BadRequestException("Missing information to get this list")
         }
-        //transactionManager.run { it.seriesRepository.getSeriesList(seriesId, userId) }
+        return transactionManager.run {
+            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, userId)?.epListId ?: throw NotFoundException("Series Not Found")
+            it.seriesRepository.getWatchedEpList(epListId)
+        }
     }
 
-    fun getLists(userId: Int?){//TODO return
+    fun getLists(userId: Int?): List<ListDetails> {
         if(isNull(userId)){
             throw BadRequestException("Missing information to get lists")
         }
-        //TODO ? transactionManager.run { it.seriesRepository. }
+        return transactionManager.run { it.seriesRepository.getLists(userId) }
     }
 
     fun getList(listId: Int?, userId: Int?){//TODO return
@@ -65,7 +116,7 @@ class SeriesServices(private val transactionManager: TransactionManager) {
             throw BadRequestException("Missing information to create list")
         }
 
-        transactionManager.run { it.seriesRepository.createSeriesList(userId, name) }
+        transactionManager.run { it.seriesRepository.createSeriesList(userId, name)}
     }
 
     fun deleteSeriesFromList(listId: Int?, seriesId: String?, userId: Int?){

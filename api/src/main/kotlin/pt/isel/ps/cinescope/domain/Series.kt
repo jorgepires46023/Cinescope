@@ -2,7 +2,7 @@ package pt.isel.ps.cinescope.domain
 
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
 
-data class Series(val imdbId: String, val tmdbId: String, val name: String, val img: String)
+data class Series(val imdbId: String?, val tmdbId: Int?, val name: String?, val img: String?, val epListId: Int?)
 
 fun checkSeriesState(state: String?):Boolean{
     if(state.isNullOrBlank()) return false

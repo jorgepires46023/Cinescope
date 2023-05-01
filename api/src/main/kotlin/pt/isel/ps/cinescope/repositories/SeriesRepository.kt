@@ -1,12 +1,13 @@
 package pt.isel.ps.cinescope.repositories
 
 import pt.isel.ps.cinescope.domain.Episode
+import pt.isel.ps.cinescope.domain.ListDetails
 import pt.isel.ps.cinescope.domain.Series
 import pt.isel.ps.cinescope.domain.SeriesState
 
 interface SeriesRepository {
 
-    fun createSeriesList(userId: Int?, name: String)
+    fun createSeriesList(userId: Int?, name: String?)
 
     fun getSeriesList(id: Int?, userId: Int?): List<Series>
 
@@ -16,7 +17,7 @@ interface SeriesRepository {
 
     fun addSeriesToSeriesData(series: Series)
 
-    fun addSeriesToSeriesUserData(id: Int?, userId: Int?, series: Series, state: SeriesState)
+    fun addSeriesToSeriesUserData(userId: Int?, series: Series, state: SeriesState)
 
     fun getSeriesFromSeriesData(seriesId: String?): Series?
 
@@ -33,4 +34,8 @@ interface SeriesRepository {
     fun deleteEpisodeFromWatchedList(eplId: Int?, epId: String?)
 
     fun changeSeriesState(seriesId: String, userId: Int, state: SeriesState)
+
+    fun getWatchedEpList(epLId: Int): List<Episode>
+
+    fun getLists(userId: Int?): List<ListDetails>
 }
