@@ -7,7 +7,7 @@ import pt.isel.ps.cinescope.domain.SeriesState
 
 interface SeriesRepository {
 
-    fun createSeriesList(userId: Int?, name: String?)
+    fun createSeriesList(userId: Int?, name: String?): Int?
 
     fun getSeriesList(id: Int?, userId: Int?): List<Series>
 

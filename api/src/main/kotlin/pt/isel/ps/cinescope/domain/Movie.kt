@@ -2,11 +2,11 @@ package pt.isel.ps.cinescope.domain
 
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
 
-data class Movie(val imdbId: String?, val tmdbId: Int?, val name: String?, val img: String?)
+data class Movie(val imdbId: String?, val tmdbId: Int?, val name: String?, val img: String?, var state: MovieState? = null)
 
 fun checkMovieState(state: String?):Boolean{
-    if(state != MovieState.PTW.state || state != MovieState.Watched.state) return false
-    return true
+    if(state == MovieState.PTW.state || state == MovieState.Watched.state) return true
+    return false
 }
 
 enum class MovieState(val state: String) {

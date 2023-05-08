@@ -1,10 +1,7 @@
 package pt.isel.ps.cinescope.services
 
 import org.springframework.stereotype.Component
-import pt.isel.ps.cinescope.domain.Movie
-import pt.isel.ps.cinescope.domain.MovieState
-import pt.isel.ps.cinescope.domain.checkMovieState
-import pt.isel.ps.cinescope.domain.checkSeriesState
+import pt.isel.ps.cinescope.domain.*
 import pt.isel.ps.cinescope.repositories.TransactionManager
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
 import pt.isel.ps.cinescope.utils.TmdbService
@@ -12,19 +9,26 @@ import pt.isel.ps.cinescope.utils.isNull
 
 @Component
 class MoviesServices(private val transactionManager: TransactionManager, private val tmdbService: TmdbService) {
-    fun createList(userId: Int?){//TODO return
-        val name = "List name"  //TODO add name as parameter
-        if(isNull(userId)){
-            throw BadRequestException("No user ID provided")
+    fun createList(userId: Int?, name: String?): Int? {
+        if(isNull(userId) || isNull(name)){
+            throw BadRequestException("No user ID or Name for the List provided")
         }
-        transactionManager.run { it.moviesRepository.createList(userId, name) }
+        return transactionManager.run {
+            if (!name.isNullOrBlank()) {
+                it.moviesRepository.createList(userId, name)
+            } else {
+                throw BadRequestException("No user ID or Name for the List provided")
+            }
+        }
     }
-    fun getList(listId:Int?, userId: Int?){//TODO return
+
+    fun getList(listId:Int?, userId: Int?): List<Movie> {
         if(isNull(listId) || isNull(userId) || isNull(userId)){
             throw BadRequestException("Missing information to get the list")
         }
         return transactionManager.run { it.moviesRepository.getMoviesListById(listId, userId) }
     }
+
     fun addMovieToList(tmdbMovieId: Int?, imdbMovieId: String?, listId:Int?, userId:Int?){//TODO return
         if(isNull(tmdbMovieId) || isNull(imdbMovieId) || isNull(listId) || isNull(userId)){
             throw BadRequestException("Missing information to add movie to list")
@@ -60,11 +64,11 @@ class MoviesServices(private val transactionManager: TransactionManager, private
     }
     fun deleteList(listId: Int?, userId: Int?){//TODO return
         if(isNull(userId) || isNull(listId)){
-            throw BadRequestException("No user ID provided")
+            throw BadRequestException("No user Id or list Id provided")
         }
         transactionManager.run { it.moviesRepository.deleteMoviesList(listId, userId)}
     }
-    fun changeState(movieId:String?, state:String?, userId: Int?){//TODO return
+    fun changeState(movieId: String?, state: String?, userId: Int?){//TODO return
         if(isNull(movieId) || isNull(state) || isNull(userId)){
             throw BadRequestException("Missing information to change this state")
         }
@@ -73,11 +77,11 @@ class MoviesServices(private val transactionManager: TransactionManager, private
         transactionManager.run { it.moviesRepository.changeState(movieId, userId, MovieState.fromString(state)) }
     }
 
-    fun getLists(userId: Int?){//TODO return
+    fun getLists(userId: Int?): List<ListDetails>{
         if(isNull(userId)){
             throw BadRequestException("No user ID provided")
         }
 
-        transactionManager.run { it.moviesRepository.getLists(userId) }
+        return transactionManager.run { it.moviesRepository.getLists(userId) }
     }
 }

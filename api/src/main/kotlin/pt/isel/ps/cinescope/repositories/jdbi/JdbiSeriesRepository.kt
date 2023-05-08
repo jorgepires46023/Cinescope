@@ -9,16 +9,18 @@ import pt.isel.ps.cinescope.repositories.SeriesRepository
 
 class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
 
-    override fun createSeriesList(userId: Int?, name: String?) {
-        handle.createUpdate("insert into cinescope.serieslists(slid, userId, name)values(default, :userId, :name)")
+    override fun createSeriesList(userId: Int?, name: String?): Int?{
+        return handle.createUpdate("insert into cinescope.serieslists(slid, userId, name)values(default, :userId, :name)")
             .bind("userId", userId)
             .bind("name", name)
-            .execute()
+            .executeAndReturnGeneratedKeys()
+            .mapTo(Int::class.java)
+            .firstOrNull()
     }
 
     override fun getSeriesList(id: Int?, userId: Int?): List<Series> {
-        return handle.createQuery("select * from cinescope.serieslists sls inner join cinescope.serielist sl on sl.slid = sls.slid" +
-                "inner join cinescope.seriesuserdata sud on sud.simdbid = sl.simdbid inner join cinescope.seriesdata sd on sd.simdbid = sud.simdbid" +
+        return handle.createQuery("select sd.simdbid as imdbId, sd.stmdbid as tmdbId, sd.name, sd.image as img, sud.eplid as epListId from cinescope.serieslists sls inner join cinescope.serielist sl on sl.slid = sls.slid " +
+                "inner join cinescope.seriesuserdata sud on sud.simdbid = sl.simdbid inner join cinescope.seriesdata sd on sd.simdbid = sud.simdbid " +
                 "where sls.slid = :listId and sls.userId = :userId")
             .bind("listId", id)
             .bind("userId", userId)

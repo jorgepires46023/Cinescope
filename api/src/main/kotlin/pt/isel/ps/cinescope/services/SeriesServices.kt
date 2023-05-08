@@ -104,19 +104,19 @@ class SeriesServices(private val transactionManager: TransactionManager, private
         return transactionManager.run { it.seriesRepository.getLists(userId) }
     }
 
-    fun getList(listId: Int?, userId: Int?){//TODO return
+    fun getList(listId: Int?, userId: Int?): List<Series> {
         if(isNull(userId) || isNull(listId)){
             throw BadRequestException("Missing information to get this list")
         }
-        transactionManager.run { it.seriesRepository.getSeriesList(listId, userId) }
+        return transactionManager.run { it.seriesRepository.getSeriesList(listId, userId) }
     }
 
-    fun createList(userId: Int?, name: String?){//TODO return
+    fun createList(userId: Int?, name: String?): Int? {
         if(isNull(userId) || isNull(name)){
             throw BadRequestException("Missing information to create list")
         }
 
-        transactionManager.run { it.seriesRepository.createSeriesList(userId, name)}
+        return transactionManager.run { it.seriesRepository.createSeriesList(userId, name)}
     }
 
     fun deleteSeriesFromList(listId: Int?, seriesId: String?, userId: Int?){

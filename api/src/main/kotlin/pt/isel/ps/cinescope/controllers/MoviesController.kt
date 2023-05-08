@@ -46,7 +46,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.CREATE_LIST)
     fun createMoviesList(@RequestBody info: MoviesModel.ListModel): ResponseEntity<*>{
-        val list = moviesServices.createList(info.userid)
+        val list = moviesServices.createList(info.userid, info.name)
 
         return ResponseEntity
             .status(200)

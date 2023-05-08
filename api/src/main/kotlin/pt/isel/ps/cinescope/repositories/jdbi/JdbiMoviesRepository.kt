@@ -8,18 +8,21 @@ import pt.isel.ps.cinescope.repositories.MoviesRepository
 
 class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
 
-    override fun createList(userId: Int?, name: String) {
-        handle.createUpdate("insert into cinescope.movieslists(mlid, userId, name) values(DEFAULT, :userId, :name )")
+    override fun createList(userId: Int?, name: String): Int? {
+        return handle.createUpdate("insert into cinescope.movieslists(mlid, userId, name) values(DEFAULT, :userId, :name )")
             .bind("userId", userId)
             .bind("name", name)
-            .execute()
+            .executeAndReturnGeneratedKeys()
+            .mapTo(Int::class.java)
+            .firstOrNull()
     }
 
     override fun getMoviesListById(id: Int?, userId: Int?): List<Movie> {
-        return handle.createQuery("select * from cinescope.moviesLists inner join movieList on movieList.mlid = moviesLists.mlid" +
-                                    "inner join moviesdata on moviesdata.mimdbid = movieList.mimdbid" +
-                                    "inner join movieuserdata on movieuserdata.mimdbid = moviesdata." +
-                                    "where movieslists.mlid = :id and movieslists.userid = :userId")
+        return handle.createQuery("select md.mimdbid as imdbid, md.mtmdbId as tmdbId, md.name, md.image as img, state " +
+                                    "from cinescope.movieslists mls inner join cinescope.movielist ml on ml.mlid = mls.mlid " +
+                                    "inner join cinescope.moviesdata md on md.mimdbid = ml.mimdbid " +
+                                    "inner join cinescope.movieuserdata mud on mud.mimdbid = md.mimdbid " +
+                                    "where mls.mlid = :id and mls.userid = :userId")
             .bind("id",id)
             .bind("userId", userId)
             .mapTo(Movie::class.java)
@@ -27,7 +30,7 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
     }
 
     override fun addMovieToList(id: Int?, userId: Int?, movie: Movie) {
-        handle.createUpdate("insert into cinescope.movelist(mimdbid, mlid) values(:mimdbid, :mlid)")
+        handle.createUpdate("insert into cinescope.movielist(mimdbid, mlid) values(:mimdbid, :mlid)")
             .bind("mimdbid", movie.imdbId)
             .bind("mlid", id)
             .execute()
@@ -41,7 +44,7 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
     }
 
     override fun addMovieToUserData(userId: Int?, movie: Movie, state: MovieState) {
-        handle.createUpdate("insert into cinescope.movieuserdata(mimdcid, userId, state) values(:mimdbid, :userId, :state)")
+        handle.createUpdate("insert into cinescope.movieuserdata(mimdbid, userId, state) values(:mimdbid, :userId, :state)")
             .bind("mimdbid", movie.imdbId)
             .bind("userId",userId)
             .bind("state", state)
@@ -58,7 +61,7 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
     }
 
     override fun getMovieFromMovieData(movieId: String?): Movie? {
-        return handle.createQuery("select * from cinescope.moviesdata where mimdbid = :movieId")
+        return handle.createQuery("select mimdbid as imdbId, mtmdbid as tmdbId, name, image as img from cinescope.moviesdata where mimdbid = :movieId")
             .bind("movieId", movieId)
             .mapTo(Movie::class.java)
             .firstOrNull()
@@ -89,7 +92,7 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
     }
 
     override fun getLists(userId: Int?): List<ListDetails> {
-        return handle.createQuery("select slid as id, name from cinescope.moviesLists where userid = :userId")
+        return handle.createQuery("select mlid as id, name from cinescope.moviesLists where userid = :userId")
             .bind("userId",userId)
             .mapTo(ListDetails::class.java)
             .list()

@@ -6,7 +6,7 @@ import pt.isel.ps.cinescope.domain.MovieState
 
 interface MoviesRepository {
 
-    fun createList(userId: Int?, name: String)
+    fun createList(userId: Int?, name: String): Int?
 
     fun getMoviesListById(id: Int?, userId: Int?): List<Movie>
 
