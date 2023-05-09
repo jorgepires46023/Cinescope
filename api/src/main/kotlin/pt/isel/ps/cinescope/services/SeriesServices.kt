@@ -25,7 +25,7 @@ class SeriesServices(private val transactionManager: TransactionManager, private
                     throw BadRequestException("Tmdb Id cannot be null")
                 }
 
-                val series = Series(imdbSeriesId, seriesDetails?.id, seriesDetails?.name, seriesDetails?.poster_path,null )
+                val series = Series(imdbSeriesId, seriesDetails?.id, seriesDetails?.name, seriesDetails?.poster_path,null)
                 it.seriesRepository.addSeriesToSeriesData(series)
                 return@run series
             }

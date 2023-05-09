@@ -19,7 +19,7 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun getSeriesList(id: Int?, userId: Int?): List<Series> {
-        return handle.createQuery("select sd.simdbid as imdbId, sd.stmdbid as tmdbId, sd.name, sd.image as img, sud.eplid as epListId from cinescope.serieslists sls inner join cinescope.serielist sl on sl.slid = sls.slid " +
+        return handle.createQuery("select sd.simdbid as imdbId, sd.stmdbid as tmdbId, sd.name, sd.image as img, sud.eplid as epListId, sud.state from cinescope.serieslists sls inner join cinescope.serielist sl on sl.slid = sls.slid " +
                 "inner join cinescope.seriesuserdata sud on sud.simdbid = sl.simdbid inner join cinescope.seriesdata sd on sd.simdbid = sud.simdbid " +
                 "where sls.slid = :listId and sls.userId = :userId")
             .bind("listId", id)
@@ -38,15 +38,15 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     override fun addSeriesToList(listId: Int?, userId: Int?, seriesId: String) {
         handle.createUpdate("insert into cinescope.serielist(slid, simdbid) values(:listId, :seriesId)")
             .bind("listId", listId)
-            .bind("userId", userId)
+            .bind("seriesId", seriesId)
             .execute()
     }
 
     override fun addSeriesToSeriesData(series: Series) {
         handle.createUpdate("insert into cinescope.seriesdata(simdbid, stmdbid, name, image) " +
-                "values(:imdbId, :tmdbid, :name, :image)")
-            .bind("imdbid", series.imdbId)
-            .bind("tmdbid", series.tmdbId)
+                "values(:imdbId, :tmdbId, :name, :image)")
+            .bind("imdbId", series.imdbId)
+            .bind("tmdbId", series.tmdbId)
             .bind("name", series.name)
             .bind("image", series.img)
             .execute()
@@ -62,14 +62,14 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun getSeriesFromSeriesData(seriesId: String?): Series? {
-        return handle.createQuery("select * from cinescope.seriesdata where simdbid = :seriesId")
+        return handle.createQuery("select simdbid as imdbId, stmdbid as tmdbId, name, image as img from cinescope.seriesdata where simdbid = :seriesId")
             .bind("seriesId", seriesId)
             .mapTo(Series::class.java)
             .firstOrNull()
     }
 
     override fun getSeriesFromSeriesUserData(seriesId: String?, userId: Int?): Series? {
-        return handle.createQuery("select * from cinescope.seriesuserdata where simdbid = :seriesId")
+        return handle.createQuery("select state, eplid as epListId from cinescope.seriesuserdata where simdbid = :seriesId")
             .bind("seriesId", seriesId)
             .mapTo(Series::class.java)
             .firstOrNull()
@@ -118,8 +118,8 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun changeSeriesState(seriesId: String, userId: Int, state: SeriesState) {
-        handle.createUpdate("update cinescope.seriesuserdata sud set sud.state = :state " +
-                "where sud.simdbid = :seriesId and sud.userid = :userId")
+        handle.createUpdate("update cinescope.seriesuserdata set state = :state " +
+                "where simdbid = :seriesId and userid = :userId")
             .bind("state", state)
             .bind("seriesId", seriesId)
             .bind("userId", userId)

@@ -1,6 +1,6 @@
 drop table if exists cinescope.serieList;
 drop table if exists cinescope.seriesLists;
-drop table if exists  watchedEpisodeList;
+drop table if exists cinescope.watchedEpisodeList;
 drop table if exists cinescope.seriesUserData;
 drop table if exists cinescope.episodesData;
 drop table if exists cinescope.seriesData;
