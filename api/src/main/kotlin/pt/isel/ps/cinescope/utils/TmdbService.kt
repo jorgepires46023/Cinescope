@@ -46,4 +46,16 @@ class TmdbService {
 
     fun getEpisodeExternalId(sid: Int, season: Int, epNum: Int) =
         fetch("tv/$sid/season/$season/episode/$epNum/external_ids?$TMDB_API_KEY").bodyToMono<ExternalIds>().block()
+
+    fun getPopularMovies() =
+        fetch("trending/movie/day?$TMDB_API_KEY").bodyToMono<Search>().block()
+
+    fun getPopularSeries() =
+        fetch("trending/tv/day?$TMDB_API_KEY").bodyToMono<Search>().block()
+
+    fun getMovieRecommendations(id: Int) =
+        fetch("movie/$id/recommendations?$TMDB_API_KEY").bodyToMono<Search>().block()
+
+    fun getSerieRecommendations(id: Int) =
+        fetch("tv/$id/recommendations?$TMDB_API_KEY").bodyToMono<Search>().block()
 }

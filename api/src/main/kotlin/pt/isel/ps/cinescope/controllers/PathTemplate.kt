@@ -3,9 +3,8 @@ package pt.isel.ps.cinescope.controllers
 object Users {
     const val CREATE_USER = "/users"                                            // Register a new user.
     const val DELETE_USER = "/users/{id}"                                       // Deactivate user
-    //const val UPDATE_USER = "/users/{id}"                                     // Update user
+    const val UPDATE_USER = "/users/{id}/edit"                                  // Update user
     const val GET_USER_INFO = "users/{id}"                                      // Gets user info
-    const val GET_USER_LISTS = "users/{id}/lists"                               // Gets all user lists
     const val LOGIN = "/login"                                                  // Logins the user
 }
 
@@ -13,7 +12,7 @@ object Movies{
     const val ADD_MOVIE = "/movies/{id}/list"                                   // Add movie to watchlist/otherlists
     const val CHANGE_STATE = "/movies/{id}/state"                               // Change state of movie(PTW/WATCHED)
     const val GET_MOVIES_LISTS = "/movies/lists"                                // Gets all lists from user
-    const val GET_LIST = "/movies/list/{id}"                                    // Gets movies list
+    const val GET_LIST = "/movies/list"                                         // Gets movies list
     const val CREATE_LIST = "/movies/list"                                      // Creates new movie list
     const val DELETE_LIST = "/movies/list/{id}"                                 // Deletes list
     const val DELETE_MOVIE_FROM_LIST = "list/{id}/movie/{mid}"                  // Deletes movie from specific Movie List
@@ -38,4 +37,8 @@ object Searches{
     const val SERIE_DETAILS = "/api_series/{id}"                                    // Search Serie details on external API
     const val SEASON_DETAILS = "/api_series/{id}/season/{seasonnum}"                // Search season details on external API
     const val EPISODE_DETAILS = "/api_series/{id}/season/{seasonnum}/ep/{epnum}"    // Search episode details on external API
+    const val MOVIE_RECOMMENDATIONS = "/api_movies/{id}/recommendations"            // Returns movie recommendations based on id provided
+    const val SERIE_RECOMMENDATIONS = "/api_series/{id}/recommendations"            // Returns serie recommendations based on id provided
+    const val GET_POPULAR_MOVIES = "/api_movies/popular"                            // Returns popular movies
+    const val GET_POPULAR_SERIES = "/api_series/popular"                            // Returns popular movies
 }

@@ -43,4 +43,30 @@ class SearchServices(val tmdbServices: TmdbService) {
         return EpisodeDetailOutput(episodeDetails, externalIds)
     }
 
+    fun getPopularMovies(): Search?{
+        val movies = tmdbServices.getPopularMovies()
+        if (movies != null)
+            movies.results?.forEach { it.media_type = "movie" }
+        return movies
+    }
+
+    fun getPopularSeries(): Search?{
+        val series = tmdbServices.getPopularSeries()
+        if (series != null)
+            series.results?.forEach {it.media_type = "tv"}
+        return series
+    }
+
+    fun getMovieRecommendations(id:Int?): Search?{
+        if(id == null) return null
+        val movies = tmdbServices.getMovieRecommendations(id)
+        return movies
+    }
+
+    fun getSerieRecommendations(id: Int?): Search?{
+        if(id == null) return null
+        val series = tmdbServices.getSerieRecommendations(id)
+        return series
+    }
+
 }
