@@ -50,4 +50,32 @@ class SearchController(val searchServices: SearchServices) {
             .status(200)
             .body(epDetails)
     }
+
+    @GetMapping(Searches.GET_POPULAR_MOVIES)
+    fun getPopularMovies(): ResponseEntity<*>{
+        return ResponseEntity
+            .status(200)
+            .body(searchServices.getPopularMovies())
+    }
+
+    @GetMapping(Searches.GET_POPULAR_SERIES)
+    fun getPopularSeries(): ResponseEntity<*>{
+        return ResponseEntity
+            .status(200)
+            .body(searchServices.getPopularSeries())
+    }
+
+    @GetMapping(Searches.MOVIE_RECOMMENDATIONS)
+    fun getMovieRecommendations(@PathVariable id: Int): ResponseEntity<*>{
+        return ResponseEntity
+            .status(200)
+            .body(searchServices.getMovieRecommendations(id))
+    }
+
+    @GetMapping(Searches.SERIE_RECOMMENDATIONS)
+    fun getSeriesRecommendations(@PathVariable id: Int): ResponseEntity<*>{
+        return ResponseEntity
+            .status(200)
+            .body(searchServices.getSerieRecommendations(id))
+    }
 }
