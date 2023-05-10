@@ -53,7 +53,7 @@ class SeriesServices(private val transactionManager: TransactionManager, private
     }
 
     fun addWatchedEpisode(tmdbSeriesId: Int?, imdbEpId: String?, epNum: Int?, seasonNum: Int?, userId: Int?){//TODO return
-        if(isNull(tmdbSeriesId) || isNull(epNum) || isNull(seasonNum) || isNull(userId)){
+        if(isNull(tmdbSeriesId) || isNull(imdbEpId) || isNull(epNum) || isNull(seasonNum) || isNull(userId)){
             throw BadRequestException("Missing information to add this watched episode")
         }
         transactionManager.run {
@@ -72,8 +72,13 @@ class SeriesServices(private val transactionManager: TransactionManager, private
                 return@run episode
             }
 
-            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(episode.imdbId, userId)?.epListId
-            it.seriesRepository.addEpisodeToWatchedList(epListId, episode.imdbId, userId)
+            if (tmdbSeriesId != null) {
+                val externalSeriesIds = tmdbService.getSeriesExternalId(tmdbSeriesId)
+                val seriesUserData = it.seriesRepository.getSeriesFromSeriesUserData(externalSeriesIds?.imdb_id, userId)
+                it.seriesRepository.addEpisodeToWatchedList(seriesUserData?.epListId, episode.imdbId, userId)
+            } else {
+                throw BadRequestException("Tmdb Id cannot be null")
+            }
         }
     }
 

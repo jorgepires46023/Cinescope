@@ -28,4 +28,6 @@ interface MoviesRepository {
 
     fun getLists(userId: Int?) :List<ListDetails>
 
+    fun getMoviesFromUserByState(userId: Int?, state: MovieState?): List<Movie>
+
 }

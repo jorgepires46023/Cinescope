@@ -741,6 +741,139 @@ class SeriesServicesTests {
         }
     }
 
+    @Test
+    fun `Get the Watched Episodes list`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            val wepList = seriesServices.getWatchedEpList("tt4574334",userId)
+
+            assertTrue(wepList.isEmpty())
+        }
+    }
+
+
+    @Test
+    fun `Get the Watched Episodes list without the Users Id`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData =
+                transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.getWatchedEpList("tt4574334", null)
+            }
+
+        }
+    }
+
+    @Test
+    fun `Get the Watched Episodes list without the series Id`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData =
+                transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.getWatchedEpList("", userId)
+            }
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.getWatchedEpList(null, userId)
+            }
+
+
+        }
+
+    }
 
     @Test
     fun `Add a watched episode to the Watched Episodes List`() {
@@ -777,7 +910,16 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,userId)
 
+            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+
+            assertEquals(wepList[0].episode, 1)
+            assertEquals(wepList[0].season, 1)
+            assertEquals(wepList[0].name,"Chapter One: The Vanishing of Will Byers")
+            assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
+            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].seriesId, 66732)
 
         }
     }
@@ -785,60 +927,414 @@ class SeriesServicesTests {
 
     @Test
     fun `Add a watched episode to the Watched Episodes List without the Users Id`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
 
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,null)
+            }
+
+        }
     }
 
     @Test
     fun `Add a watched episode to the Watched Episodes List without the series tmdbId`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.addWatchedEpisode(null,"tt4593118",1,1,userId)
+            }
+
+        }
 
     }
 
     @Test
     fun `Add a watched episode to the Watched Episodes List without the episode imdbId, episode number and season number`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,null,1,1,userId)
+            }
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"",1,1,userId)
+            }
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",null,1,userId)
+            }
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,null,userId)
+            }
+
+        }
 
     }
 
-
-
     @Test
     fun `Remove a Episode from the Watched Episodes List`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
 
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,userId)
+
+            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+
+            assertEquals(wepList[0].episode, 1)
+            assertEquals(wepList[0].season, 1)
+            assertEquals(wepList[0].name,"Chapter One: The Vanishing of Will Byers")
+            assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
+            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].seriesId, 66732)
+
+            seriesServices.removeWatchedEpisode("tt4574334","tt4593118",userId)
+
+            val wepList1 = seriesServices.getWatchedEpList("tt4574334", userId)
+
+            assertTrue(wepList1.isEmpty())
+        }
     }
 
     @Test
     fun `Remove a Episode from the Watched Episodes List without the Users Id`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
 
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,userId)
+
+            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+
+            assertEquals(wepList[0].episode, 1)
+            assertEquals(wepList[0].season, 1)
+            assertEquals(wepList[0].name,"Chapter One: The Vanishing of Will Byers")
+            assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
+            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].seriesId, 66732)
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.removeWatchedEpisode("tt4574334","tt4593118",null)
+            }
+
+        }
     }
 
     @Test
     fun `Remove a Episode from the Watched Episodes List without the series Id`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
 
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,userId)
+
+            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+
+            assertEquals(wepList[0].episode, 1)
+            assertEquals(wepList[0].season, 1)
+            assertEquals(wepList[0].name,"Chapter One: The Vanishing of Will Byers")
+            assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
+            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].seriesId, 66732)
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.removeWatchedEpisode("","tt4593118",userId)
+            }
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.removeWatchedEpisode(null,"tt4593118",userId)
+            }
+
+        }
     }
 
     @Test
     fun `Remove a Episode from the Watched Episodes List without the episode imdbId`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
 
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData =
+                transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId, "tt4593118", 1, 1, userId)
+
+            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+
+            assertEquals(wepList[0].episode, 1)
+            assertEquals(wepList[0].season, 1)
+            assertEquals(wepList[0].name, "Chapter One: The Vanishing of Will Byers")
+            assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
+            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].seriesId, 66732)
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.removeWatchedEpisode("tt4574334", "", userId)
+            }
+            assertFailsWith<BadRequestException> {
+                seriesServices.removeWatchedEpisode("tt4574334", null, userId)
+            }
+        }
     }
 
+    //TODO ver como ver da DB
     @Test
     fun `Remove a Episode from the Watched Episodes List but the episode is not in the list`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
 
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+
+            val seriesUserData =
+                transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            val seriesList = seriesServices.getList(listId, userId)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.PTW)
+
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId, "tt4593118", 1, 1, userId)
+
+            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+
+            assertEquals(wepList[0].episode, 1)
+            assertEquals(wepList[0].season, 1)
+            assertEquals(wepList[0].name, "Chapter One: The Vanishing of Will Byers")
+            assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
+            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].seriesId, 66732)
+
+            seriesServices.removeWatchedEpisode("tt4574334", "tt4593118", userId)
+        }
     }
 
-    @Test
-    fun `Get the Watched Episodes list`() {
-
-    }
-
-
-    @Test
-    fun `Get the Watched Episodes list without the Users Id`() {
-
-    }
-
-    @Test
-    fun `Get the Watched Episodes list without the series Id`() {
-
-    }
-    
 }

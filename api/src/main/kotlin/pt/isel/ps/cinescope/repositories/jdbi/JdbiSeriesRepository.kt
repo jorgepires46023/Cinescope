@@ -86,13 +86,13 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
 
     override fun addEpisodeToWatchedList(eplId: Int?, epId: String?, userId: Int?) {
         handle.createUpdate("insert into cinescope.watchedepisodelist(eplid, epimdbid) values(:eplId, :epId)")
-            .bind("eplid", eplId)
+            .bind("eplId", eplId)
             .bind("epId", epId)
             .execute()
     }
 
     override fun addEpisodeToEpData(episode: Episode) {
-        handle.createUpdate("insert into cinescope.episodedata(epimdbid, stmdbid, name, image, season, episode)" +
+        handle.createUpdate("insert into cinescope.episodesdata(epimdbid, stmdbid, name, image, season, episode)" +
                 "values(:epImdbId, :seriesId, :name, :image, :season, :episode)")
             .bind("epImdbId", episode.imdbId)
             .bind("seriesId", episode.seriesId)
@@ -104,14 +104,14 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun getEpisodeFromEpData(epId: String?) : Episode?{
-        return handle.createQuery("select * from cinescope.episodedata ed where ed.epimdbid = :epId")
+        return handle.createQuery("select epimdbid as imdbId, stmdbid as seriesId: Int?, name, image as img, season, episode from cinescope.episodesdata ed where ed.epimdbid = :epId")
             .bind("epId", epId)
             .mapTo(Episode::class.java)
             .firstOrNull()
     }
 
     override fun deleteEpisodeFromWatchedList(eplId: Int?, epId: String?) {
-        handle.createUpdate("delete from cinescope.watchedepisodelist wel where wel.eplid = :eplId and wel.simdbid = :epId ")
+        handle.createUpdate("delete from cinescope.watchedepisodelist wel where wel.eplid = :eplId and wel.epimdbid = :epId ")
             .bind("eplId", eplId)
             .bind("epId", epId)
             .execute()
@@ -127,8 +127,9 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun getWatchedEpList(eplId: Int): List<Episode> {
-        return handle.createQuery("select * from cinescope.watchedepisodelist wel inner join cinescope.episodedata ed" +
-                "on ed.epimdbid = wel.epimdbid where eplid = :eplid ")
+        return handle.createQuery("select wel.epimdbid as imdbId, ed.stmdbid as seriesId, name, image as img, season, episode " +
+                    "from cinescope.watchedepisodelist wel inner join cinescope.episodesdata ed " +
+                    "on ed.epimdbid = wel.epimdbid where eplid = :eplid ")
             .bind("eplid", eplId)
             .mapTo(Episode::class.java)
             .list()
@@ -138,6 +139,12 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
         return handle.createQuery("select slid as id, name from cinescope.seriesLists where userid = :userId")
             .bind("userId",userId)
             .mapTo(ListDetails::class.java)
+            .list()
+    }
+
+    override fun getSeriesFromUserByState(userId: Int?, state: SeriesState?): List<Series> {
+        return  handle.createQuery("")
+            .mapTo(Series::class.java)
             .list()
     }
 

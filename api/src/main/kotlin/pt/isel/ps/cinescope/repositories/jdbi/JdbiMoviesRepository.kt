@@ -98,4 +98,10 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
             .list()
     }
 
+    override fun getMoviesFromUserByState(userId: Int?, state: MovieState?): List<Movie> {
+        return handle.createQuery("")
+            .mapTo(Movie::class.java)
+            .list()
+    }
+
 }

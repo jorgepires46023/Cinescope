@@ -38,4 +38,6 @@ interface SeriesRepository {
     fun getWatchedEpList(epLId: Int): List<Episode>
 
     fun getLists(userId: Int?): List<ListDetails>
+
+    fun getSeriesFromUserByState(userId: Int?, state: SeriesState?): List<Series>
 }
