@@ -27,7 +27,7 @@ class UsersController(val usersService: UsersServices) {
             .body(user)
     }
 
-    //@PutMapping(Users.UPDATE_USER)
+    @PostMapping(Users.UPDATE_USER)
     fun editUser(@RequestBody info: UserInputModel, @PathVariable id: Int): ResponseEntity<*> {
         val user = usersService.editUser(id, info.name, info.email, info.password)
 
@@ -54,12 +54,4 @@ class UsersController(val usersService: UsersServices) {
             .body(user)
     }
 
-    @GetMapping(Users.GET_USER_LISTS)
-    fun getUserLists(@PathVariable id: Int): ResponseEntity<*> {
-        val user = "Waiting Services"//TODO usersService.getUserLists(info.id)
-
-        return ResponseEntity
-            .status(200)
-            .body(user)
-    }
 }

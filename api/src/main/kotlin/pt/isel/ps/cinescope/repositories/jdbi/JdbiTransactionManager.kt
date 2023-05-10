@@ -9,7 +9,9 @@ import pt.isel.ps.cinescope.repositories.TransactionManager
 class JdbiTransactionManager(
     private val jdbi: Jdbi
 ): TransactionManager {
-    override fun <R> run(block: (Transaction) -> R): R {
-        TODO("Not yet implemented")
+    override fun <R> run(block: (Transaction) -> R): R =
+        jdbi.inTransaction<R, Exception>{ handle ->
+            val transaction = JdbiTransaction(handle)
+            block(transaction)
+        }
     }
-}
