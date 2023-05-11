@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import pt.isel.ps.cinescope.controllers.models.ProblemJsonModel
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
+import pt.isel.ps.cinescope.services.exceptions.InternalServerErrorException
 import pt.isel.ps.cinescope.services.exceptions.NotFoundException
 import pt.isel.ps.cinescope.services.exceptions.UnauthorizedException
 
@@ -30,4 +31,10 @@ class ResponseExceptionHandler: ResponseEntityExceptionHandler(){
         .status(401)
         .contentType(MediaType.APPLICATION_PROBLEM_JSON)
         .body(ProblemJsonModel("https://example.org/problems/unauthorized", exception.msg))
+
+    @ExceptionHandler(value = [InternalServerErrorException::class])
+    fun exceptionHandler(exception: InternalServerErrorException) = ResponseEntity
+        .status(500)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(ProblemJsonModel("https://example.org/problems/internalservererror", exception.msg))
 }
