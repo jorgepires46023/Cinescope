@@ -17,7 +17,7 @@ class JdbiTransactionManager(
                 block(transaction)
             }
         } catch(e: Exception) {
-            throw InternalServerErrorException("Error in Data Base")
+            throw InternalServerErrorException("database error")
         }
 
     }

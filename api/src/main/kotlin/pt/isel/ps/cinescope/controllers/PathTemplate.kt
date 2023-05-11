@@ -9,11 +9,12 @@ object Users {
 }
 
 object Movies{
-    const val ADD_MOVIE = "/movies/{id}/list"                                   // Add movie to watchlist/otherlists
+    const val ADD_MOVIE = "/movies/{id}/list/{lid}"                             // Add movie to watchlist/otherlists
     const val CHANGE_STATE = "/movies/{id}/state"                               // Change state of movie(PTW/WATCHED)
     const val GET_LIST_BY_STATE = "/movies/state/{state}"                       // Gets all movies with state {state}
+    const val REMOVE_MOVIE_STATE = "/movies/{mid}/state"                        // Removes state from movie
     const val GET_MOVIES_LISTS = "/movies/lists"                                // Gets all lists from user
-    const val GET_LIST = "/movies/list"                                         // Gets movies list
+    const val GET_LIST = "/movies/list/{id}"                                    // Gets movies list
     const val CREATE_LIST = "/movies/list"                                      // Creates new movie list
     const val DELETE_LIST = "/movies/list/{id}"                                 // Deletes list
     const val DELETE_MOVIE_FROM_LIST = "list/{id}/movie/{mid}"                  // Deletes movie from specific Movie List

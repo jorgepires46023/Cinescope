@@ -11,13 +11,11 @@ import pt.isel.ps.cinescope.services.MoviesServices
 class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.ADD_MOVIE)
-    fun addMovie(@PathVariable id: String, @RequestBody info: MoviesModel.AddInputModel): ResponseEntity<*>{
-        //val movie = moviesServices.addMovieToList(info.tmdbId, id, info.listid, info.userid)
-
-//        return ResponseEntity
-//            .status(200)
-//            .body(movie)
-        TODO()
+    fun addMovie(@PathVariable id: Int, @PathVariable lid: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val movie = moviesServices.addMovieToList(id,lid, bearer)
+        return ResponseEntity
+            .status(200)
+            .body(movie)
     }
 
     @PostMapping(Movies.CHANGE_STATE)
@@ -30,8 +28,8 @@ class MoviesController(val moviesServices: MoviesServices) {
     }
 
     @GetMapping(Movies.GET_LIST_BY_STATE)
-    fun getListsByState(@PathVariable state: String, @CookieValue usertoken: String):ResponseEntity<*>{
-        val lists = moviesServices.getMoviesFromUserByState(usertoken, state)
+    fun getListsByState(@PathVariable state: String, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String):ResponseEntity<*>{
+        val lists = moviesServices.getMoviesFromUserByState(bearer, state)
 
         return ResponseEntity
             .status(200)
@@ -40,8 +38,8 @@ class MoviesController(val moviesServices: MoviesServices) {
 
 
     @GetMapping(Movies.GET_MOVIES_LISTS)
-    fun getMoviesLists(@RequestBody info: MoviesModel.ListModel):ResponseEntity<*>{
-        val lists = moviesServices.getLists(info.userid)
+    fun getMoviesLists(@RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String):ResponseEntity<*>{
+        val lists = moviesServices.getLists(bearer)
 
         return ResponseEntity
             .status(200)
@@ -49,8 +47,8 @@ class MoviesController(val moviesServices: MoviesServices) {
     }
 
     @GetMapping(Movies.GET_LIST)
-    fun getMoviesList(@PathVariable id: Int, @RequestBody info: MoviesModel.ListModel): ResponseEntity<*>{
-        val list = moviesServices.getList(id, info.userid)
+    fun getMoviesList(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val list = moviesServices.getList(id, bearer)
 
         return ResponseEntity
             .status(200)
@@ -58,17 +56,17 @@ class MoviesController(val moviesServices: MoviesServices) {
     }
 
     @PostMapping(Movies.CREATE_LIST)
-    fun createMoviesList(@RequestBody info: MoviesModel.ListModel): ResponseEntity<*>{
-        val list = moviesServices.createList(info.userid, info.name)
+    fun createMoviesList(@RequestBody info: MoviesModel.ListModel, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val list = moviesServices.createList(bearer, info.name)
 
         return ResponseEntity
             .status(200)
             .body(list)
     }
 
-    @PostMapping(Movies.DELETE_LIST)
-    fun deleteMoviesList(@PathVariable id: Int, @RequestBody info: MoviesModel.ListModel): ResponseEntity<*>{
-        val list = moviesServices.deleteList(id, info.userid)
+    @DeleteMapping(Movies.DELETE_LIST)
+    fun deleteMoviesList(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val list = moviesServices.deleteList(id, bearer)
 
         return ResponseEntity
             .status(200)
@@ -76,11 +74,18 @@ class MoviesController(val moviesServices: MoviesServices) {
     }
 
     @DeleteMapping(Movies.DELETE_MOVIE_FROM_LIST)
-    fun deleteSerieFromList(@PathVariable id: Int, @PathVariable mid: String?, @RequestBody info: MoviesModel.ListModel): ResponseEntity<*>{
-        val list = moviesServices.deleteMovieFromList(id, movieId = mid, info.userid)
+    fun deleteMovieFromList(@PathVariable id: Int, @PathVariable mid: Int?, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val list = moviesServices.deleteMovieFromList(id, movieId = mid, bearer)
 
         return ResponseEntity
             .status(200)
             .body(list)
+    }
+
+    @DeleteMapping(Movies.REMOVE_MOVIE_STATE)
+    fun deleteStateFromMovie(@PathVariable mid: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        return ResponseEntity
+            .status(200)
+            .body(moviesServices.deleteStateFromMovie(mid, bearer))
     }
 }
