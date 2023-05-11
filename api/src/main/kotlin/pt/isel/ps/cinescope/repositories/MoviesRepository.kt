@@ -30,4 +30,6 @@ interface MoviesRepository {
 
     fun getMoviesFromUserByState(userId: Int?, state: MovieState?): List<Movie>
 
+    fun deleteMovieFromUserData(movieId: Int?, userId: Int?)
+
 }
