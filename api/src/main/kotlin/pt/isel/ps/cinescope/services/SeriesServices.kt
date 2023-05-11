@@ -69,7 +69,7 @@ class SeriesServices(private val transactionManager: TransactionManager, private
             throw BadRequestException("Missing information to add this watched episode")
         }
         transactionManager.run {
-
+            it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, userId) ?: it.seriesRepository.addSeriesToSeriesUserData(userId, tmdbSeriesId, SeriesState.Watching)
             val episode = it.seriesRepository.getEpisodeFromEpData(imdbEpId) ?: run {
 
                val episode = if(tmdbSeriesId != null && epNum != null && seasonNum != null) {
