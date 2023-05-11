@@ -10,11 +10,11 @@ interface MoviesRepository {
 
     fun getMoviesListById(id: Int?, userId: Int?): List<Movie>
 
-    fun addMovieToList(id: Int?,userId: Int?, movie: Movie)
+    fun addMovieToList(listId: Int?, movie: Movie)
 
-    fun deleteMoviesList(id: Int?, userId: Int?)
+    fun deleteMoviesList(listId: Int?, userId: Int?)
 
-    fun addMovieToUserData(userId: Int?, movieid: Int, state: MovieState)
+    fun addMovieToUserData(userId: Int?, movieId: Int, state: MovieState)
 
     fun addMovieToMovieData(movie: Movie)
 
@@ -24,7 +24,7 @@ interface MoviesRepository {
 
     fun changeState(movieId: Int?,userId: Int?, state: MovieState)
 
-    fun deleteMovieFromList(listId: Int?, movieId: String?, userId: Int?)
+    fun deleteMovieFromList(listId: Int?, movieId: Int?, userId: Int?)
 
     fun getLists(userId: Int?) :List<ListDetails>
 
