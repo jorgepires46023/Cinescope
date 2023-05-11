@@ -9,21 +9,21 @@ interface SeriesRepository {
 
     fun createSeriesList(userId: Int?, name: String?): Int?
 
-    fun getSeriesList(id: Int?, userId: Int?): List<Series>
+    fun getSeriesList(listId: Int?, userId: Int?): List<Series>
 
-    fun deleteSeriesList(id: Int?, userId: Int?)
+    fun deleteSeriesList(listId: Int?, userId: Int?)
 
-    fun addSeriesToList(listId: Int?, userId: Int?, seriesId: String)
+    fun addSeriesToList(listId: Int?, userId: Int?, seriesId: Int)
 
     fun addSeriesToSeriesData(series: Series)
 
-    fun addSeriesToSeriesUserData(userId: Int?, series: Series, state: SeriesState)
+    fun addSeriesToSeriesUserData(userId: Int?, seriesId: Int?, state: SeriesState)
 
-    fun getSeriesFromSeriesData(seriesId: String?): Series?
+    fun getSeriesFromSeriesData(seriesId: Int?): Series?
 
-    fun getSeriesFromSeriesUserData(seriesId: String?, userId: Int?): Series?
+    fun getSeriesFromSeriesUserData(seriesId: Int?, userId: Int?): Series?
 
-    fun deleteSeriesFromList(listId: Int?, seriesId: String?, userId: Int?)
+    fun deleteSeriesFromList(listId: Int?, seriesId: Int?, userId: Int?)
 
     fun addEpisodeToWatchedList(eplId: Int?, epId: String?, userId: Int?)
 
@@ -33,7 +33,7 @@ interface SeriesRepository {
 
     fun deleteEpisodeFromWatchedList(eplId: Int?, epId: String?)
 
-    fun changeSeriesState(seriesId: String, userId: Int, state: SeriesState)
+    fun changeSeriesState(seriesId: Int, userId: Int, state: SeriesState)
 
     fun getWatchedEpList(epLId: Int): List<Episode>
 
