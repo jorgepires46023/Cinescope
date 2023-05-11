@@ -5,6 +5,10 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.jdbi.v3.core.Jdbi
 import org.postgresql.ds.PGSimpleDataSource
+import org.springframework.context.annotation.Configuration
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import pt.isel.ps.cinescope.controllers.AuthenticationInterceptor
 import pt.isel.ps.cinescope.repositories.jdbi.configure
 import pt.isel.ps.cinescope.repositories.jdbi.mappers.MovieStateMapper
 
@@ -25,6 +29,14 @@ class CinescopeApplication{
 			.configure()
 			.registerColumnMapper(MovieStateMapper())
 
+	}
+}
+
+@Configuration
+class Config(val authenticationInterceptor: AuthenticationInterceptor): WebMvcConfigurer{
+
+	override fun addInterceptors(registry: InterceptorRegistry) {
+		registry.addInterceptor(authenticationInterceptor).excludePathPatterns("/users", "/login", "/api_movies/**", "/api_series/**", "/search/**")
 	}
 }
 

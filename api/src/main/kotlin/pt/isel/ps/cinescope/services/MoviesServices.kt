@@ -1,14 +1,22 @@
 package pt.isel.ps.cinescope.services
 
 import org.springframework.stereotype.Component
+import pt.isel.ps.cinescope.controllers.TokenProcessor
 import pt.isel.ps.cinescope.domain.*
 import pt.isel.ps.cinescope.repositories.TransactionManager
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
+import pt.isel.ps.cinescope.services.exceptions.NotFoundException
 import pt.isel.ps.cinescope.utils.TmdbService
 import pt.isel.ps.cinescope.utils.isNull
 
 @Component
-class MoviesServices(private val transactionManager: TransactionManager, private val tmdbService: TmdbService) {
+class MoviesServices(
+    private val transactionManager: TransactionManager,
+    private val tmdbService: TmdbService,
+    private val usersServices: UsersServices,
+    private val tokenProcessor: TokenProcessor
+    ) {
+
     fun createList(userId: Int?, name: String?): Int? {
         if(isNull(userId) || isNull(name)){
             throw BadRequestException("No user ID or Name for the List provided")
@@ -29,32 +37,32 @@ class MoviesServices(private val transactionManager: TransactionManager, private
         return transactionManager.run { it.moviesRepository.getMoviesListById(listId, userId) }
     }
 
-    fun addMovieToList(tmdbMovieId: Int?, imdbMovieId: String?, listId:Int?, userId:Int?){//TODO return
-        if(isNull(tmdbMovieId) || isNull(imdbMovieId) || isNull(listId) || isNull(userId)){
-            throw BadRequestException("Missing information to add movie to list")
-        }
-
-        transactionManager.run {
-            val movie = it.moviesRepository.getMovieFromMovieData(imdbMovieId)?: run {
-
-                val movieDetails = if (tmdbMovieId != null) {
-                    tmdbService.getMovieDetails(tmdbMovieId)
-                } else {
-                    throw BadRequestException("Tmdb Id cannot be null")
-                }
-                val movie = Movie(movieDetails?.imdb_id, movieDetails?.id, movieDetails?.title, movieDetails?.poster_path)
-                it.moviesRepository.addMovieToMovieData(movie)
-                return@run movie
-            }
-
-            it.moviesRepository.getMovieFromMovieUserData(imdbMovieId, userId) ?: run {
-                it.moviesRepository.addMovieToUserData(userId, movie, MovieState.PTW)
-            }
-
-            it.moviesRepository.addMovieToList(listId, userId, movie)
-
-        }
-    }
+//    fun addMovieToList(tmdbMovieId: Int?, imdbMovieId: String?, listId:Int?, userId:Int?){//TODO return
+//        if(isNull(tmdbMovieId) || isNull(imdbMovieId) || isNull(listId) || isNull(userId)){
+//            throw BadRequestException("Missing information to add movie to list")
+//        }
+//
+//        transactionManager.run {
+//            val movie = it.moviesRepository.getMovieFromMovieData(imdbMovieId)?: run {
+//
+//                val movieDetails = if (tmdbMovieId != null) {
+//                    tmdbService.getMovieDetails(tmdbMovieId)
+//                } else {
+//                    throw BadRequestException("Tmdb Id cannot be null")
+//                }
+//                val movie = Movie(movieDetails?.imdb_id, movieDetails?.id, movieDetails?.title, movieDetails?.poster_path)
+//                it.moviesRepository.addMovieToMovieData(movie)
+//                return@run movie
+//            }
+//
+//            it.moviesRepository.getMovieFromMovieUserData(imdbMovieId, userId) ?: run {
+//                it.moviesRepository.addMovieToUserData(userId, movie, MovieState.PTW)
+//            }
+//
+//            it.moviesRepository.addMovieToList(listId, userId, movie)
+//
+//        }
+//    }
     fun deleteMovieFromList(listId: Int?, movieId: String?, userId: Int?){
         if(isNull(listId) || isNull(movieId) || isNull(userId)){
             throw BadRequestException("Missing information to delete movie from this list")
@@ -68,13 +76,23 @@ class MoviesServices(private val transactionManager: TransactionManager, private
         }
         transactionManager.run { it.moviesRepository.deleteMoviesList(listId, userId)}
     }
-    fun changeState(movieId: String?, state: String?, userId: Int?){//TODO return
-        if(isNull(movieId) || isNull(state) || isNull(userId)){
+    fun changeState(movieId: Int?, state: String?, bearer: String?){//TODO return
+        if(movieId == null || isNull(state)){
             throw BadRequestException("Missing information to change this state")
         }
         if(!checkMovieState(state) || state.isNullOrBlank()) throw BadRequestException("State not valid")
-
-        transactionManager.run { it.moviesRepository.changeState(movieId, userId, MovieState.fromString(state)) }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        transactionManager.run {
+            it.moviesRepository.getMovieFromMovieData(movieId) ?: run {
+                val movieDetails = tmdbService.getMovieDetails(movieId)
+                val movie = Movie(movieDetails?.imdb_id, movieDetails?.id, movieDetails?.title, movieDetails?.poster_path)
+                it.moviesRepository.addMovieToMovieData(movie)
+            }
+            if(it.moviesRepository.getMovieFromMovieUserData(movieId, user.id) != null)
+                it.moviesRepository.changeState(movieId, user.id, MovieState.fromString(state))
+            else
+                it.moviesRepository.addMovieToUserData(user.id, movieId, MovieState.fromString(state))
+             }
     }
 
     fun getLists(userId: Int?): List<ListDetails>{
@@ -85,15 +103,13 @@ class MoviesServices(private val transactionManager: TransactionManager, private
         return transactionManager.run { it.moviesRepository.getLists(userId) }
     }
 
-    fun getMoviesFromUserByState(userId: Int?, state: String?): List<Movie> {
-        if (isNull(userId)){
-            throw BadRequestException("User Id cannot be null")
-        }
+    fun getMoviesFromUserByState(usertoken: String?, state: String?): List<Movie> {
+        val user = usersServices.getUserByToken(usertoken) ?: throw NotFoundException("User not found")
 
         if (!checkMovieState(state)){
             throw BadRequestException("State not valid")
         }
 
-        return transactionManager.run { it.moviesRepository.getMoviesFromUserByState(userId, MovieState.fromString(state)) }
+        return transactionManager.run { it.moviesRepository.getMoviesFromUserByState(user.id, MovieState.fromString(state)) }
     }
 }

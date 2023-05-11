@@ -10,15 +10,16 @@ create table cinescope.users (
 );
 
 create table cinescope.moviesData (
-    mimdbid varchar(100) primary key,
-    mtmdbid varchar(100) NOT NULL,
+    mtmdbid INT primary key,
+    mimdbid varchar(100) NOT NULL,
     name varchar(100) NOT NULL,
     image varchar(100) NOT NULL
 );
 
 create table cinescope.movieUserData (
-    mimdbid varchar(100) NOT NULL REFERENCES cinescope.moviesData(mimdbid),
+    mtmdbid INT NOT NULL REFERENCES cinescope.moviesData(mtmdbid),
     userId int NOT NULL REFERENCES cinescope.users(userid),
+    primary key (mtmdbid, userId),
     state varchar(20) NOT NULL check ( state in ('PTW', 'Watched'))
 );
 
@@ -29,8 +30,9 @@ create table cinescope.moviesLists (
 );
 
 create table cinescope.movieList (
-    mimdbid varchar(100) NOT NULL REFERENCES cinescope.moviesData(mimdbid),
-    mlid int NOT NULL REFERENCES cinescope.moviesLists(mlid)
+    mtmdbid INT NOT NULL REFERENCES cinescope.moviesData(mtmdbid),
+    mlid int NOT NULL REFERENCES cinescope.moviesLists(mlid),
+    primary key (mtmdbid, mlid)
 );
 
 create table cinescope.seriesData (

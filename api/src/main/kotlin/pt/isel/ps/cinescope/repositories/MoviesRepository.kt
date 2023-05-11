@@ -14,15 +14,15 @@ interface MoviesRepository {
 
     fun deleteMoviesList(id: Int?, userId: Int?)
 
-    fun addMovieToUserData(userId: Int?, movie: Movie, state: MovieState)
+    fun addMovieToUserData(userId: Int?, movieid: Int, state: MovieState)
 
     fun addMovieToMovieData(movie: Movie)
 
-    fun getMovieFromMovieData(movieId: String?): Movie?
+    fun getMovieFromMovieData(movieId: Int?): Movie?
 
-    fun getMovieFromMovieUserData(movieId: String?, userId: Int?): Movie?
+    fun getMovieFromMovieUserData(movieId: Int?, userId: Int?): Movie?
 
-    fun changeState(movieId: String?,userId: Int?, state: MovieState)
+    fun changeState(movieId: Int?,userId: Int?, state: MovieState)
 
     fun deleteMovieFromList(listId: Int?, movieId: String?, userId: Int?)
 

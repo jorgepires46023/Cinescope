@@ -8,6 +8,7 @@ import pt.isel.ps.cinescope.services.exceptions.BadRequestException
 import pt.isel.ps.cinescope.services.exceptions.NotFoundException
 import pt.isel.ps.cinescope.services.exceptions.UnauthorizedException
 import pt.isel.ps.cinescope.utils.Encoder
+import pt.isel.ps.cinescope.utils.isNull
 import java.util.*
 
 @Component
@@ -73,6 +74,13 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
                 return@run user
             }
             throw UnauthorizedException("Unauthorized")
+        }
+    }
+
+    fun getUserByToken(usertoken: String?): User?{
+        if(usertoken.isNullOrBlank()) throw BadRequestException("token cant be null")
+        return transactionManager.run{
+            return@run it.userRepository.getUserByToken(usertoken) ?: throw NotFoundException("user not found")
         }
     }
 

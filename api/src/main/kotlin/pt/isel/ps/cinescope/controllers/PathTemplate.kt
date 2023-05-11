@@ -11,6 +11,7 @@ object Users {
 object Movies{
     const val ADD_MOVIE = "/movies/{id}/list"                                   // Add movie to watchlist/otherlists
     const val CHANGE_STATE = "/movies/{id}/state"                               // Change state of movie(PTW/WATCHED)
+    const val GET_LIST_BY_STATE = "/movies/state/{state}"                       // Gets all movies with state {state}
     const val GET_MOVIES_LISTS = "/movies/lists"                                // Gets all lists from user
     const val GET_LIST = "/movies/list"                                         // Gets movies list
     const val CREATE_LIST = "/movies/list"                                      // Creates new movie list
@@ -21,6 +22,9 @@ object Movies{
 object Series{
     const val ADD_SERIE = "/series/{id}/list"                                   // Add serie to watchlist/otherlists
     const val CHANGE_STATE = "/series/{id}/state"                               // Change state of serie(PTW/WATCHING/WATCHED)
+    const val GET_PTW_LIST = "/series/ptw"                                      // Gets all series with state PTW
+    const val GET_WATCHING_LIST = "/series/watching"                            // Gets all series with state PTW
+    const val GET_WATCHED_LIST = "/series/watched"                              // Gets all series with state WATCHED
     const val ADD_WATCHED_EP = "series/{id}/ep/{epid}"                          // Add episode to list of watched episodes
     //const val REMOVE_WATCHED_EP = "series/{id}/ep/{epid}"                     // Remove episode from list of watched episodes
     const val GET_WATCHED_EP_LIST = "series/{id}"                               // Get watched episodes list from series
