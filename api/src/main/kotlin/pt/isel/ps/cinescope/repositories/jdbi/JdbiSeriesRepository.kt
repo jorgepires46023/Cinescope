@@ -143,7 +143,11 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun getSeriesFromUserByState(userId: Int?, state: SeriesState?): List<Series> {
-        return  handle.createQuery("")
+        return  handle.createQuery(" select sd.simdbid as imdbId, sd.stmdbid as tmdbId, sd.name, sd.image as img, sud.eplid as epListId, sud.state " +
+                "from cinescope.seriesuserdata sud inner join cinescope.seriesdata sd on sd.simdbid = sud.simdbid " +
+                "where sud.state = :state and sud.userId = :userId ")
+            .bind("userId", userId)
+            .bind("state", state)
             .mapTo(Series::class.java)
             .list()
     }

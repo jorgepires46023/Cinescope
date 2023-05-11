@@ -99,7 +99,11 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
     }
 
     override fun getMoviesFromUserByState(userId: Int?, state: MovieState?): List<Movie> {
-        return handle.createQuery("")
+        return handle.createQuery("select md.mimdbid as imdbid, md.mtmdbId as tmdbId, md.name, md.image as img, mud.state " +
+                "from cinescope.movieuserdata mud inner join cinescope.moviesdata md on md.mimdbid = mud.mimdbid " +
+                "where mud.userid = :userId and mud.state = :state")
+            .bind("userId", userId)
+            .bind("state",state)
             .mapTo(Movie::class.java)
             .list()
     }

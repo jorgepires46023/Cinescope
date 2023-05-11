@@ -138,4 +138,16 @@ class SeriesServices(private val transactionManager: TransactionManager, private
 
         transactionManager.run { it.seriesRepository.deleteSeriesList(listId, userId) }
     }
+
+    fun getSeriesFromUserByState(userId: Int?, state: String?): List<Series> {
+        if (isNull(userId)) {
+            throw BadRequestException("User Id cannot be null")
+        }
+
+        if (!checkSeriesState(state)) {
+            throw BadRequestException("State not valid")
+        }
+
+        return transactionManager.run { it.seriesRepository.getSeriesFromUserByState(userId, SeriesState.fromString(state)) }
+    }
 }

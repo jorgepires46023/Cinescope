@@ -1337,4 +1337,42 @@ class SeriesServicesTests {
         }
     }
 
+    @Test
+    fun `Get List of Series with the same State`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val seriesServices = SeriesServices(transactionManager, tmdbService)
+
+            val listId = seriesServices.createList(userId, "Fantasy Series")
+
+            val listId1 = seriesServices.createList(userId, "Favourite Series")
+
+            val listId2 = seriesServices.createList(userId, "Action Series")
+
+            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+
+            seriesServices.addSeriesToList("tt1520211", 1402, listId, userId)
+
+            seriesServices.addSeriesToList("tt2805096", 58841, listId, userId)
+
+            seriesServices.changeState("tt1520211","Watched", userId)
+
+            seriesServices.changeState("tt4574334","Watching", userId)
+
+            val seriesList = seriesServices.getSeriesFromUserByState(userId, "Watching")
+
+            assertEquals(seriesList.size, 1)
+
+            assertEquals(seriesList[0].name, "Stranger Things")
+            assertEquals(seriesList[0].imdbId, "tt4574334")
+            assertEquals(seriesList[0].tmdbId, 66732)
+            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+            assertEquals(seriesList[0].state, SeriesState.Watching)
+
+        }
+    }
+
 }

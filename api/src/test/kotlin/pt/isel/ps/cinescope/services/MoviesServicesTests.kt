@@ -688,4 +688,47 @@ class MoviesServicesTests {
 
     }
 
+    @Test
+    fun `Get List of Movies with the same state`() {
+        testWithTransactionManagerAndRollback { transactionManager ->
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val id = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val moviesServices = MoviesServices(transactionManager, tmdbService)
+
+            val listId = moviesServices.createList(id, "Action Movies")
+
+            val listId1 = moviesServices.createList(id, "Favourite Movies")
+
+            val listId2 = moviesServices.createList(id, "Drama Movies")
+
+            moviesServices.addMovieToList(245891,"tt2911666",listId,id)
+
+            moviesServices.addMovieToList(11324,"tt1130884",listId1,id)
+
+            moviesServices.addMovieToList(964980,"tt16419074",listId2,id)
+
+            moviesServices.changeState("tt1130884","Watched", id)
+
+            val moviesList = moviesServices.getMoviesFromUserByState(id, "PTW")
+
+            assertEquals(moviesList.size, 2)
+
+            assertEquals(moviesList[0].name, "John Wick")
+            assertEquals(moviesList[0].imdbId, "tt2911666")
+            assertEquals(moviesList[0].tmdbId, 245891)
+            assertEquals(moviesList[0].img, "/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg")
+            assertEquals(moviesList[0].state, MovieState.PTW)
+
+            assertEquals(moviesList[1].name, "Air")
+            assertEquals(moviesList[1].imdbId, "tt16419074")
+            assertEquals(moviesList[1].tmdbId, 964980)
+            assertEquals(moviesList[1].img, "/76AKQPdH3M8cvsFR9K8JsOzVlY5.jpg")
+            assertEquals(moviesList[1].state, MovieState.PTW)
+
+        }
+
+    }
+
 }

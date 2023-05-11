@@ -84,4 +84,16 @@ class MoviesServices(private val transactionManager: TransactionManager, private
 
         return transactionManager.run { it.moviesRepository.getLists(userId) }
     }
+
+    fun getMoviesFromUserByState(userId: Int?, state: String?): List<Movie> {
+        if (isNull(userId)){
+            throw BadRequestException("User Id cannot be null")
+        }
+
+        if (!checkMovieState(state)){
+            throw BadRequestException("State not valid")
+        }
+
+        return transactionManager.run { it.moviesRepository.getMoviesFromUserByState(userId, MovieState.fromString(state)) }
+    }
 }
