@@ -73,7 +73,10 @@ class MoviesServices(
         }
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
-        transactionManager.run { it.moviesRepository.deleteMoviesList(listId, user.id)}
+        transactionManager.run {
+            it.moviesRepository.deleteMoviesFromList(listId)
+            it.moviesRepository.deleteMoviesList(listId, user.id)
+        }
     }
 
     fun changeState(movieId: Int?, state: String?, bearer: String?){//TODO return
@@ -115,11 +118,7 @@ class MoviesServices(
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
-            val lists = it.moviesRepository.getLists(user.id)
-            lists.forEach { list ->
-                it.moviesRepository.deleteMovieFromList(list.id, movieId, user.id)
-            }
-            it.moviesRepository.deleteMovieFromUserData(movieId, user.id)
+            it.moviesRepository.removeStateFromMovies(movieId, user.id)
         }
     }
 }

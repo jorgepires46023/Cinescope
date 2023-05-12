@@ -1,6 +1,7 @@
 package pt.isel.ps.cinescope.services
 
 import org.springframework.stereotype.Component
+import pt.isel.ps.cinescope.controllers.TokenProcessor
 import pt.isel.ps.cinescope.domain.*
 import pt.isel.ps.cinescope.repositories.TransactionManager
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
@@ -9,12 +10,17 @@ import pt.isel.ps.cinescope.utils.TmdbService
 import pt.isel.ps.cinescope.utils.isNull
 
 @Component
-class SeriesServices(private val transactionManager: TransactionManager, private val searchServices: SearchServices) {
+class SeriesServices(
+    private val transactionManager: TransactionManager,
+    private val searchServices: SearchServices,
+    private val tokenProcessor: TokenProcessor
+    ) {
 
-    fun addSeriesToList(tmdbSeriesId: Int?, listId: Int?, userId: Int?) {
-        if(isNull(tmdbSeriesId) || isNull(listId) || isNull(userId)){
+    fun addSeriesToList(tmdbSeriesId: Int?, listId: Int?, bearer: String?) {
+        if(isNull(tmdbSeriesId) || isNull(listId)){
             throw BadRequestException("Missing information to add series to list")
         }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
             val series = it.seriesRepository.getSeriesFromSeriesData(tmdbSeriesId) ?: run {
@@ -29,12 +35,12 @@ class SeriesServices(private val transactionManager: TransactionManager, private
                 return@run series
             }
 
-            it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, userId)?: run {
-                it.seriesRepository.addSeriesToSeriesUserData(userId, tmdbSeriesId, SeriesState.PTW)
+            it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, user.id)?: run {
+                it.seriesRepository.addSeriesToSeriesUserData(user.id, tmdbSeriesId, SeriesState.PTW)
             }
 
             if (tmdbSeriesId != null) {
-                it.seriesRepository.addSeriesToList(listId, userId, tmdbSeriesId)
+                it.seriesRepository.addSeriesToList(listId, user.id, tmdbSeriesId)
             } else {
                 throw BadRequestException("Imdb Id cannot be null")
             }
@@ -42,11 +48,13 @@ class SeriesServices(private val transactionManager: TransactionManager, private
 
     }
 
-    fun changeState(seriesId: Int?, state: String?, userId: Int?){//TODO return
-        if(seriesId == null || userId == null){
+    fun changeState(seriesId: Int?, state: String?, bearer: String?){//TODO return
+        if(seriesId == null){
             throw BadRequestException("Missing information to change this state")
         }
         if(!checkSeriesState(state)) throw BadRequestException("State not valid")
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        if(user.id == null) throw NotFoundException("User not found")
 
         transactionManager.run {
             it.seriesRepository.getSeriesFromSeriesData(seriesId) ?: run {
@@ -55,21 +63,23 @@ class SeriesServices(private val transactionManager: TransactionManager, private
                 it.seriesRepository.addSeriesToSeriesData(series)
             }
 
-            if(it.seriesRepository.getSeriesFromSeriesUserData(seriesId, userId) != null) {
-                it.seriesRepository.changeSeriesState(seriesId, userId, SeriesState.fromString(state))
+            if(it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id) != null) {
+                it.seriesRepository.changeSeriesState(seriesId, user.id, SeriesState.fromString(state))
             } else {
-                it.seriesRepository.addSeriesToSeriesUserData(userId, seriesId, SeriesState.fromString(state))
+                it.seriesRepository.addSeriesToSeriesUserData(user.id, seriesId, SeriesState.fromString(state))
             }
 
         }
     }
 
-    fun addWatchedEpisode(tmdbSeriesId: Int?, imdbEpId: String?, epNum: Int?, seasonNum: Int?, userId: Int?){//TODO return
-        if(isNull(tmdbSeriesId) || isNull(imdbEpId) || isNull(epNum) || isNull(seasonNum) || isNull(userId)){
+    //TODO dont allow same ep per user
+    fun addWatchedEpisode(tmdbSeriesId: Int?, imdbEpId: String?, epNum: Int?, seasonNum: Int?, bearer: String?){//TODO return
+        if(isNull(tmdbSeriesId) || isNull(imdbEpId) || isNull(epNum) || isNull(seasonNum)){
             throw BadRequestException("Missing information to add this watched episode")
         }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         transactionManager.run {
-            it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, userId) ?: it.seriesRepository.addSeriesToSeriesUserData(userId, tmdbSeriesId, SeriesState.Watching)
+            it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, user.id) ?: it.seriesRepository.addSeriesToSeriesUserData(user.id, tmdbSeriesId, SeriesState.Watching)
             val episode = it.seriesRepository.getEpisodeFromEpData(imdbEpId) ?: run {
 
                val episode = if(tmdbSeriesId != null && epNum != null && seasonNum != null) {
@@ -84,80 +94,91 @@ class SeriesServices(private val transactionManager: TransactionManager, private
             }
 
             if (tmdbSeriesId != null) {
-                val seriesUserData = it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, userId)
-                it.seriesRepository.addEpisodeToWatchedList(seriesUserData?.epListId, episode.imdbId, userId)
+                val seriesUserData = it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, user.id)
+                it.seriesRepository.addEpisodeToWatchedList(seriesUserData?.epListId, episode.imdbId, user.id)
             } else {
                 throw BadRequestException("Tmdb Id cannot be null")
             }
         }
     }
 
-    fun removeWatchedEpisode(seriesId: Int?, imdbEpisodeId: String?, userId: Int?){//TODO return
-        if(isNull(seriesId) || isNull(imdbEpisodeId) || isNull(userId)){
+    fun removeWatchedEpisode(seriesId: Int?, imdbEpisodeId: String?, bearer: String?){//TODO return
+        if(isNull(seriesId) || isNull(imdbEpisodeId)){
             throw BadRequestException("Missing information to remove this watched episode")
         }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         transactionManager.run {
-            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, userId)?.epListId
+            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)?.epListId
             it.seriesRepository.deleteEpisodeFromWatchedList(epListId, imdbEpisodeId)
         }
     }
 
-    fun getWatchedEpList(seriesId: Int?, userId: Int?): List<Episode> {
-        if(isNull(seriesId) || isNull(userId)){
+    fun getWatchedEpList(seriesId: Int?, bearer: String?): List<Episode> {
+        if(isNull(seriesId)){
             throw BadRequestException("Missing information to get this list")
         }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         return transactionManager.run {
-            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, userId)?.epListId ?: throw NotFoundException("Series Not Found")
+            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)?.epListId ?: throw NotFoundException("Series Not Found")
             it.seriesRepository.getWatchedEpList(epListId)
         }
     }
 
-    fun getLists(userId: Int?): List<ListDetails> {
-        if(isNull(userId)){
-            throw BadRequestException("Missing information to get lists")
-        }
-        return transactionManager.run { it.seriesRepository.getLists(userId) }
+    fun getLists(bearer: String?): List<ListDetails> {
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        return transactionManager.run { it.seriesRepository.getLists(user.id) }
     }
 
-    fun getList(listId: Int?, userId: Int?): List<Series> {
-        if(isNull(userId) || isNull(listId)){
+    fun getList(listId: Int?, bearer: String?): List<Series> {
+        if(isNull(listId)){
             throw BadRequestException("Missing information to get this list")
         }
-        return transactionManager.run { it.seriesRepository.getSeriesList(listId, userId) }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        return transactionManager.run { it.seriesRepository.getSeriesList(listId, user.id) }
     }
 
-    fun createList(userId: Int?, name: String?): Int? {
-        if(isNull(userId) || isNull(name)){
+    fun createList(bearer: String?, name: String?): Int? {
+        if(isNull(name)){
             throw BadRequestException("Missing information to create list")
         }
-
-        return transactionManager.run { it.seriesRepository.createSeriesList(userId, name)}
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        return transactionManager.run { it.seriesRepository.createSeriesList(user.id, name)}
     }
 
-    fun deleteSeriesFromList(listId: Int?, seriesId: Int?, userId: Int?){
-        if(isNull(userId) || isNull(listId) || isNull(seriesId)){
+    fun deleteSeriesFromList(listId: Int?, seriesId: Int?, bearer: String?){
+        if(isNull(listId) || isNull(seriesId)){
             throw BadRequestException("Missing information to get this list")
         }
-        transactionManager.run { it.seriesRepository.deleteSeriesFromList(listId, seriesId, userId) }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        transactionManager.run { it.seriesRepository.deleteSeriesFromList(listId, seriesId, user.id) }
     }
 
-    fun deleteList(listId: Int?, userId: Int?){//TODO return
-        if(isNull(userId) || isNull(listId)){
+    fun deleteList(listId: Int?, bearer: String?){//TODO return
+        if(isNull(listId)){
             throw BadRequestException("Missing information to delete list")
         }
-
-        transactionManager.run { it.seriesRepository.deleteSeriesList(listId, userId) }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        transactionManager.run {
+            it.seriesRepository.deleteSeriesFromList(listId)
+            it.seriesRepository.deleteSeriesList(listId, user.id)
+        }
     }
 
-    fun getSeriesFromUserByState(userId: Int?, state: String?): List<Series> {
-        if (isNull(userId)) {
-            throw BadRequestException("User Id cannot be null")
-        }
-
+    fun getSeriesFromUserByState(bearer: String?, state: String?): List<Series> {
         if (!checkSeriesState(state)) {
             throw BadRequestException("State not valid")
         }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        return transactionManager.run { it.seriesRepository.getSeriesFromUserByState(user.id, SeriesState.fromString(state)) }
+    }
 
-        return transactionManager.run { it.seriesRepository.getSeriesFromUserByState(userId, SeriesState.fromString(state)) }
+    fun removeStateFromSerie(seriesId: Int?, bearer: String?){
+        if(isNull(seriesId)){
+            throw BadRequestException("Missing information to get this list")
+        }
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        return transactionManager.run {
+
+        }
     }
 }

@@ -36,15 +36,15 @@ create table cinescope.movieList (
 );
 
 create table cinescope.seriesData (
-    simdbid varchar(100) primary key,
-    stmdbid varchar(100) UNIQUE NOT NULL,
+    stmdbid INT primary key,
+    simdbid varchar(100) UNIQUE NOT NULL,
     name varchar(100) NOT NULL,
     image varchar(100) NOT NULL
 );
 
 create table cinescope.episodesData (
     epimdbid varchar(100) primary key,
-    stmdbid varchar(100) NOT NULL references cinescope.seriesData(stmdbid),
+    stmdbid INT NOT NULL references cinescope.seriesData(stmdbid),
     name varchar(100) NOT NULL,
     image varchar(100) NOT NULL,
     season int NOT NULL,
@@ -53,14 +53,15 @@ create table cinescope.episodesData (
 
 create table cinescope.seriesUserData (
     eplid int primary key GENERATED ALWAYS AS IDENTITY,
-    simdbid varchar(100) NOT NULL REFERENCES cinescope.seriesData(simdbid),
+    stmdbid INT NOT NULL REFERENCES cinescope.seriesData(stmdbid),
     userid int NOT NULL REFERENCES cinescope.users(userId),
     state varchar(100) NOT NULL check (state in ('PTW', 'Watched', 'Watching'))
 );
 
 create table cinescope.watchedEpisodeList (
     eplid int NOT NULL REFERENCES cinescope.seriesUserData(eplid),
-    epimdbid varchar(100) NOT NULL REFERENCES cinescope.episodesData(epimdbid)
+    epimdbid varchar(100) NOT NULL REFERENCES cinescope.episodesData(epimdbid),
+    primary key (eplid, epimdbid)
 );
 
 create table cinescope.seriesLists (
@@ -71,6 +72,6 @@ create table cinescope.seriesLists (
 
 create table cinescope.serieList (
     slid int NOT NULL REFERENCES cinescope.seriesLists(slid),
-    simdbid varchar(100) NOT NULL REFERENCES cinescope.seriesData(simdbid)
+    stmdbid INT NOT NULL REFERENCES cinescope.seriesData(stmdbid)
 );
 

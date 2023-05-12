@@ -116,5 +116,16 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
             .execute()
     }
 
+    override fun removeStateFromMovies(movieId: Int, userId: Int?) {
+        handle.createUpdate("call cinescope.removestatefrommovie(:movieId, :userId)")
+            .bind("movieId", movieId)
+            .bind("userId", userId)
+            .execute()
+    }
 
+    override fun deleteMoviesFromList(listId: Int?) {
+        handle.createUpdate("delete from cinescope.movielist where mlid = :mlid")
+            .bind("mlid", listId)
+            .execute()
+    }
 }

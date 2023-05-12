@@ -40,4 +40,8 @@ interface SeriesRepository {
     fun getLists(userId: Int?): List<ListDetails>
 
     fun getSeriesFromUserByState(userId: Int?, state: SeriesState?): List<Series>
+
+    fun removeStateFromSerie(userId: Int?, serieId: Int?)
+
+    fun deleteSeriesFromList(listId: Int?)
 }

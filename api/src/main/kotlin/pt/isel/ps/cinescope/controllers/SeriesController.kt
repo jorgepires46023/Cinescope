@@ -1,5 +1,6 @@
 package pt.isel.ps.cinescope.controllers
 
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.cinescope.controllers.models.SeriesModel
@@ -9,8 +10,8 @@ import pt.isel.ps.cinescope.services.SeriesServices
 class SeriesController(val seriesServices: SeriesServices) {
 
     @PostMapping(Series.ADD_SERIE)
-    fun addSeries(@PathVariable id: String, @RequestBody info: SeriesModel.AddInputModel): ResponseEntity<*> {
-        val serie = seriesServices.addSeriesToList(id, info.tmdbId, info.listid, info.userid)
+    fun addSeries(@PathVariable id: Int, @PathVariable lid: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*> {
+        val serie = seriesServices.addSeriesToList(tmdbSeriesId = id, listId = lid, bearer)
 
         return ResponseEntity
             .status(200)
@@ -18,26 +19,35 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @PostMapping(Series.CHANGE_STATE)
-    fun changeSeriesState(@PathVariable id: String, @RequestBody info: SeriesModel.ChangeStateModel): ResponseEntity<*>{
-        val serie = seriesServices.changeState(seriesId = id, info.state, info.userid)
+    fun changeSeriesState(@PathVariable id: Int, @RequestBody info: SeriesModel.StateModel, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val serie = seriesServices.changeState(seriesId = id, info.state, bearer)
 
         return ResponseEntity
             .status(200)
             .body(serie)
     }
 
+    @GetMapping(Series.GET_SERIES_BY_STATE)
+    fun getSeriesByState(@RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String, @PathVariable state: String): ResponseEntity<*>{
+        val series = seriesServices.getSeriesFromUserByState(bearer, state)
+
+        return ResponseEntity
+            .status(200)
+            .body(series)
+    }
+
     @PostMapping(Series.ADD_WATCHED_EP)
-    fun addWatchedEpisode(@PathVariable id: Int, @PathVariable epid: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
-        val episode = seriesServices.addWatchedEpisode(id, epid,info.episodeNumber, info.seasonNumber, info.userid)
+    fun addWatchedEpisode(@PathVariable id: Int, @PathVariable epid: String, @RequestBody info: SeriesModel.EpisodeModel, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val episode = seriesServices.addWatchedEpisode(tmdbSeriesId = id, epid,info.episodeNumber, info.seasonNumber, bearer)
 
         return ResponseEntity
             .status(200)
             .body(episode)
     }
 
-    //@PostMapping(Series.REMOVE_WATCHED_EP)
-    fun removeWatchedEpisode(@PathVariable id: String, @PathVariable epid: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
-        val episode = seriesServices.removeWatchedEpisode(seriesId = id, epid, info.userid)
+    @DeleteMapping(Series.REMOVE_WATCHED_EP)
+    fun removeWatchedEpisode(@PathVariable id: Int, @PathVariable epid: String, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val episode = seriesServices.removeWatchedEpisode(seriesId = id, epid, bearer)
 
         return ResponseEntity
             .status(200)
@@ -45,8 +55,8 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @GetMapping(Series.GET_WATCHED_EP_LIST)
-    fun getWatchedEpList(@PathVariable id: String, @RequestBody info: SeriesModel.EpisodeModel): ResponseEntity<*>{
-        val list = seriesServices.getWatchedEpList(id, info.userid)
+    fun getWatchedEpList(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val list = seriesServices.getWatchedEpList(seriesId = id, bearer)
 
         return ResponseEntity
             .status(200)
@@ -55,8 +65,8 @@ class SeriesController(val seriesServices: SeriesServices) {
 
 
     @GetMapping(Series.GET_SERIES_LISTS)
-    fun getSeriesLists(@RequestBody info: SeriesModel.ListModel):ResponseEntity<*>{
-        val lists = seriesServices.getLists(info.userid)
+    fun getSeriesLists(@RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String):ResponseEntity<*>{
+        val lists = seriesServices.getLists(bearer)
 
         return ResponseEntity
             .status(200)
@@ -64,8 +74,8 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @GetMapping(Series.GET_LIST)
-    fun getSeriesList(@PathVariable id: Int, @RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
-        val list = seriesServices.getList(id, info.userid)
+    fun getSeriesList(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val list = seriesServices.getList(listId = id, bearer)
 
         return ResponseEntity
             .status(200)
@@ -73,17 +83,17 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @PostMapping(Series.CREATE_LIST)
-    fun createSeriesList(@RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
-        val list = seriesServices.createList(info.userid, info.name)
+    fun createSeriesList(@RequestBody info: SeriesModel.ListModel,@RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val list = seriesServices.createList(bearer, info.name)
 
         return ResponseEntity
             .status(200)
             .body(list)
     }
 
-    @PostMapping(Series.DELETE_LIST)
-    fun deleteSeriesList(@PathVariable id: Int, @RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
-        val list = seriesServices.deleteList(id, info.userid)
+    @DeleteMapping(Series.DELETE_LIST)
+    fun deleteSeriesList(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val list = seriesServices.deleteList(listId = id, bearer)
 
         return ResponseEntity
             .status(200)
@@ -91,12 +101,17 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @DeleteMapping(Series.DELETE_SERIE_FROM_LIST)
-    fun deleteSerieFromList(@PathVariable id: Int, @PathVariable sid: String?, @RequestBody info: SeriesModel.ListModel): ResponseEntity<*>{
-        val list = seriesServices.deleteSeriesFromList(id, seriesId =  sid, info.userid)
+    fun deleteSerieFromList(@PathVariable id: Int, @PathVariable sid: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val list = seriesServices.deleteSeriesFromList(listId = id, seriesId =  sid, bearer)
 
         return ResponseEntity
             .status(200)
             .body(list)
     }
+
+//    @DeleteMapping(Series.REMOVE_MOVIE_STATE)
+//    fun removeSerieState(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+//        val serie = seriesServices.removeStateFromSerie(id, bearer)
+//    }
 
 }

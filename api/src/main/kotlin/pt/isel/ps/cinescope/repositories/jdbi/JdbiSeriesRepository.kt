@@ -55,7 +55,7 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun addSeriesToSeriesUserData(userId: Int?, seriesId: Int?, state: SeriesState) {
-        handle.createUpdate("insert into cinescope.seriesuserdata(eplid, simdbid, userId, state) " +
+        handle.createUpdate("insert into cinescope.seriesuserdata(eplid, stmdbid, userId, state) " +
                 "values(default, :seriesId, :userId, :state)")
             .bind("seriesId", seriesId)
             .bind("userId", userId)
@@ -106,7 +106,7 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun getEpisodeFromEpData(epId: String?) : Episode?{
-        return handle.createQuery("select epimdbid as imdbId, stmdbid as seriesId: Int?, name, image as img, season, episode from cinescope.episodesdata ed where ed.epimdbid = :epId")
+        return handle.createQuery("select epimdbid as imdbId, stmdbid as seriesId, name, image as img, season, episode from cinescope.episodesdata ed where ed.epimdbid = :epId")
             .bind("epId", epId)
             .mapTo(Episode::class.java)
             .firstOrNull()
@@ -154,5 +154,16 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .list()
     }
 
+    override fun removeStateFromSerie(userId: Int?, serieId: Int?) {
+        handle.createUpdate("call cinescope.removestatefromserie(:serieId, :userId)")
+            .bind("serieId", serieId)
+            .bind("userId", userId)
+            .execute()
+    }
 
+    override fun deleteSeriesFromList(listId: Int?) {
+        handle.createUpdate("delete from cinescope.serielist where slid = :slid")
+            .bind("slid", listId)
+            .execute()
+    }
 }
