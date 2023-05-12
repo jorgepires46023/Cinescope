@@ -109,9 +109,13 @@ class SeriesController(val seriesServices: SeriesServices) {
             .body(list)
     }
 
-//    @DeleteMapping(Series.REMOVE_MOVIE_STATE)
-//    fun removeSerieState(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
-//        val serie = seriesServices.removeStateFromSerie(id, bearer)
-//    }
+    @DeleteMapping(Series.REMOVE_SERIE_STATE)
+    fun removeSerieState(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val serie = seriesServices.removeStateFromSerie(id, bearer)
+
+        return ResponseEntity
+            .status(200)
+            .body(serie)
+    }
 
 }
