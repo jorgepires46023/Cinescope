@@ -17,10 +17,11 @@ class MoviesServices(
     ) {
 
     fun createList(bearer: String?, name: String?): Int? {
-        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         if(name.isNullOrBlank()){
             throw BadRequestException("No name for the List provided")
         }
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         return transactionManager.run {
             it.moviesRepository.createList(user.id, name)
         }
@@ -30,6 +31,7 @@ class MoviesServices(
         if(isNull(listId)){
             throw BadRequestException("Missing information to get the list")
         }
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         return transactionManager.run { it.moviesRepository.getMoviesListById(listId, user.id) }
     }
@@ -38,6 +40,7 @@ class MoviesServices(
         if(tmdbMovieId == null || listId  == null){
             throw BadRequestException("Missing information to add movie to list")
         }
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
@@ -62,6 +65,7 @@ class MoviesServices(
         if(isNull(listId) || isNull(movieId)){
             throw BadRequestException("Missing information to delete movie from this list")
         }
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         transactionManager.run { it.moviesRepository.deleteMovieFromList(listId, movieId, user.id) }
@@ -71,6 +75,7 @@ class MoviesServices(
         if(isNull(listId)){
             throw BadRequestException("No user Id or list Id provided")
         }
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
@@ -84,6 +89,7 @@ class MoviesServices(
             throw BadRequestException("Missing information to change this state")
         }
         if(!checkMovieState(state) || state.isNullOrBlank()) throw BadRequestException("State not valid")
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         transactionManager.run {
             it.moviesRepository.getMovieFromMovieData(movieId) ?: run {
@@ -99,11 +105,13 @@ class MoviesServices(
     }
 
     fun getLists(bearer: String?): List<ListDetails>{
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         return transactionManager.run { it.moviesRepository.getLists(user.id) }
     }
 
     fun getMoviesFromUserByState(bearer: String?, state: String?): List<Movie> {
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         if (!checkMovieState(state)){
@@ -115,6 +123,7 @@ class MoviesServices(
 
     fun deleteStateFromMovie(movieId: Int?, bearer: String?){
         if(movieId == null) throw BadRequestException("movieid cant be null")
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         transactionManager.run {

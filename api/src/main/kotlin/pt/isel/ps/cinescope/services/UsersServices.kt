@@ -1,6 +1,7 @@
 package pt.isel.ps.cinescope.services
 
 import org.springframework.stereotype.Component
+import pt.isel.ps.cinescope.controllers.TokenProcessor
 import pt.isel.ps.cinescope.domain.User
 import pt.isel.ps.cinescope.domain.UserState
 import pt.isel.ps.cinescope.repositories.TransactionManager
@@ -12,7 +13,7 @@ import pt.isel.ps.cinescope.utils.isNull
 import java.util.*
 
 @Component
-class UsersServices(val passwordEncoder: Encoder, private val transactionManager: TransactionManager) {
+class UsersServices(val passwordEncoder: Encoder, private val transactionManager: TransactionManager, private val tokenProcessor: TokenProcessor) {
 
     fun getUserById(id: Int?): User? {
         if (id == null) throw BadRequestException("Id cannot be null")
@@ -42,25 +43,21 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
         transactionManager.run { it.userRepository.removeUser(id) }
     }
 
-    fun editUser(id: Int?, name: String?, email: String?,password: String?) {
-
-        if(name.isNullOrBlank() || email.isNullOrBlank() || password.isNullOrBlank() || id == null) {
+    fun editUser(bearer: String?, name: String?, email: String?,password: String?) {
+        if(name.isNullOrBlank() || email.isNullOrBlank() || password.isNullOrBlank()) {
             throw BadRequestException("Info to edit cannot be empty")
         }
 
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+
         transactionManager.run {
-            val user = it.userRepository.getUserById(id)?: throw NotFoundException("User not found")
             val encodedPassword = passwordEncoder.encodeInfo(password)
             val updatedUser = User(user.id, name, email, encodedPassword, user.token, user.state)
             it.userRepository.updateUserInfo(updatedUser)
         }
     }
 
-    fun getUserByToken(token: UUID?): User? {
-        if(token == null) throw BadRequestException("Token cannot be null")
-
-        return transactionManager.run { it.userRepository.getUserByToken(token.toString()) }
-    }
 
     fun login(email: String?, password: String?): User? {
         if (email.isNullOrBlank() || password.isNullOrBlank()) {
