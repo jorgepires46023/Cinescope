@@ -4,7 +4,7 @@ as
 $$
     declare movies_lists_ids record;
 begin
-    for movies_lists_ids in select * from cinescope.movieslists where userid = :userid loop
+    for movies_lists_ids in select * from cinescope.movieslists where userid = user_id loop
         DELETE from cinescope.movielist where mtmdbid = movie_id and mlid = movies_lists_ids.mlid;
         end loop;
     delete from cinescope.movieuserdata where mtmdbid = movie_id and userid = user_id;

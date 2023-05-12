@@ -14,8 +14,9 @@ class UsersServicesTests {
     companion object {
         val encoder = SHA256Encoder()
     }
+
     @Test
-    fun `create user`(): Unit {
+    fun `create user`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -23,51 +24,47 @@ class UsersServicesTests {
             val res = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
             assertNotNull(res)
-
         }
     }
 
     @Test
-    fun `create user without name`(): Unit {
+    fun `create user without name`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
 
-            assertFailsWith<BadRequestException>(message = "Name Or Email not provided") {
+            assertFailsWith<BadRequestException> {
                 usersServices.createUser(null, "jorgepires@scp.pt", "SCP é o maior")
             }
         }
-
     }
 
     @Test
-    fun `create user without email`(): Unit {
+    fun `create user without email`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
 
-            assertFailsWith<BadRequestException>(message = "Name Or Email not provided") {
+            assertFailsWith<BadRequestException> {
                 usersServices.createUser("Jorge Pires", null, "SCP é o maior")
             }
         }
-
     }
 
     @Test
-    fun `create user without password`(): Unit {
+    fun `create user without password`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
 
-            assertFailsWith<BadRequestException>(message = "Password not provided or not valid") {
+            assertFailsWith<BadRequestException> {
                 usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", null)
             }
         }
-
     }
 
     @Test
-    fun `remove user with id`(): Unit {
+    fun `remove user with id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -80,25 +77,23 @@ class UsersServicesTests {
             val user = usersServices.getUserById(id)
             assertNotNull(user)
             assertEquals("Inactive", user?.state.toString())
-
         }
     }
 
     @Test
-    fun `remove user without id`(): Unit {
+    fun `remove user without id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
 
-            assertFailsWith<BadRequestException>(message = "Id cannot be null") {
+            assertFailsWith<BadRequestException> {
                 usersServices.removeUser(null)
             }
-
         }
     }
 
     @Test
-    fun `Get User By its Id`(): Unit {
+    fun `Get User By its Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -112,38 +107,35 @@ class UsersServicesTests {
             assertEquals("João Pinto", user?.name)
             assertEquals("joaopinto@scp.pt", user?.email)
             assertTrue(encoder.validateInfo("O SCP é o meu amor", user?.password))
-
         }
     }
 
     @Test
-    fun `Get User without its Id`(): Unit {
+    fun `Get User without its Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
 
-            assertFailsWith<BadRequestException>(message = "Id cannot be null") {
+            assertFailsWith<BadRequestException> {
                 usersServices.getUserById(null)
             }
-
         }
     }
 
     @Test
-    fun `Get User that don't exist`(): Unit {
+    fun `Get User that don't exist`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
 
-            assertFailsWith<NotFoundException>(message = "User not Found") {
+            assertFailsWith<NotFoundException> {
                 usersServices.getUserById(38547981)
             }
-
         }
     }
 
     @Test
-    fun `Edit the password of an User`(): Unit {
+    fun `Edit the password of an User`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -164,7 +156,7 @@ class UsersServicesTests {
     }
 
     @Test
-    fun `Edit the name of an User`(): Unit {
+    fun `Edit the name of an User`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -185,7 +177,7 @@ class UsersServicesTests {
     }
 
     @Test
-    fun `Edit the email of an User`(): Unit {
+    fun `Edit the email of an User`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -206,7 +198,7 @@ class UsersServicesTests {
     }
 
     @Test
-    fun `Edit all Info of an User`(): Unit {
+    fun `Edit all Info of an User`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -228,7 +220,7 @@ class UsersServicesTests {
     }
 
     @Test
-    fun `Edit the Info of an User, without a name`(): Unit {
+    fun `Edit the Info of an User, without a name`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -237,18 +229,18 @@ class UsersServicesTests {
 
             assertNotNull(id)
 
-            assertFailsWith<BadRequestException>(message = "Info to edit cannot be empty") {
+            assertFailsWith<BadRequestException> {
                 usersServices.editUser(id, null,"joaobalsinha@slb.pt" ,"O Benfica é o MAIOR" )
             }
 
-            assertFailsWith<BadRequestException>(message = "Info to edit cannot be empty") {
+            assertFailsWith<BadRequestException> {
                 usersServices.editUser(id, "","joaobalsinha@slb.pt" , "O Benfica é o MAIOR")
             }
         }
     }
 
     @Test
-    fun `Edit the Info of an User, without an email`(): Unit {
+    fun `Edit the Info of an User, without an email`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -257,18 +249,18 @@ class UsersServicesTests {
 
             assertNotNull(id)
 
-            assertFailsWith<BadRequestException>(message = "Info to edit cannot be empty") {
+            assertFailsWith<BadRequestException> {
                 usersServices.editUser(id, "João Balsinha", null,"O Benfica é o MAIOR" )
             }
 
-            assertFailsWith<BadRequestException>(message = "Info to edit cannot be empty") {
+            assertFailsWith<BadRequestException> {
                 usersServices.editUser(id, "João Balsinha", null, "O Benfica é o MAIOR")
             }
         }
     }
 
     @Test
-    fun `Edit the Info of an User, without a password`(): Unit {
+    fun `Edit the Info of an User, without a password`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
@@ -277,14 +269,13 @@ class UsersServicesTests {
 
             assertNotNull(id)
 
-            assertFailsWith<BadRequestException>(message = "Info to edit cannot be empty") {
+            assertFailsWith<BadRequestException> {
                 usersServices.editUser(id, "João Balsinha", "joaobalsinha@slb.pt", null)
             }
 
-            assertFailsWith<BadRequestException>(message = "Info to edit cannot be empty") {
+            assertFailsWith<BadRequestException> {
                 usersServices.editUser(id, "João Balsinha", "joaobalsinha@slb.pt", "")
             }
-
         }
     }
 
@@ -315,11 +306,14 @@ class UsersServicesTests {
 
             val usersServices = UsersServices(encoder, transactionManager)
 
-            assertFailsWith<BadRequestException>(message = "Token cannot be null") {
-                usersServices.getUserByToken(null)
+            assertFailsWith<BadRequestException> {
+                usersServices.getUserByToken(usertoken = null)
+            }
+
+            assertFailsWith<BadRequestException> {
+                usersServices.getUserByToken(usertoken = "")
             }
         }
-
     }
 
 

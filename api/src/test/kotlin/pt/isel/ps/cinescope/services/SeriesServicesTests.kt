@@ -1,8 +1,10 @@
 package pt.isel.ps.cinescope.services
 
 import org.junit.jupiter.api.Test
+import pt.isel.ps.cinescope.controllers.TokenProcessor
 import pt.isel.ps.cinescope.domain.SeriesState
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
+import pt.isel.ps.cinescope.services.exceptions.NotFoundException
 import pt.isel.ps.cinescope.testWithTransactionManagerAndRollback
 import pt.isel.ps.cinescope.utils.SHA256Encoder
 import pt.isel.ps.cinescope.utils.TmdbService
@@ -14,7 +16,8 @@ import kotlin.test.assertTrue
 class SeriesServicesTests {
     companion object {
         val encoder = SHA256Encoder()
-        val tmdbService = TmdbService()    }
+        val searchServices = SearchServices(TmdbService())
+    }
 
     @Test
     fun `Create Series List`() {
@@ -22,13 +25,17 @@ class SeriesServicesTests {
 
             val usersServices = UsersServices(encoder, transactionManager)
 
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
+
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            seriesServices.createList(userId, "Fantasy Series")
+            seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            val seriesLists = seriesServices.getLists(userId)
+            val seriesLists = seriesServices.getLists(user?.token.toString())
 
             assertEquals(seriesLists[0].name, "Fantasy Series")
         }
@@ -40,16 +47,20 @@ class SeriesServicesTests {
 
             val usersServices = UsersServices(encoder, transactionManager)
 
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
+
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.createList(userId, null)
+                seriesServices.createList(user?.token.toString(), null)
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.createList(userId, "")
+                seriesServices.createList(user?.token.toString(), "")
             }
         }
     }
@@ -58,7 +69,11 @@ class SeriesServicesTests {
     fun `Create Series List without the Users Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             assertFailsWith<BadRequestException> {
                 seriesServices.createList(null, "Fantasy Series")
@@ -72,27 +87,45 @@ class SeriesServicesTests {
 
             val usersServices = UsersServices(encoder, transactionManager)
 
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
+
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertNotNull(seriesList)
         }
     }
+
     @Test
-    fun `Get list for a User without the users Id`(){
+    fun `Get list for a User without the Users Id`(){
         testWithTransactionManagerAndRollback { transactionManager ->
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
+
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val user = usersServices.getUserById(userId)
+
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
             assertFailsWith<BadRequestException> {
-                seriesServices.getList(1, null)
+                seriesServices.getList(listId, null)
             }
 
+            assertFailsWith<BadRequestException> {
+                seriesServices.getList(listId, "")
+            }
         }
     }
 
@@ -100,12 +133,19 @@ class SeriesServicesTests {
     fun `Get list for a User without the list Id`(){
         testWithTransactionManagerAndRollback { transactionManager ->
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
+
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.getList(null, 2)
+                seriesServices.getList(null, user?.token.toString())
             }
-
         }
     }
 
@@ -115,76 +155,135 @@ class SeriesServicesTests {
 
             val usersServices = UsersServices(encoder, transactionManager)
 
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
+
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            seriesServices.createList(userId, "Fantasy Series")
+            seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            val seriesLists = seriesServices.getLists(userId)
+            val seriesLists = seriesServices.getLists(user?.token.toString())
 
             assertEquals(seriesLists[0].name, "Fantasy Series")
 
-            seriesServices.deleteList(seriesLists[0].id, userId)
+            seriesServices.deleteList(seriesLists[0].id, user?.token.toString())
 
-            val seriesList = seriesServices.getList(seriesLists[0].id, userId)
+            val seriesList = seriesServices.getList(seriesLists[0].id, user?.token.toString())
 
             assertTrue(seriesList.isEmpty())
-
         }
     }
 
     @Test
-    fun `Delete a list without the users Id`(){
+    fun `Delete a list without the Users Id`(){
         testWithTransactionManagerAndRollback { transactionManager ->
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             assertFailsWith<BadRequestException> {
                 seriesServices.deleteList(38, null)
             }
 
+            assertFailsWith<BadRequestException> {
+                seriesServices.deleteList(38, "")
+            }
         }
     }
 
     @Test
     fun `Delete a list without the list Id`(){
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.deleteList(null, userId)
+                seriesServices.deleteList(null, user?.token.toString())
             }
-
         }
     }
 
+    @Test
+    fun `Delete a list with Series in it`(){
+        testWithTransactionManagerAndRollback { transactionManager ->
+
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
+
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+
+            val user = usersServices.getUserById(userId)
+
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
+
+            val seriesLists = seriesServices.getLists(user?.token.toString())
+
+            assertEquals(seriesLists[0].name, "Fantasy Series")
+
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
+
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
+
+            assertEquals(seriesData?.name, "Stranger Things")
+            assertEquals(seriesData?.imdbId, "tt4574334")
+            assertEquals(seriesData?.tmdbId, 66732)
+            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
+
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
+
+            //TODO ver se é melhor criar outra class para Series User Data
+            assertEquals(seriesUserData?.state, SeriesState.PTW)
+            assertNotNull(seriesUserData?.epListId)
+
+            seriesServices.deleteList(seriesLists[0].id, user?.token.toString())
+
+            val seriesList = seriesServices.getList(seriesLists[0].id, user?.token.toString())
+
+            assertTrue(seriesList.isEmpty())
+        }
+    }
     @Test
     fun `Get all Lists for a User`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
 
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
+
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            seriesServices.createList(userId, "Fantasy Series")
+            seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.createList(userId, "Favourite Series")
+            seriesServices.createList(user?.token.toString(), "Favourite Series")
 
-            seriesServices.createList(userId, "Sitcoms")
+            seriesServices.createList(user?.token.toString(), "Sitcoms")
 
-            val seriesList = seriesServices.getLists(userId)
+            val seriesList = seriesServices.getLists(user?.token.toString())
 
             assertEquals(seriesList[0].name, "Fantasy Series")
             assertEquals(seriesList[1].name, "Favourite Series")
             assertEquals(seriesList[2].name, "Sitcoms")
-
         }
     }
 
@@ -192,10 +291,18 @@ class SeriesServicesTests {
     fun `Get all Lists for a User without the User's Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             assertFailsWith<BadRequestException> {
                 seriesServices.getLists(null)
+            }
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.getLists("")
             }
         }
     }
@@ -204,112 +311,105 @@ class SeriesServicesTests {
     @Test
     fun `Add a Series to a list`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
             assertEquals(seriesList[0].tmdbId, 66732)
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
-
-        }
-    }
-
-    @Test
-    fun `Add a Series to a list without the series imdbId`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
-
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
-
-            val listId = seriesServices.createList(userId, "Fantasy Series")
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.addSeriesToList(null,66732,listId,userId)
-            }
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.addSeriesToList("",66732,listId,userId)
-            }
-
         }
     }
 
     @Test
     fun `Add a Series to a list without the series tmdbId`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addSeriesToList("tt4574334",null,listId,userId)
+                seriesServices.addSeriesToList(null,listId,user?.token.toString())
             }
-
         }
     }
 
     @Test
     fun `Add a Series to a list without the list's Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addSeriesToList("tt4574334",66732,null,userId)
+                seriesServices.addSeriesToList(66732,null, user?.token.toString())
             }
-
         }
     }
 
     @Test
     fun `Add a Series to a list without the Users Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addSeriesToList("tt4574334",66732,listId,null)
+                seriesServices.addSeriesToList(66732,listId,null)
             }
-
         }
     }
 
@@ -317,35 +417,44 @@ class SeriesServicesTests {
     @Test
     fun `Add a Series to a list but the Series doesn't exists`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+                seriesServices.addSeriesToList(667325465,listId,user?.token.toString())
             }
-
         }
     }
 
     @Test
     fun `Delete a series from a list`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
@@ -353,13 +462,13 @@ class SeriesServicesTests {
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
 
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -367,9 +476,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.deleteSeriesFromList(listId, "tt4574334", userId)
+            seriesServices.deleteSeriesFromList(listId, 66732, user?.token.toString())
 
-            val list = seriesServices.getList(listId, userId)
+            val list = seriesServices.getList(listId, user?.token.toString())
 
             assertTrue(list.isEmpty())
         }
@@ -378,18 +487,22 @@ class SeriesServicesTests {
     @Test
     fun `Delete a series from a list without the list's Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            //TODO apagar?
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
@@ -397,23 +510,22 @@ class SeriesServicesTests {
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
 
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
             assertEquals(seriesList[0].tmdbId, 66732)
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
-            //TODO
 
             assertFailsWith<BadRequestException> {
-                seriesServices.deleteSeriesFromList(null, "tt4574334", userId)
+                seriesServices.deleteSeriesFromList(null, 66732, user?.token.toString())
             }
         }
     }
@@ -421,18 +533,22 @@ class SeriesServicesTests {
     @Test
     fun `Delete a series from a list without the Users Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            //TODO apagar?
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
@@ -440,23 +556,26 @@ class SeriesServicesTests {
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
 
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
             assertEquals(seriesList[0].tmdbId, 66732)
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
-            //TODO
 
             assertFailsWith<BadRequestException> {
-                seriesServices.deleteSeriesFromList(listId, "tt4574334", null)
+                seriesServices.deleteSeriesFromList(listId, 66732, null)
+            }
+
+            assertFailsWith<BadRequestException> {
+                seriesServices.deleteSeriesFromList(listId, 66732, "")
             }
         }
     }
@@ -464,46 +583,44 @@ class SeriesServicesTests {
     @Test
     fun `Delete a series from a list without the series Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            //TODO apagar?
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
             assertEquals(seriesList[0].tmdbId, 66732)
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
-            //TODO
 
             assertFailsWith<BadRequestException> {
-                seriesServices.deleteSeriesFromList(listId, "", userId)
-            }
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.deleteSeriesFromList(listId, null, userId)
+                seriesServices.deleteSeriesFromList(listId, null, user?.token.toString())
             }
         }
     }
@@ -512,75 +629,80 @@ class SeriesServicesTests {
     @Test
     fun `Delete a series from a list but the series is not on the list`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            //TODO apagar?
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
             assertEquals(seriesList[0].tmdbId, 66732)
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
-            //TODO
 
             assertFailsWith<BadRequestException> {
-                seriesServices.deleteSeriesFromList(listId, "tt4574334", userId)
+                seriesServices.deleteSeriesFromList(listId, 641616518, user?.token.toString())
             }
-
         }
     }
 
     @Test
     fun `Change the state of a series in a list`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -588,49 +710,52 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.changeState("tt4574334", "Watching", userId)
+            seriesServices.changeState(66732, "Watching", user?.token.toString())
 
-            val seriesState1 = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesState1 = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             assertEquals(seriesState1?.state, SeriesState.Watching)
 
-            seriesServices.changeState("tt4574334", "Watched", userId)
+            seriesServices.changeState(66732, "Watched", user?.token.toString())
 
-            val seriesState2 = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesState2 = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             assertEquals(seriesState2?.state, SeriesState.Watched)
-
         }
     }
 
     @Test
     fun `Change the state of a series in a list without providing the state to change to`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId, user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -639,48 +764,51 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.changeState("tt4574334", null, userId)
+                seriesServices.changeState(66732, null, user?.token.toString())
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.changeState("tt4574334", "", userId)
+                seriesServices.changeState(66732, "", user?.token.toString())
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.changeState("tt4574334", "Banana", userId)
+                seriesServices.changeState(66732, "Banana", user?.token.toString())
             }
-
         }
     }
 
     @Test
     fun `Change the state of a series in a list without the series Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -689,30 +817,30 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.changeState("", "Watching", userId)
+                seriesServices.changeState(null, "Watching", user?.token.toString())
             }
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.changeState(null, "Watching", userId)
-            }
-
         }
     }
 
     @Test
     fun `Change the state of a series in a list without the users Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId, user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
@@ -720,13 +848,13 @@ class SeriesServicesTests {
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
 
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -735,40 +863,47 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.changeState("tt4574334", "Watching", null)
+                seriesServices.changeState(66732, "Watching", null)
             }
 
+            assertFailsWith<BadRequestException>{
+                seriesServices.changeState(66732, "Watching", "")
+            }
         }
     }
 
     @Test
     fun `Get the Watched Episodes list`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -776,42 +911,44 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            val wepList = seriesServices.getWatchedEpList("tt4574334",userId)
+            val wepList = seriesServices.getWatchedEpList(66732,user?.token.toString())
 
             assertTrue(wepList.isEmpty())
         }
     }
 
-
     @Test
     fun `Get the Watched Episodes list without the Users Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+            seriesServices.addSeriesToList( 66732, listId, user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData =
-                transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -820,41 +957,47 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.getWatchedEpList("tt4574334", null)
+                seriesServices.getWatchedEpList(66732, null)
             }
 
+            assertFailsWith<BadRequestException> {
+                seriesServices.getWatchedEpList(66732, "")
+            }
         }
     }
 
     @Test
     fun `Get the Watched Episodes list without the series Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+            seriesServices.addSeriesToList( 66732, listId, user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData =
-                transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -863,46 +1006,43 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.getWatchedEpList("", userId)
+                seriesServices.getWatchedEpList(null, user?.token.toString())
             }
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.getWatchedEpList(null, userId)
-            }
-
-
         }
-
     }
 
     @Test
     fun `Add a watched episode to the Watched Episodes List`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -910,9 +1050,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,userId)
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1, user?.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+            val wepList = seriesServices.getWatchedEpList(66732, user?.token.toString())
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -920,39 +1060,41 @@ class SeriesServicesTests {
             assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
             assertEquals(wepList[0].imdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
-
         }
     }
-
 
     @Test
     fun `Add a watched episode to the Watched Episodes List without the Users Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -964,37 +1106,44 @@ class SeriesServicesTests {
                 seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,null)
             }
 
+            assertFailsWith<BadRequestException> {
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,"")
+            }
         }
     }
 
     @Test
     fun `Add a watched episode to the Watched Episodes List without the series tmdbId`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1003,41 +1152,43 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(null,"tt4593118",1,1,userId)
+                seriesServices.addWatchedEpisode(null,"tt4593118",1,1,user?.token.toString())
             }
-
         }
-
     }
 
     @Test
     fun `Add a watched episode to the Watched Episodes List without the episode imdbId, episode number and season number`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1046,53 +1197,55 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,null,1,1,userId)
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,null,1,1,user?.token.toString())
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"",1,1,userId)
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"",1,1,user?.token.toString())
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",null,1,userId)
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",null,1,user?.token.toString())
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,null,userId)
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,null,user?.token.toString())
             }
-
         }
-
     }
 
     @Test
     fun `Remove a Episode from the Watched Episodes List`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1100,9 +1253,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,userId)
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,user?.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+            val wepList = seriesServices.getWatchedEpList(66732, user?.token.toString())
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -1111,9 +1264,9 @@ class SeriesServicesTests {
             assertEquals(wepList[0].imdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
 
-            seriesServices.removeWatchedEpisode("tt4574334","tt4593118",userId)
+            seriesServices.removeWatchedEpisode(66732,"tt4593118",user?.token.toString())
 
-            val wepList1 = seriesServices.getWatchedEpList("tt4574334", userId)
+            val wepList1 = seriesServices.getWatchedEpList(66732, user?.token.toString())
 
             assertTrue(wepList1.isEmpty())
         }
@@ -1122,31 +1275,35 @@ class SeriesServicesTests {
     @Test
     fun `Remove a Episode from the Watched Episodes List without the Users Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1154,9 +1311,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,userId)
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,user?.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+            val wepList = seriesServices.getWatchedEpList(66732, user?.token.toString())
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -1166,40 +1323,47 @@ class SeriesServicesTests {
             assertEquals(wepList[0].seriesId, 66732)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode("tt4574334","tt4593118",null)
+                seriesServices.removeWatchedEpisode(66732,"tt4593118",null)
             }
 
+            assertFailsWith<BadRequestException> {
+                seriesServices.removeWatchedEpisode(66732,"tt4593118", "")
+            }
         }
     }
 
     @Test
     fun `Remove a Episode from the Watched Episodes List without the series Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334",66732,listId,userId)
+            seriesServices.addSeriesToList(66732,listId,user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1207,9 +1371,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,userId)
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,user?.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+            val wepList = seriesServices.getWatchedEpList(66732, user?.token.toString())
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -1219,45 +1383,43 @@ class SeriesServicesTests {
             assertEquals(wepList[0].seriesId, 66732)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode("","tt4593118",userId)
+                seriesServices.removeWatchedEpisode(null,"tt4593118",user?.token.toString())
             }
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode(null,"tt4593118",userId)
-            }
-
         }
     }
 
     @Test
     fun `Remove a Episode from the Watched Episodes List without the episode imdbId`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+            seriesServices.addSeriesToList(66732, listId, user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData =
-                transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1265,9 +1427,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId, "tt4593118", 1, 1, userId)
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId, "tt4593118", 1, 1, user?.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+            val wepList = seriesServices.getWatchedEpList(66732, user?.token.toString())
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -1277,10 +1439,10 @@ class SeriesServicesTests {
             assertEquals(wepList[0].seriesId, 66732)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode("tt4574334", "", userId)
+                seriesServices.removeWatchedEpisode(66372,"", user?.token.toString())
             }
             assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode("tt4574334", null, userId)
+                seriesServices.removeWatchedEpisode(66732, null, user?.token.toString())
             }
         }
     }
@@ -1289,32 +1451,35 @@ class SeriesServicesTests {
     @Test
     fun `Remove a Episode from the Watched Episodes List but the episode is not in the list`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+            seriesServices.addSeriesToList(66732, listId, user?.token.toString())
 
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData("tt4574334") }
+            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
             assertEquals(seriesData?.name, "Stranger Things")
             assertEquals(seriesData?.imdbId, "tt4574334")
             assertEquals(seriesData?.tmdbId, 66732)
             assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
 
-
-            val seriesUserData =
-                transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData("tt4574334", userId) }
+            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             //TODO ver se é melhor criar outra class para Series User Data
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, userId)
+            val seriesList = seriesServices.getList(listId, user?.token.toString())
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1322,9 +1487,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId, "tt4593118", 1, 1, userId)
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId, "tt4593118", 1, 1, user?.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList("tt4574334", userId)
+            val wepList = seriesServices.getWatchedEpList(66732, user?.token.toString())
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -1333,36 +1498,43 @@ class SeriesServicesTests {
             assertEquals(wepList[0].imdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
 
-            seriesServices.removeWatchedEpisode("tt4574334", "tt4593118", userId)
+            assertFailsWith<NotFoundException> {
+                seriesServices.removeWatchedEpisode(66732, "tt4593118shbsry", user?.token.toString())
+            }
         }
     }
 
     @Test
     fun `Get List of Series with the same State`() {
         testWithTransactionManagerAndRollback { transactionManager ->
+
             val usersServices = UsersServices(encoder, transactionManager)
+
+            val tokenProcessor = TokenProcessor(usersServices)
+
+            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
-            val seriesServices = SeriesServices(transactionManager, tmdbService)
+            val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList(userId, "Fantasy Series")
+            val listId = seriesServices.createList(user?.token.toString(), "Fantasy Series")
 
-            val listId1 = seriesServices.createList(userId, "Favourite Series")
+            val listId1 = seriesServices.createList(user?.token.toString(), "Favourite Series")
 
-            val listId2 = seriesServices.createList(userId, "Action Series")
+            val listId2 = seriesServices.createList(user?.token.toString(), "Action Series")
 
-            seriesServices.addSeriesToList("tt4574334", 66732, listId, userId)
+            seriesServices.addSeriesToList(66732, listId, user?.token.toString())
 
-            seriesServices.addSeriesToList("tt1520211", 1402, listId, userId)
+            seriesServices.addSeriesToList( 1402, listId1, user?.token.toString())
 
-            seriesServices.addSeriesToList("tt2805096", 58841, listId, userId)
+            seriesServices.addSeriesToList( 58841, listId2, user?.token.toString())
 
-            seriesServices.changeState("tt1520211","Watched", userId)
+            seriesServices.changeState(1402,"Watched", user?.token.toString())
 
-            seriesServices.changeState("tt4574334","Watching", userId)
+            seriesServices.changeState(66732, "Watching", user?.token.toString())
 
-            val seriesList = seriesServices.getSeriesFromUserByState(userId, "Watching")
+            val seriesList = seriesServices.getSeriesFromUserByState(user?.token.toString(), "Watching")
 
             assertEquals(seriesList.size, 1)
 
@@ -1371,7 +1543,6 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].tmdbId, 66732)
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.Watching)
-
         }
     }
 
