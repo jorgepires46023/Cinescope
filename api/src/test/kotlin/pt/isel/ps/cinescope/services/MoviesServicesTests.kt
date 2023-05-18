@@ -102,9 +102,9 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            val moviesList = moviesServices.getList(listId, user?.token.toString())
+            val moviesList = moviesServices.getList(listId, "bearer ${user?.token.toString()}")
 
             assertNotNull(moviesList)
         }
@@ -145,7 +145,7 @@ class MoviesServicesTests {
             val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                moviesServices.getList(null, user?.token.toString())
+                moviesServices.getList(null, "bearer ${user?.token.toString()}")
             }
         }
     }
@@ -164,15 +164,15 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            moviesServices.createList(user?.token.toString(), "Action Movies")
+            moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            val moviesLists = moviesServices.getLists(user?.token.toString())
+            val moviesLists = moviesServices.getLists("bearer ${user?.token.toString()}")
 
             assertEquals(moviesLists[0].name, "Action Movies")
 
-            moviesServices.deleteList(moviesLists[0].id, user?.token.toString())
+            moviesServices.deleteList(moviesLists[0].id,"bearer ${user?.token.toString()}")
 
-            val moviesList = moviesServices.getList(moviesLists[0].id, user?.token.toString())
+            val moviesList = moviesServices.getList(moviesLists[0].id, "bearer ${user?.token.toString()}")
 
             assertTrue(moviesList.isEmpty())
         }
@@ -213,7 +213,7 @@ class MoviesServicesTests {
             val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                moviesServices.deleteList(null, user?.token.toString())
+                moviesServices.deleteList(null, "bearer ${user?.token.toString()}")
             }
         }
     }
@@ -232,13 +232,13 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            val moviesLists = moviesServices.getLists(user?.token.toString())
+            val moviesLists = moviesServices.getLists("bearer ${user?.token.toString()}")
 
             assertEquals(moviesLists[0].name, "Action Movies")
 
-            moviesServices.addMovieToList(245891,listId,user?.token.toString())
+            moviesServices.addMovieToList(245891,listId,"bearer ${user?.token.toString()}")
 
             val movieData = transactionManager.run { it.moviesRepository.getMovieFromMovieData(245891) }
 
@@ -256,9 +256,9 @@ class MoviesServicesTests {
             assertEquals(movieData?.img, "/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg")*/
             assertEquals(moviesUserData?.state, MovieState.PTW)
 
-            moviesServices.deleteList(moviesLists[0].id, user?.token.toString())
+            moviesServices.deleteList(moviesLists[0].id, "bearer ${user?.token.toString()}")
 
-            val moviesList = moviesServices.getList(moviesLists[0].id, user?.token.toString())
+            val moviesList = moviesServices.getList(moviesLists[0].id, "bearer ${user?.token.toString()}")
 
             assertTrue(moviesList.isEmpty())
         }
@@ -278,13 +278,13 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            moviesServices.createList(user?.token.toString(), "Action Movies")
+            moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            moviesServices.createList(user?.token.toString(), "Favourite Movies")
+            moviesServices.createList("bearer ${user?.token.toString()}", "Favourite Movies")
 
-            moviesServices.createList(user?.token.toString(), "Drama Movies")
+            moviesServices.createList("bearer ${user?.token.toString()}", "Drama Movies")
 
-            val moviesLists = moviesServices.getLists(user?.token.toString())
+            val moviesLists = moviesServices.getLists("bearer ${user?.token.toString()}")
 
             assertEquals(moviesLists[0].name, "Action Movies")
             assertEquals(moviesLists[1].name, "Favourite Movies")
@@ -305,6 +305,10 @@ class MoviesServicesTests {
             assertFailsWith<BadRequestException> {
                 moviesServices.getLists(null)
             }
+
+            assertFailsWith<BadRequestException> {
+                moviesServices.getLists("")
+            }
         }
     }
 
@@ -323,9 +327,9 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            moviesServices.addMovieToList(245891,listId,user?.token.toString())
+            moviesServices.addMovieToList(245891,listId,"bearer ${user?.token.toString()}")
 
             val movieData = transactionManager.run { it.moviesRepository.getMovieFromMovieData(245891) }
 
@@ -343,7 +347,7 @@ class MoviesServicesTests {
             assertEquals(movieData?.img, "/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg")*/
             assertEquals(moviesUserData?.state, MovieState.PTW)
 
-            val movieList = moviesServices.getList(listId, user?.token.toString())
+            val movieList = moviesServices.getList(listId, "bearer ${user?.token.toString()}")
 
             assertEquals(movieList[0].name, "John Wick")
             assertEquals(movieList[0].imdbId, "tt2911666")
@@ -367,10 +371,10 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
             assertFailsWith<BadRequestException> {
-                moviesServices.addMovieToList(null,listId,user?.token.toString())
+                moviesServices.addMovieToList(null,listId,"bearer ${user?.token.toString()}")
             }
         }
     }
@@ -390,7 +394,7 @@ class MoviesServicesTests {
             val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                moviesServices.addMovieToList(245891,null, user?.token.toString())
+                moviesServices.addMovieToList(245891,null, "bearer ${user?.token.toString()}")
             }
         }
     }
@@ -409,7 +413,7 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
             assertFailsWith<BadRequestException> {
                 moviesServices.addMovieToList(245891,listId, null)
@@ -436,10 +440,10 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
             assertFailsWith<NotFoundException> {
-                moviesServices.addMovieToList(316788486,listId,user?.token.toString())
+                moviesServices.addMovieToList(316788486,listId,"bearer ${user?.token.toString()}")
             }
         }
     }
@@ -458,9 +462,9 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            moviesServices.addMovieToList(245891,listId,user?.token.toString())
+            moviesServices.addMovieToList(245891,listId,"bearer ${user?.token.toString()}")
 
             val movieData = transactionManager.run { it.moviesRepository.getMovieFromMovieData(245891) }
 
@@ -478,7 +482,7 @@ class MoviesServicesTests {
             assertEquals(movieData?.img, "/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg")*/
             assertEquals(moviesUserData?.state, MovieState.PTW)
 
-            val movieList = moviesServices.getList(listId, user?.token.toString())
+            val movieList = moviesServices.getList(listId, "bearer ${user?.token.toString()}")
 
             assertEquals(movieList[0].name, "John Wick")
             assertEquals(movieList[0].imdbId, "tt2911666")
@@ -487,9 +491,9 @@ class MoviesServicesTests {
             assertEquals(movieList[0].state, MovieState.PTW)
 
 
-            moviesServices.deleteMovieFromList(listId,245891, user?.token.toString())
+            moviesServices.deleteMovieFromList(listId,245891, "bearer ${user?.token.toString()}")
 
-            val list = moviesServices.getList(listId, user?.token.toString())
+            val list = moviesServices.getList(listId, "bearer ${user?.token.toString()}")
             assertTrue(list.isEmpty())
         }
     }
@@ -509,7 +513,7 @@ class MoviesServicesTests {
             val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                moviesServices.deleteMovieFromList(null, 245891, user?.token.toString())
+                moviesServices.deleteMovieFromList(null, 245891, "bearer ${user?.token.toString()}")
             }
         }
     }
@@ -528,7 +532,7 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
             assertFailsWith<BadRequestException> {
                 moviesServices.deleteMovieFromList(listId,245891, null)
@@ -554,10 +558,10 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
             assertFailsWith<BadRequestException> {
-                moviesServices.deleteMovieFromList(listId,null, user?.token.toString())
+                moviesServices.deleteMovieFromList(listId,null, "bearer ${user?.token.toString()}")
             }
         }
     }
@@ -577,10 +581,10 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
             assertFailsWith<NotFoundException> {
-                moviesServices.deleteMovieFromList(listId, 568591698, user?.token.toString())
+                moviesServices.deleteMovieFromList(listId, 568591698, "bearer ${user?.token.toString()}")
             }
         }
     }
@@ -599,9 +603,9 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            moviesServices.addMovieToList(245891,listId,user?.token.toString())
+            moviesServices.addMovieToList(245891,listId,"bearer ${user?.token.toString()}")
 
             val movieData = transactionManager.run { it.moviesRepository.getMovieFromMovieData(245891) }
 
@@ -619,7 +623,7 @@ class MoviesServicesTests {
             assertEquals(movieData?.img, "/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg")*/
             assertEquals(moviesUserData?.state, MovieState.PTW)
 
-            val movieList = moviesServices.getList(listId, user?.token.toString())
+            val movieList = moviesServices.getList(listId,"bearer ${user?.token.toString()}")
 
             assertEquals(movieList[0].name, "John Wick")
             assertEquals(movieList[0].imdbId, "tt2911666")
@@ -627,7 +631,7 @@ class MoviesServicesTests {
             assertEquals(movieList[0].img, "/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg")
             assertEquals(movieList[0].state, MovieState.PTW)
 
-            moviesServices.changeState(245891,"Watched", user?.token.toString())
+            moviesServices.changeState(245891,"Watched", "bearer ${user?.token.toString()}")
 
             val moviesUserDataChanged = transactionManager.run { it.moviesRepository.getMovieFromMovieUserData(245891, userId) }
 
@@ -649,7 +653,7 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            moviesServices.changeState(245891,"Watched", user?.token.toString())
+            moviesServices.changeState(245891,"Watched", "bearer ${user?.token.toString()}")
 
             val movieData = transactionManager.run { it.moviesRepository.getMovieFromMovieData(245891) }
 
@@ -684,9 +688,9 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            moviesServices.addMovieToList(245891,listId, user?.token.toString())
+            moviesServices.addMovieToList(245891,listId, "bearer ${user?.token.toString()}")
 
             val movieData = transactionManager.run { it.moviesRepository.getMovieFromMovieData(245891) }
 
@@ -704,7 +708,7 @@ class MoviesServicesTests {
             assertEquals(movieData?.img, "/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg")*/
             assertEquals(moviesUserData?.state, MovieState.PTW)
 
-            val movieList = moviesServices.getList(listId, user?.token.toString())
+            val movieList = moviesServices.getList(listId, "bearer ${user?.token.toString()}")
 
             assertEquals(movieList[0].name, "John Wick")
             assertEquals(movieList[0].imdbId, "tt2911666")
@@ -714,15 +718,15 @@ class MoviesServicesTests {
 
 
             assertFailsWith<BadRequestException> {
-                moviesServices.changeState(245891,"Banana", user?.token.toString())
+                moviesServices.changeState(245891,"Banana","bearer ${user?.token.toString()}")
             }
 
             assertFailsWith<BadRequestException> {
-                moviesServices.changeState(245891,"", user?.token.toString())
+                moviesServices.changeState(245891,"", "bearer ${user?.token.toString()}")
             }
 
             assertFailsWith<BadRequestException> {
-                moviesServices.changeState(245891,null, user?.token.toString())
+                moviesServices.changeState(245891,null, "bearer ${user?.token.toString()}")
             }
         }
     }
@@ -741,9 +745,9 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            moviesServices.addMovieToList(245891,listId, user?.token.toString())
+            moviesServices.addMovieToList(245891,listId, "bearer ${user?.token.toString()}")
 
             val movieData = transactionManager.run { it.moviesRepository.getMovieFromMovieData(245891) }
 
@@ -761,7 +765,7 @@ class MoviesServicesTests {
             assertEquals(movieData?.img, "/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg")*/
             assertEquals(moviesUserData?.state, MovieState.PTW)
 
-            val movieList = moviesServices.getList(listId, user?.token.toString())
+            val movieList = moviesServices.getList(listId, "bearer ${user?.token.toString()}")
 
             assertEquals(movieList[0].name, "John Wick")
             assertEquals(movieList[0].imdbId, "tt2911666")
@@ -771,7 +775,7 @@ class MoviesServicesTests {
 
 
             assertFailsWith<BadRequestException> {
-                moviesServices.changeState(null,"Watched", user?.token.toString())
+                moviesServices.changeState(null,"Watched", "bearer ${user?.token.toString()}")
             }
         }
     }
@@ -790,9 +794,9 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            moviesServices.addMovieToList(245891,listId, user?.token.toString())
+            moviesServices.addMovieToList(245891,listId, "bearer ${user?.token.toString()}")
 
             val movieData = transactionManager.run { it.moviesRepository.getMovieFromMovieData(245891) }
 
@@ -810,7 +814,7 @@ class MoviesServicesTests {
             assertEquals(movieData?.img, "/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg")*/
             assertEquals(moviesUserData?.state, MovieState.PTW)
 
-            val movieList = moviesServices.getList(listId, user?.token.toString())
+            val movieList = moviesServices.getList(listId, "bearer ${user?.token.toString()}")
 
             assertEquals(movieList[0].name, "John Wick")
             assertEquals(movieList[0].imdbId, "tt2911666")
@@ -843,21 +847,21 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            val listId1 = moviesServices.createList(user?.token.toString(), "Favourite Movies")
+            val listId1 = moviesServices.createList("bearer ${user?.token.toString()}", "Favourite Movies")
 
-            val listId2 = moviesServices.createList(user?.token.toString(), "Drama Movies")
+            val listId2 = moviesServices.createList("bearer ${user?.token.toString()}", "Drama Movies")
 
-            moviesServices.addMovieToList(245891,listId,user?.token.toString())
+            moviesServices.addMovieToList(245891,listId,"bearer ${user?.token.toString()}")
 
-            moviesServices.addMovieToList(11324,listId1,user?.token.toString())
+            moviesServices.addMovieToList(11324,listId1,"bearer ${user?.token.toString()}")
 
-            moviesServices.addMovieToList(964980,listId2,user?.token.toString())
+            moviesServices.addMovieToList(964980,listId2,"bearer ${user?.token.toString()}")
 
-            moviesServices.changeState(11324,"Watched", user?.token.toString())
+            moviesServices.changeState(11324,"Watched", "bearer ${user?.token.toString()}")
 
-            val moviesList = moviesServices.getMoviesFromUserByState(user?.token.toString(), "PTW")
+            val moviesList = moviesServices.getMoviesFromUserByState("bearer ${user?.token.toString()}", "PTW")
 
             assertEquals(moviesList.size, 2)
 
@@ -889,19 +893,19 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            val listId1 = moviesServices.createList(user?.token.toString(), "Drama Movies")
+            val listId1 = moviesServices.createList("bearer ${user?.token.toString()}", "Drama Movies")
 
-            moviesServices.addMovieToList(245891,listId,user?.token.toString())
+            moviesServices.addMovieToList(245891,listId,"bearer ${user?.token.toString()}")
 
-            moviesServices.addMovieToList(964980,listId1,user?.token.toString())
+            moviesServices.addMovieToList(964980,listId1,"bearer ${user?.token.toString()}")
 
-            moviesServices.changeState(245891,"Watched", user?.token.toString())
+            moviesServices.changeState(245891,"Watched", "bearer ${user?.token.toString()}")
 
-            moviesServices.changeState(11324, "Watched" ,user?.token.toString())
+            moviesServices.changeState(11324, "Watched", "bearer ${user?.token.toString()}")
 
-            val moviesList = moviesServices.getMoviesFromUserByState(user?.token.toString(), "Watched")
+            val moviesList = moviesServices.getMoviesFromUserByState("bearer ${user?.token.toString()}", "Watched")
 
             assertEquals(moviesList.size, 2)
 
@@ -933,28 +937,28 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            val listId1 = moviesServices.createList(user?.token.toString(), "Drama Movies")
+            val listId1 = moviesServices.createList("bearer ${user?.token.toString()}", "Drama Movies")
 
-            moviesServices.addMovieToList(245891,listId,user?.token.toString())
+            moviesServices.addMovieToList(245891,listId,"bearer ${user?.token.toString()}")
 
-            moviesServices.addMovieToList(964980,listId1,user?.token.toString())
+            moviesServices.addMovieToList(964980,listId1,"bearer ${user?.token.toString()}")
 
-            moviesServices.changeState(245891,"Watched", user?.token.toString())
+            moviesServices.changeState(245891,"Watched", "bearer ${user?.token.toString()}")
 
-            moviesServices.changeState(11324, "Watched" ,user?.token.toString())
+            moviesServices.changeState(11324, "Watched", "bearer ${user?.token.toString()}")
 
             assertFailsWith<BadRequestException> {
-                moviesServices.getMoviesFromUserByState(user?.token.toString(), "Banana")
+                moviesServices.getMoviesFromUserByState("bearer ${user?.token.toString()}", "Banana")
             }
 
             assertFailsWith<BadRequestException> {
-                moviesServices.getMoviesFromUserByState(user?.token.toString(), "")
+                moviesServices.getMoviesFromUserByState("bearer ${user?.token.toString()}", "")
             }
 
             assertFailsWith<BadRequestException> {
-                moviesServices.getMoviesFromUserByState(user?.token.toString(), null)
+                moviesServices.getMoviesFromUserByState("bearer ${user?.token.toString()}", null)
             }
         }
     }
@@ -973,17 +977,17 @@ class MoviesServicesTests {
 
             val user = usersServices.getUserById(userId)
 
-            val listId = moviesServices.createList(user?.token.toString(), "Action Movies")
+            val listId = moviesServices.createList("bearer ${user?.token.toString()}", "Action Movies")
 
-            val listId1 = moviesServices.createList(user?.token.toString(), "Drama Movies")
+            val listId1 = moviesServices.createList("bearer ${user?.token.toString()}", "Drama Movies")
 
-            moviesServices.addMovieToList(245891,listId,user?.token.toString())
+            moviesServices.addMovieToList(245891,listId,"bearer ${user?.token.toString()}")
 
-            moviesServices.addMovieToList(964980,listId1,user?.token.toString())
+            moviesServices.addMovieToList(964980,listId1,"bearer ${user?.token.toString()}")
 
-            moviesServices.changeState(245891,"Watched", user?.token.toString())
+            moviesServices.changeState(245891,"Watched", "bearer ${user?.token.toString()}")
 
-            moviesServices.changeState(11324, "Watched" ,user?.token.toString())
+            moviesServices.changeState(11324, "Watched", "bearer ${user?.token.toString()}")
 
             assertFailsWith<BadRequestException> {
                 moviesServices.getMoviesFromUserByState(null, "Watched")

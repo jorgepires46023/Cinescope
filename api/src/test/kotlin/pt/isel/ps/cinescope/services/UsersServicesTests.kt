@@ -134,7 +134,7 @@ class UsersServicesTests {
         }
     }
 
-    @Test
+ /*   @Test
     fun `Edit the password of an User`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
@@ -277,7 +277,7 @@ class UsersServicesTests {
                 usersServices.editUser(id, "João Balsinha", "joaobalsinha@slb.pt", "")
             }
         }
-    }
+    }*/
 
     @Test
     fun `Get User By Token`() {
@@ -291,7 +291,7 @@ class UsersServicesTests {
             val user = usersServices.getUserById(id)
             assertNotNull(user)
 
-            val userByToken = usersServices.getUserByToken(user?.token)
+            val userByToken = usersServices.getUserByToken(user?.token.toString())
             assertNotNull(userByToken)
 
             assertEquals(user?.name, userByToken?.name)

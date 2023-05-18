@@ -27,14 +27,14 @@ class UsersController(val usersService: UsersServices) {
             .body(user)
     }
 
-    @PostMapping(Users.UPDATE_USER)
+    /*@PostMapping(Users.UPDATE_USER)
     fun editUser(@RequestBody info: UserInputModel, @PathVariable id: Int): ResponseEntity<*> {
         val user = usersService.editUser(id, info.name, info.email, info.password)
 
         return ResponseEntity
             .status(200)
             .body(user)
-    }
+    }*/
 
     @GetMapping(Users.GET_USER_INFO)
     fun getUserInfo(@PathVariable id: Int): ResponseEntity<*> {

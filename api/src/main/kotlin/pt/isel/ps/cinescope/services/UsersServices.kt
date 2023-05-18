@@ -13,7 +13,7 @@ import pt.isel.ps.cinescope.utils.isNull
 import java.util.*
 
 @Component
-class UsersServices(val passwordEncoder: Encoder, private val transactionManager: TransactionManager, private val tokenProcessor: TokenProcessor) {
+class UsersServices(val passwordEncoder: Encoder, private val transactionManager: TransactionManager, /*private val tokenProcessor: TokenProcessor*/) {
 
     fun getUserById(id: Int?): User? {
         if (id == null) throw BadRequestException("Id cannot be null")
@@ -43,7 +43,7 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
         transactionManager.run { it.userRepository.removeUser(id) }
     }
 
-    fun editUser(bearer: String?, name: String?, email: String?,password: String?) {
+  /*  fun editUser(bearer: String?, name: String?, email: String?,password: String?) {
         if(name.isNullOrBlank() || email.isNullOrBlank() || password.isNullOrBlank()) {
             throw BadRequestException("Info to edit cannot be empty")
         }
@@ -57,7 +57,7 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
             it.userRepository.updateUserInfo(updatedUser)
         }
     }
-
+*/
 
     fun login(email: String?, password: String?): User? {
         if (email.isNullOrBlank() || password.isNullOrBlank()) {
