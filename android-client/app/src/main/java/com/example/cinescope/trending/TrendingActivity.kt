@@ -1,4 +1,14 @@
 package com.example.cinescope.trending
 
-class TrendingActivity {
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+
+class TrendingActivity: ComponentActivity() {
+    override fun onResume() {
+        super.onResume()
+
+        setContent {
+            TrendingScreen()
+        }
+    }
 }
