@@ -1,8 +1,8 @@
-package com.example.cinescope.service
+package com.example.cinescope.service.serviceInterfaces
 
 import com.example.cinescope.domain.User
 
-interface CinescopeProfileService {
+interface CinescopeUsersService {
 
     suspend fun signUp(email: String, pwd: String): User
 

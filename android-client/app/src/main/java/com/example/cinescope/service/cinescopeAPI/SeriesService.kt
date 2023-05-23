@@ -1,7 +1,7 @@
 package com.example.cinescope.service.cinescopeAPI
 
 import com.example.cinescope.domain.Series
-import com.example.cinescope.service.CinescopeSeriesService
+import com.example.cinescope.service.serviceInterfaces.CinescopeSeriesService
 
 class SeriesService: CinescopeSeriesService {
     override suspend fun addSeriesToList(seriesId: Int, listId: Int): Series {

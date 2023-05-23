@@ -1,4 +1,4 @@
-package com.example.cinescope.service
+package com.example.cinescope.service.serviceInterfaces
 
 import com.example.cinescope.domain.Series
 
