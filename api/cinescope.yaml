@@ -1,0 +1,1179 @@
+openapi: 3.0.3
+info:
+  title: Cinescope 0.1
+  description: |-
+    This is Cinescope's API based on OpenAPI 3.0 specification
+  version: 1.0.11
+paths:
+  /users:
+    post:
+      summary: Create a new user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInputModel'
+      responses:
+        201:
+          description: User created successfully
+        400:
+          description: Invalid request data
+        500:
+          description: Internal server error
+  /login:
+    post:
+      summary: User login
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInputModel'
+      responses:
+        200:
+          description: User login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Invalid login credentials
+        500:
+          description: Internal server error
+  /movies/{id}/list/{lid}:
+    post:
+      summary: Add movie to specified list
+      tags:
+        - Movies
+      parameters:
+        - name: id
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: integer
+        - name: lid
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Movie added successfully to list
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /movies/{id}/state:
+    post:
+      summary: Change state to movie
+      tags:
+        - Movies
+      parameters:
+        - name: id
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+           type: integer
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeStateModel'
+      responses:
+        200:
+          description: Successfully changed movie state
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+    delete:
+      summary: Delete state from movie
+      tags:
+        - Movies
+      parameters:
+        - name: id
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully deleted movie state
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /movies/state/{state}:
+    get:
+      summary: Get all user's movies by state
+      tags:
+        - Movies
+      parameters:
+        - name: state
+          in: path
+          description: Movie state (PTW, Watched)
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully got user's movies by state
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /movies/lists:
+    get:
+      summary: Get all user's lists of movies
+      tags:
+        - Movies
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully got user's movies lists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListDetails'
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /movies/list/{id}:
+    get:
+      summary: Get movies from list
+      tags:
+        - Movies
+      parameters:
+        - name: id
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully got movies from list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+    delete:
+      summary: Delete movie list
+      tags:
+        - Movies
+      parameters:
+        - name: id
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully deleted list
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /movies/list:
+    post:
+      summary: Create list of movies
+      tags:
+        - Movies
+      security:
+          - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListModel'
+      responses:
+        201:
+          description: Successfully created list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /list/{id}/movie/{mid}:
+    delete:
+      summary: Deletes movie from list
+      tags:
+        - Movies
+      parameters:
+        - name: id
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: integer
+        - name: mid
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully deleted movie from list
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /series/{id}/list/{lid}:
+    post:
+      summary: Add serie to list
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: integer
+        - name: lid
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully added serie to list
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /series/{id}/state:
+    post:
+      summary: Change state of serie
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+           type: integer
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeStateModel'
+      responses:
+        200:
+          description: Successfully changed serie state
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+    delete:
+      summary: Remove state from serie
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully deleted serie state
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /series/state/{state}:
+    get:
+      summary: Get all user's series by state
+      tags:
+        - Series
+      parameters:
+        - name: state
+          in: path
+          description: Serie state (PTW, Watching, Watched)
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully got user's series by state
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Serie'
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /series/{id}/ep/{epid}:
+    post:
+      summary: Add episode to list of watched episodes
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: integer
+        - name: epid
+          in: path
+          description: Episode List ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EpisodeModel'
+      responses:
+        200:
+          description: Successfully added episode to watched episode list
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+    delete:
+      summary: Remove episode to list of watched episodes
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: integer
+        - name: epid
+          in: path
+          description: Episode List ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully removed episode to watched episode list
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /series/{id}/watchedep:
+    get:
+      summary: get all watched episodes from a serie
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Watched episode list ID
+          required: true
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully got all watched episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Episode'
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /series/lists:
+    get:
+      summary: get all series list from user
+      tags:
+        - Series
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully got all series list from user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListDetails'
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+    post:
+      summary: create series list
+      tags:
+        - Series
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListModel'
+      responses:
+        201:
+          description: Successfully created series list
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /series/list/{id}:
+    get:
+      summary: get serie list
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Serie list ID
+          required: true
+          schema:
+            type: integer
+      security:
+          - bearerAuth: []
+      responses:
+        200:
+          description: Successfully got all series from list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Serie'
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+    delete:
+      summary: delete serie list
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Serie list ID
+          required: true
+          schema:
+            type: integer
+      security:
+          - bearerAuth: []
+      responses:
+        200:
+          description: Successfully deleted series list
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /series/list/{id}/serie/{sid}:
+    delete:
+      summary: delete serie from series list
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Serie list ID
+          required: true
+          schema:
+            type: integer
+        - name: sid
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: integer
+      security:
+          - bearerAuth: []
+      responses:
+        200:
+          description: Successfully deleted serie from list
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+  /api_movies/{id}:
+    get:
+      summary: search movie details in external API
+      tags:
+        - Searches
+      parameters:
+        - name: id
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully got movie details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieResponse'
+            
+        400:
+          description: Invalid parameters
+        500:
+          description: Internal Server
+  /api_series/{id}:
+   get:
+      summary: search serie details in external API
+      tags:
+        - Searches
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully got serie details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SerieResponse'
+            
+        400:
+          description: Invalid parameters
+        500:
+          description: Internal Server
+  /api_series/{id}/season/{seasonnum}:
+    get:
+      summary: search season details
+      tags:
+        - Searches
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: integer
+        - name: seasonnum
+          in: path
+          description: Season number
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully got season details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeasonResponse'
+  /api_series/{id}/season/{seasonnum}/ep/{epnum}:
+    get:
+      summary: search episode details
+      tags:
+        - Searches
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: integer
+        - name: seasonnum
+          in: path
+          description: Season number
+          required: true
+          schema:
+            type: integer
+        - name: epnum
+          in: path
+          description: Episode number
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully got episode details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpisodeResponse'
+        400:
+          description: Invalid parameters
+        500:
+          description: Internal Server
+  /api_movies/{id}/recommendations:
+    get:
+      summary: get movie recommendations
+      tags:
+        - Searches
+      parameters:
+        - name: id
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully got movies recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        400:
+          description: Invalid parameters
+        500:
+          description: Internal Server
+  /api_series/{id}/recommendations:
+    get:
+      summary: get serie recommendations
+      tags:
+        - Searches
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully got series recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        400:
+          description: Invalid parameters
+        500:
+          description: Internal Server
+  /api_movies/popular:
+    get:
+      summary: get popular movies
+      tags:
+        - Searches
+      responses:
+        200:
+          description: Successfully got popular movies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        500:
+          description: Internal Server
+  /api_series/popular:
+    get:
+      summary: get popular series
+      tags:
+        - Searches
+      responses:
+        200:
+          description: Successfully got popular series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        500:
+          description: Internal Server
+  /search/{query}:
+    get:
+      summary: search for movies or series
+      tags:
+        - Searches
+      parameters:
+        - name: query
+          in: path
+          description: Search query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully got search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        400:
+          description: Invalid parameters
+        500:
+          description: Internal Server
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        token:
+          type: string
+        state:
+          type: string
+      required:
+        - name
+        - token
+        - email
+    UserInputModel:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - name
+        - email
+        - password
+    LoginInputModel:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    Movie:
+      type: object
+      properties:
+        imdbID:
+          type: string
+        tmdbID:
+          type: integer
+        name:
+          type: string
+        img:
+          type: string
+        state:
+          type: string
+      required:
+        - tmdbID
+        - name
+        - img
+        - state
+    Serie:
+      type: object
+      properties:
+        imdbID:
+          type: string
+        tmdbID:
+          type: integer
+        name:
+          type: string
+        img:
+          type: string
+        EpListId:
+          type: integer
+        state:
+          type: string
+      required:
+        - tmdbID
+        - name
+        - img
+        - state
+    Episode:
+      type: object
+      properties:
+        imdbID:
+          type: string
+        seriesID:
+          type: integer
+        name:
+          type: string
+        img:
+          type: string
+        season:
+          type: integer
+        episode:
+          type: integer
+      required:
+        - tmdbID
+        - name
+        - img
+        - state
+    ChangeStateModel:
+      type: object
+      properties:
+        state:
+          type: string
+      required:
+        - state
+    ListDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
+        - name
+    ListModel:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    EpisodeModel:
+      type: object
+      properties:
+        season_number:
+          type: integer
+        episode_number:
+          type: integer
+      required:
+        - season_number
+        - episode_number
+    MovieResponse:
+      type: object
+      properties:
+        movieDetails:
+          $ref: '#/components/schemas/MovieDetails'
+        watchProviders:
+          $ref: '#/components/schemas/WatchProviders'
+        externalIds:
+          $ref: '#/components/schemas/ExternalIds'
+    MovieDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+        imdb_id:
+          type: string
+        original_title:
+          type: string
+        overview:
+          type: string
+        poster_path:
+          type: string
+        release_date:
+          type: string
+          format: date
+        runtime:
+          type: integer
+        status:
+          type: string
+        title:
+          type: string
+    WatchProviders:
+      type: object
+      properties:
+        id:
+          type: integer
+        results:
+          type: object
+          properties:
+            PT:
+              $ref: '#/components/schemas/WatchProviderDetails'
+    WatchProviderDetails:
+      type: object
+      properties:
+        link:
+          type: string
+        flatrate:
+          type: string
+        rent:
+          type: string
+        buy:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderInfo'
+    ProviderInfo:
+      type: object
+      properties:
+        display_priority:
+          type: integer
+        provider_name:
+          type: string
+    ExternalIds:
+      type: object
+      properties:
+        imdb_id:
+          type: string
+        facebook_id:
+          type: string
+        twitter_id:
+          type: string
+    SerieResponse:
+      type: object
+      properties:
+        serieDetails:
+          $ref: '#/components/schemas/SerieDetails'
+        watchProviders:
+          $ref: '#/components/schemas/WatchProviders'
+        externalIds:
+          $ref: '#/components/schemas/ExternalIds'
+    SerieDetails:
+      type: object
+      properties:
+        created_by:
+          type: array
+          items:
+            $ref: '#/components/schemas/Creator' 
+        id:
+          type: integer
+        name:
+          type: string
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Seasons'
+        status:
+          type: string
+        poster_path:
+          type: string
+    Creator:
+      type: object
+      properties:
+        name:
+          type: string
+        profile_path:
+          type: string
+    Seasons:
+      type: object
+      properties:
+        episode_count:
+          type: integer
+        id:
+          type: integer
+        name:
+          type: string
+        season_number:
+          type: integer
+    SeasonResponse:
+      type: object
+      properties:
+        air_date:
+          type: string
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/EpisodeDetails'
+        externalIds:
+          $ref: '#/components/schemas/ExternalIds'
+    EpisodeDetails:
+      type: object
+      properties:
+        air_date:
+          type: string
+        episode_number:
+          type: integer
+        id:
+          type: integer
+        name:
+          type: string
+        overview:
+          type: string
+        still_path:
+          type: string
+    EpisodeResponse:
+      type: object
+      properties:
+        EpisodeDetails:
+          $ref: '#/components/schemas/EpisodeDetails'
+        externalIds:
+          $ref: '#/components/schemas/ExternalIds'
+    SearchResponse:
+      type: object
+      properties:
+        page:
+          type: integer
+        results: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Result'
+        total_results:
+          type: integer
+        total_pages:
+          type: integer
+    Result:
+      type: object
+      properties:
+        poster_path:
+          type: string
+        id:
+          type: integer
+        title:
+          type: string
+        name:
+          type: string
+        media_type:
+          type: string
+        popularity:
+          type: integer
+          
+    
+  securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT           
+
