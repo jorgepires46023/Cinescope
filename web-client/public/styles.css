@@ -5,6 +5,7 @@ h1 {
 }
 
 nav {
+  position: fixed;
   margin: 0;
   width: 100%;
   height: 40px;
@@ -170,8 +171,8 @@ html {
   top: 0;
   bottom: 0;
   width: 100%;
-  /*display: flex;
-  flex-flow: column;*/
+  /* display: flex;
+  flex-flow: column; */
 }
 
 .centerDiv {
@@ -365,7 +366,7 @@ html {
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
   border-radius: 10px;
-  background-color: #f2f2f2;
+  background-color: black;
   height: inherit;
   width: inherit;
   text-align: center;
@@ -374,11 +375,9 @@ html {
 .popularContentGrid {
   display: grid;
   justify-content: center;
-  gap: 5px;
-  /* grid-template-columns: repeat(10, minmax(200px, 1fr)); */
+  gap: 8px;
+  column-gap: 20px;
   grid-template-columns: repeat(10,6.5%);
-  /*grid-template-rows: 30% 0%;*/
-  /*grid-auto-rows: auto;*/
   margin-right: 50px;
   margin-left: 50px;
   padding: 0px;
@@ -395,6 +394,7 @@ html {
   text-align: center;
   font-family: monospace;
   font-style: normal;
+  font-size: 23px;
 }
 
 .gridDiv {

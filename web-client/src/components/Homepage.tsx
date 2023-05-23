@@ -66,7 +66,7 @@ export function Homepage() {
 
             <div className="showDiv">
                 <h2 className="h2ClassGrid">Popular Movies</h2>
-                <div className="gridDiv">
+                
                 <div className="popularContentGrid">
                     {moviesList.results.map(movie =>
                         <div className="cardContent">
@@ -74,12 +74,12 @@ export function Homepage() {
                         </div>
                     )}
                 </div>
-                </div>
+                
             </div>
 
             <div className="showDiv">
                 <h2 className="h2ClassGrid">Popular Series</h2>
-                <div className="gridDiv">
+                
                 <div className="popularContentGrid">
                     {seriesList.results.map(series =>
                         <div className="cardContent">
@@ -87,7 +87,7 @@ export function Homepage() {
                         </div>
                     )}
                 </div>
-                </div>
+                
             </div>
         </div>
     )
