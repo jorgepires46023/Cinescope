@@ -87,7 +87,7 @@ paths:
           description: Movie ID
           required: true
           schema:
-           type: integer
+            type: integer
       security:
         - bearerAuth: []
       requestBody:
@@ -245,7 +245,7 @@ paths:
       tags:
         - Movies
       security:
-          - bearerAuth: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -343,7 +343,7 @@ paths:
           description: Serie ID
           required: true
           schema:
-           type: integer
+            type: integer
       security:
         - bearerAuth: []
       requestBody:
@@ -580,7 +580,7 @@ paths:
           schema:
             type: integer
       security:
-          - bearerAuth: []
+        - bearerAuth: []
       responses:
         200:
           description: Successfully got all series from list
@@ -610,7 +610,7 @@ paths:
           schema:
             type: integer
       security:
-          - bearerAuth: []
+        - bearerAuth: []
       responses:
         200:
           description: Successfully deleted series list
@@ -641,7 +641,7 @@ paths:
           schema:
             type: integer
       security:
-          - bearerAuth: []
+        - bearerAuth: []
       responses:
         200:
           description: Successfully deleted serie from list
@@ -672,13 +672,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MovieResponse'
-            
+
         400:
           description: Invalid parameters
         500:
           description: Internal Server
   /api_series/{id}:
-   get:
+    get:
       summary: search serie details in external API
       tags:
         - Searches
@@ -696,7 +696,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SerieResponse'
-            
+
         400:
           description: Invalid parameters
         500:
@@ -773,6 +773,12 @@ paths:
           required: true
           schema:
             type: integer
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
       responses:
         200:
           description: Successfully got movies recommendations
@@ -796,6 +802,12 @@ paths:
           required: true
           schema:
             type: integer
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
       responses:
         200:
           description: Successfully got series recommendations
@@ -812,6 +824,13 @@ paths:
       summary: get popular movies
       tags:
         - Searches
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
       responses:
         200:
           description: Successfully got popular movies
@@ -826,6 +845,13 @@ paths:
       summary: get popular series
       tags:
         - Searches
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
       responses:
         200:
           description: Successfully got popular series
@@ -844,7 +870,7 @@ paths:
         - name: query
           in: path
           description: Search query
-          required: true
+          required: false
           schema:
             type: string
       responses:
@@ -1077,7 +1103,7 @@ components:
         created_by:
           type: array
           items:
-            $ref: '#/components/schemas/Creator' 
+            $ref: '#/components/schemas/Creator'
         id:
           type: integer
         name:
@@ -1146,7 +1172,7 @@ components:
       properties:
         page:
           type: integer
-        results: 
+        results:
           type: array
           items:
             $ref: '#/components/schemas/Result'
@@ -1169,11 +1195,11 @@ components:
           type: string
         popularity:
           type: integer
-          
-    
+
+
   securitySchemes:
-      bearerAuth:
-        type: http
-        scheme: bearer
-        bearerFormat: JWT           
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 

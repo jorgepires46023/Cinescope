@@ -8,8 +8,8 @@ import pt.isel.ps.cinescope.services.SearchServices
 @RestController
 class SearchController(val searchServices: SearchServices) {
     @GetMapping(Searches.SEARCH_QUERIE)
-    fun searchByQuery(@PathVariable query: String):ResponseEntity<*>{
-        val search = searchServices.searchByQuery(query)
+    fun searchByQuery(@PathVariable query: String, @RequestParam page: Int):ResponseEntity<*>{
+        val search = searchServices.searchByQuery(query, page)
 
         return ResponseEntity
             .status(200)
@@ -52,30 +52,30 @@ class SearchController(val searchServices: SearchServices) {
     }
 
     @GetMapping(Searches.GET_POPULAR_MOVIES)
-    fun getPopularMovies(): ResponseEntity<*>{
+    fun getPopularMovies(@RequestParam page: Int?): ResponseEntity<*>{
         return ResponseEntity
             .status(200)
-            .body(searchServices.getPopularMovies())
+            .body(searchServices.getPopularMovies(page))
     }
 
     @GetMapping(Searches.GET_POPULAR_SERIES)
-    fun getPopularSeries(): ResponseEntity<*>{
+    fun getPopularSeries(@RequestParam page: Int): ResponseEntity<*>{
         return ResponseEntity
             .status(200)
-            .body(searchServices.getPopularSeries())
+            .body(searchServices.getPopularSeries(page))
     }
 
     @GetMapping(Searches.MOVIE_RECOMMENDATIONS)
-    fun getMovieRecommendations(@PathVariable id: Int): ResponseEntity<*>{
+    fun getMovieRecommendations(@PathVariable id: Int, @RequestParam page: Int): ResponseEntity<*>{
         return ResponseEntity
             .status(200)
-            .body(searchServices.getMovieRecommendations(id))
+            .body(searchServices.getMovieRecommendations(id, page))
     }
 
     @GetMapping(Searches.SERIE_RECOMMENDATIONS)
-    fun getSeriesRecommendations(@PathVariable id: Int): ResponseEntity<*>{
+    fun getSeriesRecommendations(@PathVariable id: Int, @RequestParam page: Int): ResponseEntity<*>{
         return ResponseEntity
             .status(200)
-            .body(searchServices.getSerieRecommendations(id))
+            .body(searchServices.getSerieRecommendations(id,page))
     }
 }

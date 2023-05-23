@@ -10,9 +10,10 @@ import pt.isel.ps.cinescope.utils.TmdbService
 @Component
 class SearchServices(val tmdbServices: TmdbService) {
 
-    fun searchByQuery(input: String?): Search? {
+    fun searchByQuery(input: String?, page: Int?): Search? {
+        val p = page ?: 1
         if (input.isNullOrBlank()) return null
-        return tmdbServices.fetchQuery(input)
+        return tmdbServices.fetchQuery(input, p)
     }
 
     fun movieDetails(id: Int?): MovieDetailsOutput?{
@@ -43,29 +44,33 @@ class SearchServices(val tmdbServices: TmdbService) {
         return EpisodeDetailOutput(episodeDetails, externalIds)
     }
 
-    fun getPopularMovies(): Search?{
-        val movies = tmdbServices.getPopularMovies()
+    fun getPopularMovies(page: Int?): Search?{
+        val p = page ?: 1
+        val movies = tmdbServices.getPopularMovies(p)
         if (movies != null)
             movies.results?.forEach { it.media_type = "movie" }
         return movies
     }
 
-    fun getPopularSeries(): Search?{
-        val series = tmdbServices.getPopularSeries()
+    fun getPopularSeries(page: Int?): Search?{
+        val p = page ?: 1
+        val series = tmdbServices.getPopularSeries(p)
         if (series != null)
             series.results?.forEach {it.media_type = "tv"}
         return series
     }
 
-    fun getMovieRecommendations(id:Int?): Search?{
+    fun getMovieRecommendations(id:Int?, page: Int?): Search?{
+        val p = page ?: 1
         if(id == null) return null
-        val movies = tmdbServices.getMovieRecommendations(id)
+        val movies = tmdbServices.getMovieRecommendations(id, p)
         return movies
     }
 
-    fun getSerieRecommendations(id: Int?): Search?{
+    fun getSerieRecommendations(id: Int?, page: Int?): Search?{
+        val p = page ?: 1
         if(id == null) return null
-        val series = tmdbServices.getSerieRecommendations(id)
+        val series = tmdbServices.getSerieRecommendations(id, p)
         return series
     }
 
