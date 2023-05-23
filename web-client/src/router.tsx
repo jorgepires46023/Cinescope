@@ -1,7 +1,10 @@
 import * as React from 'react'
-import { Outlet, createBrowserRouter, RouterProvider, BrowserRouter } from 'react-router-dom';
+import { Outlet, createBrowserRouter, RouterProvider, BrowserRouter, useNavigate } from 'react-router-dom';
+import { CreateUser } from './components/CreateUser';
 import { Homepage } from './components/Homepage';
+import { Login } from './components/Login';
 import { NavBar } from './components/navbar/Navbar';
+import { useEffect } from 'react';
 
 function DashboardMessages() {
     return (
@@ -21,7 +24,7 @@ const routes = createBrowserRouter([
         "element": <DefaultPage />,
         "children": [
             {
-                "path": "cinescope",
+                "path": "/home",
                 "element": <Homepage />,
                 "children": [
                     {
@@ -35,18 +38,30 @@ const routes = createBrowserRouter([
                 ]
             }
         ]
+    },
+    {
+        "path": "/login",
+        "element": <Login />
+    },
+    {
+        "path": "/createuser",
+        "element": <CreateUser />
     }
 ])
 
 function DefaultPage() {//Component to guarantee that every Webage renders navbar
+    const navigate = useNavigate()
+    useEffect(() => { 
+        navigate("home")
+    }, [])
+    
     return (
-        <div>
+        <div className='firstDiv'>
             <NavBar />
             <Outlet/>
         </div>
     )
 }
-
 
 
 export function App() {
