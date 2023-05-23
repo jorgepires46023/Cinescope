@@ -1,9 +1,9 @@
 package com.example.cinescope.service.cinescopeAPI
 
 import com.example.cinescope.domain.User
-import com.example.cinescope.service.CinescopeProfileService
+import com.example.cinescope.service.serviceInterfaces.CinescopeUsersService
 
-class ProfileService: CinescopeProfileService {
+class UsersService: CinescopeUsersService {
     override suspend fun signUp(email: String, pwd: String): User {
         TODO("Not yet implemented")
     }
