@@ -8,7 +8,7 @@ import pt.isel.ps.cinescope.services.SearchServices
 @RestController
 class SearchController(val searchServices: SearchServices) {
     @GetMapping(Searches.SEARCH_QUERIE)
-    fun searchByQuery(@PathVariable query: String, @RequestParam page: Int):ResponseEntity<*>{
+    fun searchByQuery(@PathVariable query: String, @RequestParam page: Int?):ResponseEntity<*>{
         val search = searchServices.searchByQuery(query, page)
 
         return ResponseEntity
@@ -59,21 +59,21 @@ class SearchController(val searchServices: SearchServices) {
     }
 
     @GetMapping(Searches.GET_POPULAR_SERIES)
-    fun getPopularSeries(@RequestParam page: Int): ResponseEntity<*>{
+    fun getPopularSeries(@RequestParam page: Int?): ResponseEntity<*>{
         return ResponseEntity
             .status(200)
             .body(searchServices.getPopularSeries(page))
     }
 
     @GetMapping(Searches.MOVIE_RECOMMENDATIONS)
-    fun getMovieRecommendations(@PathVariable id: Int, @RequestParam page: Int): ResponseEntity<*>{
+    fun getMovieRecommendations(@PathVariable id: Int, @RequestParam page: Int?): ResponseEntity<*>{
         return ResponseEntity
             .status(200)
             .body(searchServices.getMovieRecommendations(id, page))
     }
 
     @GetMapping(Searches.SERIE_RECOMMENDATIONS)
-    fun getSeriesRecommendations(@PathVariable id: Int, @RequestParam page: Int): ResponseEntity<*>{
+    fun getSeriesRecommendations(@PathVariable id: Int, @RequestParam page: Int?): ResponseEntity<*>{
         return ResponseEntity
             .status(200)
             .body(searchServices.getSerieRecommendations(id,page))
