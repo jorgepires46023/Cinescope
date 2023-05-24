@@ -49,7 +49,7 @@ nav {
 .iselGroupCenter {
   height: 100%;
   display: inline-block;
-  width: 50%;
+  width: 49%;
 }
 
 .createUserDiv {
@@ -90,6 +90,23 @@ nav {
   text-align: center;
   justify-content: center;
 }
+
+.iselLinkLogo {
+  float: left;
+  color: #f2f2f2;
+  vertical-align: middle;
+  /*padding: 13px 20px;
+  /* First Center Alignment - Second Distance between buttons*/
+  text-decoration: none;
+  font-size: 25px;
+  font-family: monospace;
+  font-style: normal;
+  display: inline-flex;
+  justify-content: center;
+  box-sizing: content-box;
+  height: inherit;
+}
+
 
 .label {
   background-color: transparent;
@@ -227,11 +244,11 @@ html {
 }
 
 .logo {
-  box-sizing: border-box;
-  display: inline-block;
   border-radius: 10px;
-  width: 20%;
-  height: 50%;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
 }
 
 .registerInput {
@@ -395,10 +412,4 @@ html {
   font-family: monospace;
   font-style: normal;
   font-size: 23px;
-}
-
-.gridDiv {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
 }

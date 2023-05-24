@@ -7,7 +7,7 @@ export function NavBar() {
     return (
         <div className='iselnavbar'>
             <div className="iselGroupLeft">
-                <Link className='iselLink' to="/">Cinescope</Link>
+                <Link className='iselLinkLogo' to="/home"><img src="cinescope logo.png" alt="Cinescope" className="logo"/></Link>
                 <Link className='iselLink' to="/cinescope/tasks">Series</Link>
                 <Link className='iselLink' to="/cinescope/messages">Movies</Link>
             </div>
