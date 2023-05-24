@@ -1,10 +1,7 @@
 package pt.isel.ps.cinescope.repositories.jdbi
 
 import org.jdbi.v3.core.Handle
-import pt.isel.ps.cinescope.domain.Episode
-import pt.isel.ps.cinescope.domain.ListDetails
-import pt.isel.ps.cinescope.domain.Series
-import pt.isel.ps.cinescope.domain.SeriesState
+import pt.isel.ps.cinescope.domain.*
 import pt.isel.ps.cinescope.repositories.SeriesRepository
 
 class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
@@ -165,5 +162,17 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
         handle.createUpdate("delete from cinescope.serielist where slid = :slid")
             .bind("slid", listId)
             .execute()
+    }
+
+    override fun getSerieUserData(userId: Int?, stmdbid: Int?): List<SeriesOnLists> {
+        return handle.createQuery("select * from cinescope.seriesonlists where userid = :userid and stmdbid = :stmdbid")
+            .bind("userid", userId)
+            .bind("stmdbid", stmdbid)
+            .mapTo(SeriesOnLists::class.java)
+            .list()
+    }
+
+    override fun getWatchedEpisodeList(userId: Int?, stmdbid: Int?): List<Episode> {
+        TODO("Not yet implemented")
     }
 }

@@ -2,6 +2,7 @@ package pt.isel.ps.cinescope.repositories
 
 import pt.isel.ps.cinescope.domain.ListDetails
 import pt.isel.ps.cinescope.domain.Movie
+import pt.isel.ps.cinescope.domain.MovieOnLists
 import pt.isel.ps.cinescope.domain.MovieState
 
 interface MoviesRepository {
@@ -35,5 +36,7 @@ interface MoviesRepository {
     fun removeStateFromMovies(movieId: Int, userId: Int?)
 
     fun deleteMoviesFromList(listId: Int?)
+
+    fun getMovieUserData(userId: Int?, mtmdbid: Int?): List<MovieOnLists>
 
 }

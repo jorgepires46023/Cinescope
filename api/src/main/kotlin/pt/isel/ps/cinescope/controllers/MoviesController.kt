@@ -88,4 +88,12 @@ class MoviesController(val moviesServices: MoviesServices) {
             .status(200)
             .body(moviesServices.deleteStateFromMovie(mid, bearer))
     }
+
+    @GetMapping(Movies.MOVIE_USER_DATA)
+    fun getMovieUserData(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val movieUserData = moviesServices.getMovieUserData(id, bearer)
+        return ResponseEntity
+            .status(200)
+            .body(movieUserData)
+    }
 }

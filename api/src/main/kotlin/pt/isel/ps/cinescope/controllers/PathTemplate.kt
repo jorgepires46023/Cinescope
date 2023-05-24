@@ -18,12 +18,13 @@ object Movies{
     const val CREATE_LIST = "/movies/list"                                      // Creates new movie list
     const val DELETE_LIST = "/movies/list/{id}"                                 // Deletes list
     const val DELETE_MOVIE_FROM_LIST = "list/{id}/movie/{mid}"                  // Deletes movie from specific Movie List
+    const val MOVIE_USER_DATA = "movies/{id}"                                   // Gets movie info based on user
 }
 
 object Series{
-    const val ADD_SERIE = "/series/{id}/list/{lid}"                                   // Add serie to specific list
+    const val ADD_SERIE = "/series/{id}/list/{lid}"                             // Add serie to specific list
     const val CHANGE_STATE = "/series/{id}/state"                               // Change state of serie(PTW/WATCHING/WATCHED)
-    const val REMOVE_SERIE_STATE = "/series/{id}/state"                        // Removes state from movie
+    const val REMOVE_SERIE_STATE = "/series/{id}/state"                         // Removes state from movie
     const val GET_SERIES_BY_STATE = "/series/state/{state}"                     // Gets all series with state PTW
     const val ADD_WATCHED_EP = "series/{id}/ep/{epid}"                          // Add episode to list of watched episodes
     const val REMOVE_WATCHED_EP = "series/{id}/ep/{epid}"                       // Remove episode from list of watched episodes
@@ -32,7 +33,8 @@ object Series{
     const val GET_LIST = "/series/list/{id}"                                    // Gets series list
     const val CREATE_LIST = "/series/list"                                      // Creates new movie list
     const val DELETE_LIST = "/series/list/{id}"                                 // Deletes list
-    const val DELETE_SERIE_FROM_LIST ="series/list/{id}/serie/{sid}"            // Deletes serie from specific Serie List
+    const val DELETE_SERIE_FROM_LIST = "series/list/{id}/serie/{sid}"           // Deletes serie from specific Serie List
+    const val SERIE_USER_DATA = "series/{id}"
 }
 
 object Searches{

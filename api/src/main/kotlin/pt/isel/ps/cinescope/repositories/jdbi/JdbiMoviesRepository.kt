@@ -1,8 +1,10 @@
 package pt.isel.ps.cinescope.repositories.jdbi
 
 import org.jdbi.v3.core.Handle
+import org.jdbi.v3.core.kotlin.mapTo
 import pt.isel.ps.cinescope.domain.ListDetails
 import pt.isel.ps.cinescope.domain.Movie
+import pt.isel.ps.cinescope.domain.MovieOnLists
 import pt.isel.ps.cinescope.domain.MovieState
 import pt.isel.ps.cinescope.repositories.MoviesRepository
 
@@ -127,5 +129,13 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
         handle.createUpdate("delete from cinescope.movielist where mlid = :mlid")
             .bind("mlid", listId)
             .execute()
+    }
+
+    override fun getMovieUserData(userId: Int?, mtmdbid: Int?): List<MovieOnLists> {
+        return handle.createQuery("select * from cinescope.movieonlists where userid = :userid and mtmdbid = :mtmdbid")
+            .bind("userid", userId)
+            .bind("mtmdbid", mtmdbid)
+            .mapTo(MovieOnLists::class.java)
+            .list()
     }
 }

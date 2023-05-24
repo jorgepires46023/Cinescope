@@ -118,4 +118,13 @@ class SeriesController(val seriesServices: SeriesServices) {
             .body(serie)
     }
 
+    @GetMapping(Series.SERIE_USER_DATA)
+    fun getSerieUserData(@PathVariable id: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val serieUserData = seriesServices.getSerieUserData(id, bearer)
+
+        return ResponseEntity
+            .status(200)
+            .body(serieUserData)
+    }
+
 }

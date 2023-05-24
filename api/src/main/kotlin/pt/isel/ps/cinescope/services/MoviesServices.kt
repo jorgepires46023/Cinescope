@@ -2,6 +2,7 @@ package pt.isel.ps.cinescope.services
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.cinescope.controllers.TokenProcessor
+import pt.isel.ps.cinescope.controllers.models.MoviesModel
 import pt.isel.ps.cinescope.domain.*
 import pt.isel.ps.cinescope.repositories.TransactionManager
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
@@ -129,5 +130,19 @@ class MoviesServices(
         transactionManager.run {
             it.moviesRepository.removeStateFromMovies(movieId, user.id)
         }
+    }
+
+    fun getMovieUserData(movieId: Int?, bearer: String?): MovieUserData? {
+        if (movieId == null) throw BadRequestException("movieid cant be null")
+        if (bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
+        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        val res = transactionManager.run {
+            return@run it.moviesRepository.getMovieUserData(user.id, movieId)
+        }
+        if (res.isEmpty()) return null
+        val state = res.first().state
+        val lists = mutableListOf<ListDetails>()
+        res.forEach { lists.add(ListDetails(it.mlid, it.name)) }
+        return MovieUserData(movieId, MovieState.fromString(state), lists)
     }
 }
