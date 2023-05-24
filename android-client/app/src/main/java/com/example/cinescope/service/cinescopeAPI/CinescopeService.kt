@@ -16,7 +16,7 @@ import java.net.URL
 abstract class CinescopeService(_cinescopeURL: URL){
     internal var cinescopeURL: URL
     internal val httpClient: OkHttpClient = OkHttpClient()
-    internal val gson: Gson = Gson()
+    private val gson: Gson = Gson()
 
     init {
         this.cinescopeURL=_cinescopeURL

@@ -43,7 +43,7 @@ class SearchService(
 
         try {
              popularMovies.addAll(popularMoviesDto.toMovies())
-        } catch (e: RuntimeException){
+        } catch (e: RuntimeException){//TODO check if this is RuntimeException
             throw UnexpectedMappingException()
         }
 

@@ -25,6 +25,8 @@ class SearchServiceTests {
 
     private val JsonMediaType = ("application/json").toMediaType()
 
+    //TODO check if it's possible to throw UnexpectedMappingException
+
     @Test
     fun `getPopularMovies returns list of movies when response is understood`(): Unit =
         runBlocking {
