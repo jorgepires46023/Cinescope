@@ -51,10 +51,10 @@ abstract class CinescopeService(_cinescopeURL: URL){
             if (response.isSuccessful && contentType == JsonMediaType) {
                 gson.fromJson<T>(body.string(), type)
             }else {
-                throw UnexpectedResponseException(response)
+                throw UnsuccessfulResponseException(response)
             }
         } catch (e: JsonSyntaxException) {
-            throw UnsuccessfulResponseException(e.message)
+            throw UnexpectedResponseException(e.message)
         } finally {
             response.body?.closeQuietly()
         }

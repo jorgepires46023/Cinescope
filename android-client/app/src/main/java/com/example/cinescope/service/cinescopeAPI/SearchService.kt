@@ -2,9 +2,15 @@ package com.example.cinescope.service.cinescopeAPI
 
 import com.example.cinescope.domain.Movie
 import com.example.cinescope.domain.Series
+import com.example.cinescope.service.dtoMappers.toMovies
+import com.example.cinescope.service.dtos.PopularDto
+import com.example.cinescope.service.exceptions.UnexpectedMappingException
+import com.example.cinescope.service.exceptions.UnexpectedResponseException
 import com.example.cinescope.service.serviceInterfaces.CinescopeSearchService
 import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.send
+import java.lang.IllegalArgumentException
+import java.lang.RuntimeException
 import java.net.URL
 
 class SearchService(
@@ -32,9 +38,16 @@ class SearchService(
         val request = buildRequest(cinescopeURL.joinPath(Searches.GET_POPULAR_MOVIES))
 
         val popularMoviesDto = httpClient.send(request){response ->
-            handleResponse<Movie>(response, Movie::class.java) //TODO change Movie for MovieDto and then map it to Movie
+            handleResponse<PopularDto>(response, PopularDto::class.java)
         }
-        TODO("return list of popular movies")
+
+        try {
+             popularMovies.addAll(popularMoviesDto.toMovies())
+        } catch (e: RuntimeException){
+            throw UnexpectedMappingException()
+        }
+
+        return popularMovies
     }
 
     override suspend fun getPopularSeries(): List<Series> {
