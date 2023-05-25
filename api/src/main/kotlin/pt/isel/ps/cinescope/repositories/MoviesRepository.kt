@@ -39,4 +39,6 @@ interface MoviesRepository {
 
     fun getMovieUserData(userId: Int?, mtmdbid: Int?): List<MovieOnLists>
 
+    fun getMovieState(userId: Int?, mtmdbid: Int?): MovieState?
+
 }

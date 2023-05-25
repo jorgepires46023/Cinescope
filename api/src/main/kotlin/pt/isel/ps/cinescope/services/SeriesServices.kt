@@ -254,18 +254,20 @@ class SeriesServices(
         if (serieId == null) throw BadRequestException("serieId cant be null")
         if (bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
-        val serieUserData = transactionManager.run {
-            return@run it.seriesRepository.getSerieUserData(user.id, serieId)
+        val state = transactionManager.run{
+            return@run it.seriesRepository.getSerieState(user.id, serieId)
+        }
+        if(state == null) return null
+        val listsWhereSerie = transactionManager.run {
+            return@run it.seriesRepository.getListsSerieIsPresent(user.id, serieId)
         }
 //        val episodeData = transactionManager.run{
 //            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(serieId, user.id)?.epListId ?: throw NotFoundException("Series Not Found")
 //            return@run it.seriesRepository.getWatchedEpList(epListId)
 //        }
 //      if we want to send all info in one request
-        if (serieUserData.isEmpty()) return null
-        val state = serieUserData.first().state
         val lists = mutableListOf<ListDetails>()
-        serieUserData.forEach { lists.add(ListDetails(it.slid, it.name)) }
-        return SerieUserData(serieId, SeriesState.fromString(state), lists)
+        if (!listsWhereSerie.isEmpty()) listsWhereSerie.forEach { lists.add(ListDetails(it.slid, it.name)) }
+        return SerieUserData(serieId, state, lists)
     }
 }

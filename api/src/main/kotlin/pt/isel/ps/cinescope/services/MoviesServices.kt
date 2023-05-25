@@ -136,13 +136,14 @@ class MoviesServices(
         if (movieId == null) throw BadRequestException("movieid cant be null")
         if (bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
+        val state = transactionManager.run {
+            return@run it.moviesRepository.getMovieState(user.id, movieId)
+        } ?: return null
         val res = transactionManager.run {
             return@run it.moviesRepository.getMovieUserData(user.id, movieId)
         }
-        if (res.isEmpty()) return null
-        val state = res.first().state
         val lists = mutableListOf<ListDetails>()
-        res.forEach { lists.add(ListDetails(it.mlid, it.name)) }
-        return MovieUserData(movieId, MovieState.fromString(state), lists)
+        if (!res.isEmpty()) res.forEach { lists.add(ListDetails(it.mlid, it.name)) }
+        return MovieUserData(movieId, state, lists)
     }
 }
