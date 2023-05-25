@@ -301,6 +301,37 @@ paths:
           description: User not found
         500:
           description: Internal Server Error
+  /movies/{id}:
+    get:
+      summary: get user data on movie
+      tags:
+        - Movies
+      parameters:
+        - name: id
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully got user information on movie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieUserData'
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
   /series/{id}/list/{lid}:
     post:
       summary: Add serie to list
@@ -653,6 +684,37 @@ paths:
           description: User not found
         500:
           description: Internal Server Error
+  /series/{id}:
+    get:
+      summary: get user data on serie
+      tags:
+        - Series
+      parameters:
+        - name: id
+          in: path
+          description: Serie ID
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully got user information on serie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SerieUserData'
+        400:
+          description: Invalid parameters
+        401:
+          description: Unauthorized
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
   /api_movies/{id}:
     get:
       summary: search movie details in external API
@@ -870,7 +932,7 @@ paths:
         - name: query
           in: path
           description: Search query
-          required: false
+          required: true
           schema:
             type: string
       responses:
@@ -1065,9 +1127,13 @@ components:
         link:
           type: string
         flatrate:
-          type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderInfo'
         rent:
-          type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderInfo'
         buy:
           type: array
           items:
@@ -1195,6 +1261,28 @@ components:
           type: string
         popularity:
           type: integer
+    MovieUserData:
+      type: object
+      properties:
+        id:
+          type: integer
+        state:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListDetails'
+    SerieUserData:
+      type: object
+      properties:
+        id:
+          type: integer
+        state:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListDetails'
 
 
   securitySchemes:

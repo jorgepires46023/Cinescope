@@ -1,6 +1,7 @@
 package pt.isel.ps.cinescope.repositories.jdbi
 
 import org.jdbi.v3.core.Handle
+import org.jdbi.v3.core.kotlin.mapTo
 import pt.isel.ps.cinescope.domain.*
 import pt.isel.ps.cinescope.repositories.SeriesRepository
 
@@ -164,12 +165,20 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .execute()
     }
 
-    override fun getSerieUserData(userId: Int?, stmdbid: Int?): List<SeriesOnLists> {
+    override fun getListsSerieIsPresent(userId: Int?, stmdbid: Int?): List<SeriesOnLists> {
         return handle.createQuery("select * from cinescope.seriesonlists where userid = :userid and stmdbid = :stmdbid")
             .bind("userid", userId)
             .bind("stmdbid", stmdbid)
             .mapTo(SeriesOnLists::class.java)
             .list()
+    }
+
+    override fun getSerieState(userId: Int?, seriesId: Int): SeriesState? {
+        return handle.createQuery("select state from cinescope.seriesuserdata where userid = :userid and stmdbid = :stmdbid")
+            .bind("userid", userId)
+            .bind("stmdbid", seriesId)
+            .mapTo<SeriesState>()
+            .firstOrNull()
     }
 
     override fun getWatchedEpisodeList(userId: Int?, stmdbid: Int?): List<Episode> {
