@@ -1,6 +1,6 @@
 package com.example.cinescope.service.dtos
 
-data class PopularDto(
+data class ContentAPIDto(
     val page: Int,
     val results: List<Results>,
     val total_results: Int,

@@ -37,7 +37,7 @@ object Series{
 
 object Searches{
     const val MOVIE_DETAILS = "/api_movies/{id}"                                    // Search Movie details on external API
-    const val SEARCH_QUERIE = "/search/{query}"                                     // Search input on external API
+    const val SEARCH_QUERY = "/search/{query}"                                      // Search input on external API
     const val SERIE_DETAILS = "/api_series/{id}"                                    // Search Serie details on external API
     const val SEASON_DETAILS = "/api_series/{id}/season/{seasonnum}"                // Search season details on external API
     const val EPISODE_DETAILS = "/api_series/{id}/season/{seasonnum}/ep/{epnum}"    // Search episode details on external API
