@@ -2,6 +2,7 @@ package pt.isel.ps.cinescope.services
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.cinescope.domain.*
+import pt.isel.ps.cinescope.domain.Result
 import pt.isel.ps.cinescope.utils.TmdbService
 
 //TODO serieDetails/MovieDetails permitir null object ou lancar exception?
@@ -13,7 +14,10 @@ class SearchServices(val tmdbServices: TmdbService) {
     fun searchByQuery(input: String?, page: Int?): Search? {
         val p = page ?: 1
         if (input.isNullOrBlank()) return null
-        return tmdbServices.fetchQuery(input, p)
+        val res = tmdbServices.fetchQuery(input, p) ?: return null
+        val filter = res.results?.filter { r -> r.media_type == "tv" || r.media_type == "movie" }?.toTypedArray() ?: emptyArray()
+        val diff = (res.results?.size)?.minus(filter.size) ?: 0
+        return Search(res.page, filter, res.total_results?.minus(diff), res.total_pages)
     }
 
     fun movieDetails(id: Int?): MovieDetailsOutput?{
