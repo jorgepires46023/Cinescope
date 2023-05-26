@@ -26,12 +26,13 @@ data class MovieDetailsOutput(
 )
 
 data class SeriesDetails(
-    val created_by: Array<Creator>?,
+    val overview: String?,
     val id: Int?,
     val name: String?,
     val seasons: Array<Seasons>?,
     val status: String?,
-    val poster_path: String?
+    val poster_path: String?,
+    val backdrop_path: String?
 )
 
 data class SeriesDetailsOutput(
