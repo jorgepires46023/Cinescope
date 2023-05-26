@@ -34,14 +34,17 @@ class SearchServices(val tmdbServices: TmdbService) {
         val externalIds = tmdbServices.getSeriesExternalId(id) ?: return null
         val watchProviders = tmdbServices.getSeriesWatchProviders(id) ?: return null
         val images = tmdbServices.getSerieImages(id) ?: return null
-        val image = images.backdrops.first { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) }
-        return SeriesDetailsOutput(SeriesDetails(seriesDetails.overview, seriesDetails.id, seriesDetails.name, seriesDetails.seasons, seriesDetails.status, seriesDetails.poster_path, image.file_path),
+        val image = images.backdrops.first { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) } //TODO fix !!
+        return SeriesDetailsOutput(
+            SeriesDetails(seriesDetails.overview, seriesDetails.id, seriesDetails.name, seriesDetails.seasons, seriesDetails.status, seriesDetails.poster_path, image.file_path),
             watchProviders, externalIds)
     }
 
-    fun seasonDetails(id: Int?, seasonNum: Int?): SeasonDetails?{
+    fun seasonDetails(id: Int?, seasonNum: Int?): SeasonDetailsOutput?{
         if(id == null || seasonNum == null) return null
-        return tmdbServices.getSeasonDetails(id, seasonNum)
+        val seasonDetails = tmdbServices.getSeasonDetails(id, seasonNum) ?: return null
+        val watchProviders = tmdbServices.getSeasonWatchProviders(id, seasonNum) ?: return null
+        return SeasonDetailsOutput(seasonDetails, watchProviders)
     }
 
     fun episodeDetails(id: Int?, seasonNum: Int?, epNum: Int?): EpisodeDetailOutput?{

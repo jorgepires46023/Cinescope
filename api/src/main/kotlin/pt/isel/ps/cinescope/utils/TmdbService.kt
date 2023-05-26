@@ -38,11 +38,14 @@ class TmdbService {
     fun getSeasonDetails(sid: Int, seasonNum: Int) =
         fetch("tv/$sid/season/$seasonNum?$TMDB_API_KEY").bodyToMono<SeasonDetails>().block()
 
+    fun getSeriesWatchProviders(sid: Int) =
+        fetch("tv/$sid/watch/providers?$TMDB_API_KEY").bodyToMono<WatchProviders>().block()
+
     fun getEpisodeDetails(sid: Int, seasonNum: Int, epNum: Int) =
         fetch("tv/$sid/season/$seasonNum/episode/$epNum?$TMDB_API_KEY").bodyToMono<EpisodeDetails>().block()
 
-    fun getSeriesWatchProviders(sid: Int) =
-        fetch("tv/$sid/watch/providers?$TMDB_API_KEY").bodyToMono<WatchProviders>().block()
+    fun getSeasonWatchProviders(sid: Int, season: Int) =
+        fetch("/tv/$sid/season/$season/watch/providers?$TMDB_API_KEY").bodyToMono<WatchProviders>().block()
 
     fun getSeriesExternalId(sid: Int) =
         fetch("tv/$sid/external_ids?$TMDB_API_KEY").bodyToMono<ExternalIds>().block()

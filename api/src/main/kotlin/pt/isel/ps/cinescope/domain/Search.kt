@@ -41,6 +41,11 @@ data class SeriesDetailsOutput(
     val externalIds: ExternalIds?
 )
 
+data class SeasonDetailsOutput(
+    val seasonDetails: SeasonDetails,
+    val watchProviders: WatchProviders,
+)
+
 data class EpisodeDetailOutput(
     val episodeDetails: EpisodeDetails,
     val externalIds: ExternalIds?
@@ -66,4 +71,4 @@ data class CountriesInfo(@JsonProperty("PT") val pt: CountryProviders?) //TODO o
 
 data class CountryProviders(val link: String?, val flatrate: Array<ProviderInfo>?, val rent: Array<ProviderInfo>?, val buy: Array<ProviderInfo>?)
 
-data class ProviderInfo(val display_priority: Int?, val provider_name: String?)
+data class ProviderInfo(val logo_path: String?, val display_priority: Int?, val provider_name: String?)
