@@ -1166,10 +1166,6 @@ components:
     SerieDetails:
       type: object
       properties:
-        created_by:
-          type: array
-          items:
-            $ref: '#/components/schemas/Creator'
         id:
           type: integer
         name:
@@ -1209,6 +1205,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EpisodeDetails'
+        watchProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/WatchProviders'
         externalIds:
           $ref: '#/components/schemas/ExternalIds'
     EpisodeDetails:
