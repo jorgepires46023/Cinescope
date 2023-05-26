@@ -43,7 +43,7 @@ data class SeriesDetailsOutput(
 
 data class SeasonDetailsOutput(
     val seasonDetails: SeasonDetails,
-    val watchProviders: WatchProviders,
+    val watchProviders: WatchProviders
 )
 
 data class EpisodeDetailOutput(

@@ -1178,13 +1178,6 @@ components:
           type: string
         poster_path:
           type: string
-    Creator:
-      type: object
-      properties:
-        name:
-          type: string
-        profile_path:
-          type: string
     Seasons:
       type: object
       properties:
@@ -1199,18 +1192,23 @@ components:
     SeasonResponse:
       type: object
       properties:
-        air_date:
-          type: string
-        episodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/EpisodeDetails'
+        seasonDetails:
+          $ref: '#/components/schemas/SeasonDetails'
         watchProviders:
           type: array
           items:
             $ref: '#/components/schemas/WatchProviders'
-        externalIds:
-          $ref: '#/components/schemas/ExternalIds'
+    SeasonDetails:
+      type: object
+      properties:
+        air_date:
+          type: string
+        seasonNumber:
+          type: integer
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/EpisodeDetails'
     EpisodeDetails:
       type: object
       properties:
