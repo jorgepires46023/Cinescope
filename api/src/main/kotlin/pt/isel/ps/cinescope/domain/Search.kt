@@ -50,6 +50,10 @@ data class ExternalIds(val imdb_id: String?, val facebook_id: String?, val twitt
 
 data class Creator(val name: String?, val profile_path: String?)
 
+data class ImagesResponse(val backdrops: Array<Image>, val id: Int?)
+
+data class Image(val height: Int?, val width: Int?, val file_path: String?)
+
 data class Seasons(val episode_count: Int?, val id: Int?, val name: String?, val season_number: Int?)
 
 data class SeasonDetails(val air_date: String?, val episodes: Array<EpisodeDetails>?, val season_number: Int?)

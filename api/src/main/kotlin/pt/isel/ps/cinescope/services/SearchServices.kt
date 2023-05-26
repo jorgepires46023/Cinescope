@@ -33,7 +33,10 @@ class SearchServices(val tmdbServices: TmdbService) {
         val seriesDetails = tmdbServices.getSerieDetails(id) ?: return null
         val externalIds = tmdbServices.getSeriesExternalId(id) ?: return null
         val watchProviders = tmdbServices.getSeriesWatchProviders(id) ?: return null
-        return SeriesDetailsOutput(seriesDetails, watchProviders, externalIds)
+        val images = tmdbServices.getSerieImages(id) ?: return null
+        val image = images.backdrops.first { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) }
+        return SeriesDetailsOutput(SeriesDetails(seriesDetails.overview, seriesDetails.id, seriesDetails.name, seriesDetails.seasons, seriesDetails.status, seriesDetails.poster_path, image.file_path),
+            watchProviders, externalIds)
     }
 
     fun seasonDetails(id: Int?, seasonNum: Int?): SeasonDetails?{
