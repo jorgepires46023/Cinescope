@@ -1124,8 +1124,6 @@ components:
     WatchProviderDetails:
       type: object
       properties:
-        link:
-          type: string
         flatrate:
           type: array
           items:
@@ -1141,8 +1139,8 @@ components:
     ProviderInfo:
       type: object
       properties:
-        display_priority:
-          type: integer
+        logo_path:
+          type: string
         provider_name:
           type: string
     ExternalIds:

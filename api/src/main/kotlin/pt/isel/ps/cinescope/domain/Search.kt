@@ -69,6 +69,6 @@ data class WatchProviders(val id: Int?, val results: CountriesInfo?)
 
 data class CountriesInfo(@JsonProperty("PT") val pt: CountryProviders?) //TODO outros paises
 
-data class CountryProviders(val link: String?, val flatrate: Array<ProviderInfo>?, val rent: Array<ProviderInfo>?, val buy: Array<ProviderInfo>?)
+data class CountryProviders(val flatrate: Array<ProviderInfo>?, val rent: Array<ProviderInfo>?, val buy: Array<ProviderInfo>?)
 
-data class ProviderInfo(val logo_path: String?, val display_priority: Int?, val provider_name: String?)
+data class ProviderInfo(val logo_path: String?, val provider_name: String?)

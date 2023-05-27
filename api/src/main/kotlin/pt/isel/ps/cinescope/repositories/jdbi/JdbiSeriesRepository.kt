@@ -126,11 +126,12 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .execute()
     }
 
-    override fun getWatchedEpList(eplId: Int): List<Episode> {
+    override fun getWatchedEpList(epLId: Int): List<Episode> {
         return handle.createQuery("select wel.epimdbid as imdbId, ed.stmdbid as seriesId, name, image as img, season, episode " +
                     "from cinescope.watchedepisodelist wel inner join cinescope.episodesdata ed " +
-                    "on ed.epimdbid = wel.epimdbid where eplid = :eplid")
-            .bind("eplid", eplId)
+                    "on ed.epimdbid = wel.epimdbid where eplid = :eplid" +
+                    " order by episode asc")
+            .bind("eplid", epLId)
             .mapTo(Episode::class.java)
             .list()
     }
