@@ -49,7 +49,7 @@ export async function deleteStateFormMovie(movieId: number, token: string) {
 }
 
 export async function getMoviesLists(token: string) {
-    return await fetch(`${DOMAIN_URL}/movies/list`, {
+    return await fetch(`${DOMAIN_URL}/movies/lists`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

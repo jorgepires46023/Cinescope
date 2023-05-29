@@ -3,55 +3,51 @@ import { NavBar } from "./navbar/Navbar"
 import { Link, useNavigate } from "react-router-dom"
 import { login } from "../RequestsHelpers/UserRequestsHelper"
 import { useContext, useState } from "react"
+import { UserContext } from "./UserProvider"
+import { EMPTY_LOGIN_INFO, LoginInfo } from "../utils/Types"
 
 export function Login() {
-    //const userInfo = useContext(UserContext)
-    const [User, setUser] = useState({
-        email: "",
-        password: "",
-    })
+    const userInfo = useContext(UserContext)
+
+    const [User, setUser] = useState<LoginInfo>(EMPTY_LOGIN_INFO)
+
     const [errMsg, setErrMsg] = useState(true);
+
     const navigate = useNavigate()
-    
+
     //useEffect(() => { }, [errMsg])  //If failed login we show message error
 
     async function handleLogin(ev: React.FormEvent<HTMLFormElement>) {
         ev.preventDefault()
 
-        const user = login(User.email, User.password)
+        const user = await login(User.email, User.password)
 
         if (user != undefined) {
-            //userInfo.setToken(user.token)
-            //userInfo.setUserId(user.id)
-            console.log("SECCESS")
-            navigate("/")
+            userInfo.setToken(user.token)
+            userInfo.setUserId(user.id)
+            navigate("/home")
         } else {
             setErrMsg(false)
         }
-
     }
-    
+
     function handleChange(ev: React.FormEvent<HTMLInputElement>) {
         const id = ev.currentTarget.id
         setUser({ ...User, [id]: ev.currentTarget.value })
     }
 
     return (
-
         <div>
-            <NavBar />
             <div className="centerDiv">
                 <div className="titleDiv">
                     <h1 className="titleClass">Login</h1>
                 </div>
-                <form className="cardform" onSubmit={handleLogin}>
-                    {/*<label htmlFor="email"> E-mail</label>*/}
+                <form className="cardForm" onSubmit={handleLogin}>
                     <div className="inputDiv">
-                        <input type="text" id="email" placeholder="E-mail" className="emailInput" onChange={handleChange} value={User.email}/><br />
+                        <input type="text" id="email" placeholder="E-mail" className="emailInput" onChange={handleChange} value={User.email} /><br />
                     </div>
-                    {/*<label htmlFor="password"> Password</label>*/}
                     <div className="inputDiv">
-                        <input type="password" id="password" placeholder="Password" className="passwdInput" onChange={handleChange} value={User.password}/><br></br><br />
+                        <input type="password" id="password" placeholder="Password" className="passwdInput" onChange={handleChange} value={User.password} /><br></br><br />
                     </div>
                     <input type="submit" className="submitButton" value="Login" />
                     <div className="hrDiv">

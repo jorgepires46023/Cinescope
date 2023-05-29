@@ -1,16 +1,12 @@
 import * as React from "react"
-import { NavBar } from "./navbar/Navbar"
 import { createUser } from "../RequestsHelpers/UserRequestsHelper"
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { EMPTY_NEW_USER_INFO, NewUserInfo } from "../utils/Types"
 
 export function CreateUser() {
 
-    const [newUser, setNewUser] = useState({
-        username: "",
-        email: "",
-        password: "",
-    })
+    const [newUser, setNewUser] = useState<NewUserInfo>(EMPTY_NEW_USER_INFO)
 
     const [errMsg, setErrMsg] = useState(true);
     const navigate = useNavigate()
@@ -40,21 +36,19 @@ export function CreateUser() {
     //TODO criar algo para mostrar erros
     return (
         <div >
-            <NavBar />
             <div className="centerDiv">
                 <div className="titleDiv">
-                     <h1 className="titleClass">Create a New User</h1>
+                    <h1 className="titleClass">Create a New User</h1>
                 </div>
-                <form className="cardform" onSubmit={handleCreateUser}>
-                    {/*<label htmlFor="username" className="label"> Name: </label>*/}
+                <form className="cardForm" onSubmit={handleCreateUser}>
                     <div className="inputDiv">
                         <input type="text" id="username" placeholder="Name" onChange={handleChange} value={newUser.username} className="nameInput" /><br />
                     </div>
-                    {/*<label htmlFor="email" className="label"> E-mail: </label>*/}
+                    
                     <div className="inputDiv">
                         <input type="email" id="email" placeholder="E-mail" onChange={handleChange} value={newUser.email} className="emailInput" /><br />
                     </div>
-                    {/*<label htmlFor="password" className="label"> Password: </label>*/}
+
                     <div className="inputDiv">
                         <input type="password" id="password" placeholder="Password" onChange={handleChange} value={newUser.password} className="passwdInput" /><br></br><br />
                     </div>

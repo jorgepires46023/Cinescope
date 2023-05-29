@@ -1,44 +1,15 @@
 import * as React from "react"
-import { Outlet, useSearchParams } from "react-router-dom"
-import { NavBar } from "./navbar/Navbar"
+import { useNavigate } from "react-router-dom"
 import { getPopularMovies, getPopularSeries } from "../RequestsHelpers/SearchRequestsHelper"
 import { useEffect, useState } from "react"
-
-type ListElem = {
-    poster_path: string,
-    id: number,
-    title: string,
-    name: string | null,
-    media_type: string,
-    popularity: number
-}
-
-type List = {
-    page: number,
-    results: [ListElem] | [],
-    total_results: number,
-    total_pages: number
-}
-
+import { EMPTY_LIST, List } from "../utils/Types"
 
 export function Homepage() {
 
-    const [moviesList, setMoviesList] = useState<List>(
-        {
-            page: 0,
-            results: [],
-            total_results: 0,
-            total_pages: 0
-        }
-    )
-    const [seriesList, setSeriesList] = useState<List>(
-        {
-            page: 0,
-            results: [],
-            total_results: 0,
-            total_pages: 0
-        }
-    )
+    const navigate = useNavigate()
+
+    const [moviesList, setMoviesList] = useState<List>(EMPTY_LIST)
+    const [seriesList, setSeriesList] = useState<List>(EMPTY_LIST)
 
     async function getPopularMoviesInfo() {
         const movies = await getPopularMovies(1)
@@ -54,23 +25,27 @@ export function Homepage() {
         getPopularMoviesInfo()
         getPopularSeriesInfo()
     }, [])
-    console.log("Series => ")
-    console.log(seriesList)
-    console.log("Movies => ")
-    console.log(moviesList)
+    
+    function getMovie(movieId: number) {
+        navigate(`/movies/${movieId}`, )
+    }
+
+    function getSerie(serieId: number) {
+        navigate(`/series/${serieId}`)
+    }
+    
     return (
         <div className="pageDiv">
-            {/*<div className="titleDiv">
-                <h1>Cinescope</h1>
-    </div>*/}
-
             <div className="showDiv">
                 <h2 className="h2ClassGrid">Popular Movies</h2>
                 
                 <div className="popularContentGrid">
                     {moviesList.results.map(movie =>
-                        <div className="cardContent">
+                        <div className="cardContent" onClick={() => getMovie(movie.id)} key={movie.id}>
                              <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} className="imgPopular" />
+                             <div className="cardOverlay">
+                                <p>{movie.title}</p>
+                             </div>
                         </div>
                     )}
                 </div>
@@ -80,10 +55,13 @@ export function Homepage() {
             <div className="showDiv">
                 <h2 className="h2ClassGrid">Popular Series</h2>
                 
-                <div className="popularContentGrid">
+                <div className="popularContentGrid" >
                     {seriesList.results.map(series =>
-                        <div className="cardContent">
+                        <div className="cardContent" onClick={() => getSerie(series.id)} key={series.id}>
                             <img src={`https://image.tmdb.org/t/p/w500${series.poster_path}`} alt={series.title} className="imgPopular" />
+                            <div className="cardOverlay">
+                                <p>{series.name}</p>
+                             </div>
                         </div>
                     )}
                 </div>

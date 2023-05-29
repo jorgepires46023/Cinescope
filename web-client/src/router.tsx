@@ -5,18 +5,13 @@ import { Homepage } from './components/Homepage';
 import { Login } from './components/Login';
 import { NavBar } from './components/navbar/Navbar';
 import { useEffect } from 'react';
-
-function DashboardMessages() {
-    return (
-        <div> <h1>DashBoardMessages</h1> </div>
-    )
-}
-
-function DashboardTasks() {
-    return (
-        <div> <h1>DashBoardTasks</h1> </div>
-    )
-}
+import { MoviesDetails } from './components/MoviesDetails';
+import { SeriesDetails } from './components/SeriesDetails';
+import { Movies } from './components/Movies';
+import { Series } from './components/Series';
+import { SearchResults } from './components/SearchResults';
+import { Profile } from './components/Profile';
+import { Logout } from './components/Logout';
 
 const routes = createBrowserRouter([
     {
@@ -25,40 +20,63 @@ const routes = createBrowserRouter([
         "children": [
             {
                 "path": "/home",
-                "element": <Homepage />,
+                "element": <Homepage />
+            },
+            {
+                "path": "/login",
+                "element": <Login />
+            },
+            {
+                "path": "/logout",
+                "element": <Logout />
+            },
+            {
+                "path": "/createuser",
+                "element": <CreateUser />
+            },
+            {
+                "path": "/movies",
+                "element": <Movies />,
                 "children": [
-                    {
-                        "path": "tasks",
-                        "element": <DashboardTasks />
-                    },
-                    {
-                        "path": "messages",
-                        "element": <DashboardMessages />
-                    }
+                    
                 ]
+            },
+            {
+                "path": "/movies/:movieId",
+                "element": <MoviesDetails />
+            },
+            {
+                "path": "/series",
+                "element": <Series />,
+                "children": [
+                ]
+            },
+            {
+                "path": "/series/:serieId",
+                "element": <SeriesDetails />
+            },
+            {
+                "path": "/search/:query",
+                "element": <SearchResults />
+            },
+            {
+                "path": "/profile",
+                "element": <Profile />
             }
         ]
-    },
-    {
-        "path": "/login",
-        "element": <Login />
-    },
-    {
-        "path": "/createuser",
-        "element": <CreateUser />
     }
 ])
 
 function DefaultPage() {//Component to guarantee that every Webage renders navbar
     const navigate = useNavigate()
-    useEffect(() => { 
+    useEffect(() => {
         navigate("home")
     }, [])
-    
+
     return (
         <div className='firstDiv'>
             <NavBar />
-            <Outlet/>
+            <Outlet />
         </div>
     )
 }
