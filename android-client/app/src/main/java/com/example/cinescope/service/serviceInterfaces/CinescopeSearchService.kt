@@ -7,9 +7,9 @@ import com.example.cinescope.domain.Series
 interface CinescopeSearchService {
     suspend fun searchByQuery(searchQuery:String): CompleteSearch
 
-    suspend fun movieDetails()
+    suspend fun movieDetails(id: Int)
 
-    suspend fun seriesDetails()
+    suspend fun seriesDetails(id: Int)
 
     suspend fun episodeDetails()
 
