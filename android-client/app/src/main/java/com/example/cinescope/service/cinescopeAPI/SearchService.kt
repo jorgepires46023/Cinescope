@@ -34,11 +34,11 @@ class SearchService(
         }
     }
 
-    override suspend fun movieDetails() {
+    override suspend fun movieDetails(id: Int) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun seriesDetails() {
+    override suspend fun seriesDetails(id: Int) {
         TODO("Not yet implemented")
     }
 
