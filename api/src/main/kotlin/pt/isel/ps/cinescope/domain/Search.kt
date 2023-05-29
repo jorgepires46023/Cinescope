@@ -13,6 +13,7 @@ data class MovieDetails(
     val original_title: String?,
     val overview: String?,
     val poster_path: String?,
+    val backdrop_path: String?,
     val release_date: String?,
     val runtime: Int?,
     val status: String?,

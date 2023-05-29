@@ -25,7 +25,10 @@ class SearchServices(val tmdbServices: TmdbService) {
         val movieDetails = tmdbServices.getMovieDetails(id) ?: return null
         val externalIds = tmdbServices.getMoviesExternalId(id) ?: return null
         val watchProviders = tmdbServices.getMoviesWatchProviders(id) ?: return null
-        return MovieDetailsOutput(movieDetails, watchProviders, externalIds)
+        val images = tmdbServices.getMovieImages(id) ?: return null
+        val image = images.backdrops.first { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) } //TODO fix !!
+        return MovieDetailsOutput(MovieDetails(movieDetails.id, movieDetails.imdb_id, movieDetails.original_title, movieDetails.overview, movieDetails.poster_path, image.file_path, movieDetails.release_date, movieDetails.runtime, movieDetails.status, movieDetails.title),
+            watchProviders, externalIds)
     }
 
     fun serieDetails(id: Int?): SeriesDetailsOutput?{
@@ -33,7 +36,7 @@ class SearchServices(val tmdbServices: TmdbService) {
         val seriesDetails = tmdbServices.getSerieDetails(id) ?: return null
         val externalIds = tmdbServices.getSeriesExternalId(id) ?: return null
         val watchProviders = tmdbServices.getSeriesWatchProviders(id) ?: return null
-        val images = tmdbServices.getSerieImages(id) ?: return null
+        val images = tmdbServices.getMovieImages(id) ?: return null
         val image = images.backdrops.first { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) } //TODO fix !!
         return SeriesDetailsOutput(
             SeriesDetails(seriesDetails.overview, seriesDetails.id, seriesDetails.name, seriesDetails.seasons, seriesDetails.status, seriesDetails.poster_path, image.file_path),

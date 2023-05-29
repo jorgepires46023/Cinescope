@@ -35,6 +35,9 @@ class TmdbService {
     fun getSerieImages(sid: Int) =
         fetch("/tv/$sid/images?$TMDB_API_KEY").bodyToMono<ImagesResponse>().block()
 
+    fun getMovieImages(sid: Int) =
+        fetch("/movie/$sid/images?$TMDB_API_KEY").bodyToMono<ImagesResponse>().block()
+
     fun getSeasonDetails(sid: Int, seasonNum: Int) =
         fetch("tv/$sid/season/$seasonNum?$TMDB_API_KEY").bodyToMono<SeasonDetails>().block()
 
