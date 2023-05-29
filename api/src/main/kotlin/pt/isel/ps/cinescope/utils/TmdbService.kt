@@ -1,13 +1,15 @@
 package pt.isel.ps.cinescope.utils
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.codec.ServerCodecConfigurer
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.config.WebFluxConfigurer
+import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import pt.isel.ps.cinescope.domain.*
-import java.util.Objects
+
 
 const val TMDB_API_KEY = "api_key=1f54ddc9f7ff5ecab4807e013dddc65b"
 const val TMDB_URL = "https://api.themoviedb.org/3/"
@@ -15,16 +17,18 @@ const val TMDB_URL = "https://api.themoviedb.org/3/"
 @Service
 class TmdbService {
 
-    @Configuration
-    class WebFluxConfiguration: WebFluxConfigurer{
-        @Override
-        override fun configureHttpMessageCodecs(configurer: ServerCodecConfigurer) {
-            configurer.defaultCodecs().maxInMemorySize(500 * 1024)
-        }
-    }
+    val client = WebClient.builder()
+        .baseUrl(TMDB_URL)
+        .exchangeStrategies(
+            ExchangeStrategies.builder().codecs{
+                it.defaultCodecs().maxInMemorySize(1000000)
+            }.build()
+        )
+        .build()
+
+
 
     private fun fetch(path: String): WebClient.ResponseSpec{
-        val client = WebClient.create(TMDB_URL)
         return client.get().uri(path).retrieve()
     }
 
