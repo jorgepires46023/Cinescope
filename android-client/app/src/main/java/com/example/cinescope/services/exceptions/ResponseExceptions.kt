@@ -1,4 +1,4 @@
-package com.example.cinescope.service.exceptions
+package com.example.cinescope.services.exceptions
 
 import okhttp3.Response
 

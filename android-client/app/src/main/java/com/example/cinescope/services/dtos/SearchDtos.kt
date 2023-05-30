@@ -1,4 +1,4 @@
-package com.example.cinescope.service.dtos
+package com.example.cinescope.services.dtos
 
 data class ContentAPIDto(
     val page: Int,
@@ -7,19 +7,32 @@ data class ContentAPIDto(
     val total_pages: Int
 )
 
-data class MovieDetailsDto(
+data class MovieInfo(
     val movieDetails: MovieDetails,
     val watchProviders: WatchProviders,
     val externalIds: ExternalIds
 )
 
-data class SeriesDetailsDto(
+data class SeriesInfo(
     val seriesDetails: SeriesDetails,
     val watchProviders: WatchProviders,
     val externalIds: ExternalIds
 )
 
+data class EpisodeInfo(
+    val episodeDetails: EpisodeDetails,
+    val externalIds: ExternalIds
+)
+
 //******************************** AUX Classes to Dto **********************************************
+data class EpisodeDetails(
+    val air_date: String,
+    val episode_number: Int,
+    val id: Int,
+    val name: String,
+    val overview: String,
+    val stil_path: String
+)
 data class Results(
     val poster_path: String,
     val id: Int,

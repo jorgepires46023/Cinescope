@@ -18,14 +18,15 @@ import com.example.cinescope.cinescopeservicetests.mockdata.series1
 import com.example.cinescope.cinescopeservicetests.mockdata.wrongObjToMap
 import com.example.cinescope.domain.Movie
 import com.example.cinescope.domain.Series
-import com.example.cinescope.service.cinescopeAPI.SearchService
-import com.example.cinescope.service.exceptions.UnexpectedResponseException
-import com.example.cinescope.service.exceptions.UnsuccessfulResponseException
+import com.example.cinescope.services.cinescopeAPI.SearchService
+import com.example.cinescope.services.exceptions.UnexpectedResponseException
+import com.example.cinescope.services.exceptions.UnsuccessfulResponseException
 import com.example.cinescope.testutils.MockWebServerRule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import org.junit.Assert
 import org.junit.Rule
@@ -34,6 +35,9 @@ import org.junit.Test
 class SearchServiceTests {
     @get:Rule
     val testRule = MockWebServerRule()
+
+    val httpClient: OkHttpClient = OkHttpClient()
+    val gson: Gson= Gson()
 
     private val jsonFormatter: Gson = GsonBuilder().create()
 
@@ -52,7 +56,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( popMovieResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.getPopularMovies()
@@ -69,7 +73,7 @@ class SearchServiceTests {
             mockServer.enqueue(response = MockResponse().setResponseCode(404)
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.getPopularMovies()
@@ -85,7 +89,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.getPopularMovies()
@@ -101,7 +105,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.getPopularMovies()
@@ -121,7 +125,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( popSeriesResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.getPopularSeries()
@@ -138,7 +142,7 @@ class SearchServiceTests {
             mockServer.enqueue(response = MockResponse().setResponseCode(404)
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.getPopularSeries()
@@ -154,7 +158,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.getPopularSeries()
@@ -170,7 +174,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.getPopularSeries()
@@ -190,7 +194,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( recommendedMovieResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.getMovieRecommendations(movie1.movieId)
@@ -207,7 +211,7 @@ class SearchServiceTests {
             mockServer.enqueue(response = MockResponse().setResponseCode(404)
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.getMovieRecommendations(movie1.movieId)
@@ -223,7 +227,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.getMovieRecommendations(movie1.movieId)
@@ -239,7 +243,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.getMovieRecommendations(movie1.movieId)
@@ -259,7 +263,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( recommendedSeriesResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.getSeriesRecommendations(series1.seriesId)
@@ -276,7 +280,7 @@ class SearchServiceTests {
             mockServer.enqueue(response = MockResponse().setResponseCode(404)
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.getSeriesRecommendations(series1.seriesId)
@@ -292,7 +296,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.getSeriesRecommendations(series1.seriesId)
@@ -308,7 +312,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.getSeriesRecommendations(series1.seriesId)
@@ -328,7 +332,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( searchByQueryResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.searchByQuery("movieNameExample")
@@ -345,7 +349,7 @@ class SearchServiceTests {
             mockServer.enqueue(response = MockResponse().setResponseCode(404)
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.searchByQuery("movieNameExample")
@@ -361,7 +365,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             searchService.searchByQuery("movieNameExample")
@@ -377,7 +381,7 @@ class SearchServiceTests {
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 
-            val searchService = SearchService(mockServer.url("/").toUrl())
+            val searchService = SearchService(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
             val actual = searchService.searchByQuery("movieNameExample")

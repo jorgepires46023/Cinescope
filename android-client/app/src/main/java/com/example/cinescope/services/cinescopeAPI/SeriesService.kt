@@ -1,9 +1,17 @@
-package com.example.cinescope.service.cinescopeAPI
+package com.example.cinescope.services.cinescopeAPI
 
 import com.example.cinescope.domain.Series
-import com.example.cinescope.service.serviceInterfaces.CinescopeSeriesService
+import com.example.cinescope.services.serviceInterfaces.CinescopeMoviesService
+import com.example.cinescope.services.serviceInterfaces.CinescopeSeriesService
+import com.google.gson.Gson
+import okhttp3.OkHttpClient
+import java.net.URL
 
-class SeriesService: CinescopeSeriesService {
+class SeriesService(
+    private val cinescopeURL: URL,
+    gson: Gson,
+    httpClient: OkHttpClient
+) : CinescopeSeriesService, CinescopeService(gson, httpClient) {
     override suspend fun addSeriesToList(seriesId: Int, listId: Int): Series {
         TODO("Not yet implemented")
     }

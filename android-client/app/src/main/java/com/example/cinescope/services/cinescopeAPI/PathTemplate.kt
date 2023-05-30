@@ -1,4 +1,4 @@
-package com.example.cinescope.service.cinescopeAPI
+package com.example.cinescope.services.cinescopeAPI
 
 object Users {
     const val CREATE_USER = "/users"                                            // Register a new user.

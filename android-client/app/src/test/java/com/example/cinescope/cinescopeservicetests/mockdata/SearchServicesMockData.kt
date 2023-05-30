@@ -4,8 +4,8 @@ import com.example.cinescope.domain.CompleteSearch
 import com.example.cinescope.domain.MediaType
 import com.example.cinescope.domain.Movie
 import com.example.cinescope.domain.Series
-import com.example.cinescope.service.dtos.ContentAPIDto
-import com.example.cinescope.service.dtos.Results
+import com.example.cinescope.services.dtos.ContentAPIDto
+import com.example.cinescope.services.dtos.Results
 
 internal val movie1 = Movie(1, "Movie1", "testImg1")
 internal val movie2 = Movie(2, "Movie2", "testImg2")

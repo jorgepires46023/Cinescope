@@ -1,7 +1,8 @@
-package com.example.cinescope.service.cinescopeAPI
+package com.example.cinescope.services.cinescopeAPI
 
-import com.example.cinescope.service.exceptions.UnexpectedResponseException
-import com.example.cinescope.service.exceptions.UnsuccessfulResponseException
+import com.example.cinescope.services.MethodHTTP
+import com.example.cinescope.services.exceptions.UnexpectedResponseException
+import com.example.cinescope.services.exceptions.UnsuccessfulResponseException
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import okhttp3.MediaType.Companion.toMediaType
@@ -13,29 +14,23 @@ import okhttp3.internal.closeQuietly
 import java.lang.reflect.Type
 import java.net.URL
 
-abstract class CinescopeService(_cinescopeURL: URL){
-    internal var cinescopeURL: URL
-    internal val httpClient: OkHttpClient = OkHttpClient()
-    private val gson: Gson = Gson()
+abstract class CinescopeService(
+    private val _gson: Gson,
+    private val _httpClient: OkHttpClient) {
 
-    init {
-        this.cinescopeURL=_cinescopeURL
-    }
+    private val gson : Gson = this._gson
+    val httpClient: OkHttpClient = this._httpClient
 
     private val JsonMediaType = ("application/json").toMediaType()
 
-    enum class Method(val method: String) {
-        GET("GET"), POST("POST"), PUT("PUT"), DELETE("DELETE")
-    }
-
     /** Builds a request **/
     internal fun buildRequest(
-        url: URL, method: Method = Method.GET,
+        url: URL, method: MethodHTTP = MethodHTTP.GET,
         body: RequestBody? = null, token: String? = null
     ) =
         Request.Builder()
             .url(url)
-            .method(method.method, body)
+            .method(method.type, body)
             .let {
                 if (token == null) it
                 else it.header("Authorization", "Bearer $token")

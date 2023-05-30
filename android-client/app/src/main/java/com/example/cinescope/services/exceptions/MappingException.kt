@@ -1,4 +1,4 @@
-package com.example.cinescope.service.exceptions
+package com.example.cinescope.services.exceptions
 
 abstract class MappingException(override val message: String) : Exception()
 

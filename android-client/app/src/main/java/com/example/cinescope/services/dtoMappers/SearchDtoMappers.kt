@@ -1,18 +1,18 @@
-package com.example.cinescope.service.dtoMappers
+package com.example.cinescope.services.dtoMappers
 
 import com.example.cinescope.domain.CompleteSearch
 import com.example.cinescope.domain.MediaContent
 import com.example.cinescope.domain.MediaType
 import com.example.cinescope.domain.Movie
 import com.example.cinescope.domain.Series
-import com.example.cinescope.service.dtos.ContentAPIDto
-import com.example.cinescope.service.dtos.Results
+import com.example.cinescope.services.dtos.ContentAPIDto
+import com.example.cinescope.services.dtos.Results
 
 fun ContentAPIDto.toMovies(): List<Movie> {
     val moviesList = mutableListOf<Movie>()
     this.results.forEach{
         val content = checkAndAdd(it)
-        if(content is Movie) moviesList.add(content as Movie)
+        if(content is Movie) moviesList.add(content)
     }
     return moviesList
 }
