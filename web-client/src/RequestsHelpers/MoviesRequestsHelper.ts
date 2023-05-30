@@ -105,3 +105,14 @@ export async function deleteMovieFromList(listId: number, movieId: number, token
         })
         .then(res => res.json())
 }
+
+export async function getMoviesUserData(movieId: number, token: string) {
+    return await fetch(`${DOMAIN_URL}/movies/${movieId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization":`Bearer ${token}`
+        }
+        })
+        .then(res => res.json())
+}

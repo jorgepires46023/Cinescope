@@ -145,9 +145,11 @@ export type UserListsElems = {
     name: string
 }
 
-/* export type UserLists = [
-    UserListsElems
-] */
+export type MovieUserData = {
+    id: number,
+    state: string,
+    lists: [UserListsElems]
+}
     
 /*                        Empty Objects                          */ 
 
@@ -297,6 +299,8 @@ export const EMPTY_USER_LISTS_ELEMS: UserListsElems = {
     name: ""
 }
 
-/* export const EMPTY_USER_LISTS: UserLists = [
-    EMPTY_USER_LISTS_ELEMS
-] */
+export const EMPTY_MOVIE_USER_DATA: MovieUserData = {
+    id: 0,
+    state: "",
+    lists: [EMPTY_USER_LISTS_ELEMS]
+}

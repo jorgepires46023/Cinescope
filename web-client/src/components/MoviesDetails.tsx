@@ -2,10 +2,10 @@ import * as React from "react";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getMoviesDetails } from "../RequestsHelpers/SearchRequestsHelper";
-import { EMPTY_MOVIE_DETAILS_RESULTS, EMPTY_PROVIDERS_INFO, EMPTY_USER_LISTS_ELEMS, /* EMPTY_USER_LISTS, */ MovieDetailsResults, ProviderInfo, /* UserLists, */ UserListsElems } from "../utils/Types";
+import { EMPTY_MOVIE_DETAILS_RESULTS, EMPTY_MOVIE_USER_DATA, EMPTY_PROVIDERS_INFO, EMPTY_USER_LISTS_ELEMS, /* EMPTY_USER_LISTS, */ MovieDetailsResults, MovieUserData, ProviderInfo, /* UserLists, */ UserListsElems } from "../utils/Types";
 import { BACKDROP_IMAGE_DOMAIN, IMAGE_DOMAIN, handleError } from "../utils/Tools";
 import { UserContext } from "./UserProvider";
-import { changeMovieState, deleteStateFormMovie, getMoviesLists } from "../RequestsHelpers/MoviesRequestsHelper";
+import { addMovieToList, changeMovieState, deleteMovieFromList, deleteStateFormMovie, getMoviesListByState, getMoviesLists, getMoviesUserData } from "../RequestsHelpers/MoviesRequestsHelper";
 
 export function MoviesDetails() {
     const userInfo = useContext(UserContext)
@@ -18,17 +18,39 @@ export function MoviesDetails() {
 
     const [showListsDiv, setShowListsDiv] = useState<boolean>(false)
 
-    const [isChecked, setIsChecked] = useState<boolean>(false) 
+    const [isChecked, setIsChecked] = useState<boolean>(false)
+
+    const [movieStateInfo, setMovieStateInfo] = useState<MovieUserData>(EMPTY_MOVIE_USER_DATA)
 
     const { movieId } = useParams()
 
     async function getMovieDetailsInfo() {
         const movieDetails = await getMoviesDetails(+movieId)
-        console.log(movieDetails)
+
         setMovie(movieDetails)
+
         if (movieDetails.watchProviders.results.PT) {
             setShowInfo(movieDetails.watchProviders.results.PT.flatrate)
         }
+
+        if (userInfo.token) {
+            try {
+                const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
+                
+                if (movieStateInfo) {
+                    setMovieStateInfo(movieStateInfo)
+                    const select: HTMLSelectElement = document.querySelector('#showState');
+                    select.options.namedItem(movieStateInfo.state).selected = true
+                }
+            } catch (error) {
+                if (error.status == 404) {
+                    const select: HTMLSelectElement = document.querySelector('#showState')
+                    select.options.namedItem("Add State").selected = true
+                }
+            }
+
+        }
+
     }
 
     useEffect(() => {
@@ -50,10 +72,6 @@ export function MoviesDetails() {
         }
     }
 
-    function addToWatchList(ev) {
-
-    }
-
     async function showUserLists(ev) {
 
         const lists = await getMoviesLists(userInfo.token)
@@ -61,29 +79,55 @@ export function MoviesDetails() {
         setShowLists(lists)
 
         setShowListsDiv(true)
+
+        /* movieStateInfo.lists.map(list => {
+            console.log(list.name)
+            const checkbox = document.getElementById(`${list.name}`) as HTMLInputElement;
+            console.log(checkbox)
+            checkbox.checked = true
+        }
+        ) */
     }
 
-    async function addToPTW() {
+    async function addState(ev) {
+        console.log(ev.currentTarget)
+        const state = ev.currentTarget.value
 
-        if(!isChecked) {
-            await changeMovieState(movie.movieDetails.id, "PTW", userInfo.token)
-            setIsChecked(true)
-        } else {
-            await deleteStateFormMovie(movie.movieDetails.id, userInfo.token)
-            setIsChecked(false)
+        if (state == "PTW") {
+            await changeMovieState(+movieId, "PTW", userInfo.token)
+        }
+        if (state == "Watched") {
+            await changeMovieState(+movieId, "Watched", userInfo.token)
+        }
+
+        if (state == "Add State") {
+            await deleteStateFormMovie(+movieId, userInfo.token)
         }
     }
 
-    function addToList(ev) {
+    async function addToList(ev, listId: number) {
+        const checked = ev.currentTarget.checked
+        if (checked) {
+            await addMovieToList(+movieId, listId, userInfo.token)
+        } else {
+            await deleteMovieFromList(listId, +movieId, userInfo.token)
+           
+        }
+    }
 
-
-
+    function showChecked(listId: number) {
+        const list = movieStateInfo.lists.find(list => list.id === listId)
+        if(list) {
+            return true
+        } else {
+            return false
+        }
     }
 
     return (
         <div className="pageDiv" style={{ backgroundImage: `url(${BACKDROP_IMAGE_DOMAIN}/${movie.movieDetails.backdrop_path})` }}>
             {
-                showListsDiv &&
+                showListsDiv && 
                 <div className="showListsDiv">
                     <div className="listsTitleDiv">
                         <button className="exitLists" onClick={() => setShowListsDiv(false)}> {"<"}</button>
@@ -96,12 +140,13 @@ export function MoviesDetails() {
                             showLists.map(list =>
                                 <div className="showListInfo">
                                     <div className="listInfo">
-                                        <label htmlFor="PTW">{list.name}</label>
-                                        <input id="PTW" name="PTW" type="checkbox" className="checkmarkLists"/>
+                                        <label htmlFor={list.name}>{list.name}</label>
+                                        <input id={list.name} name={list.name} type="checkbox" checked={showChecked(list.id)} onChange={(event) => addToList(event, list.id)} className="checkmarkLists" />
                                     </div>
                                 </div>
                             )
                         }
+                        
                     </div>
                 </div>
             }
@@ -109,9 +154,12 @@ export function MoviesDetails() {
                 <div className="posterDiv">
                     <img src={`${IMAGE_DOMAIN}/${movie.movieDetails.poster_path}`} alt={movie.movieDetails.title} onError={handleError} className="posterImg" />
                     {userInfo.token && <div className="buttonsDiv">
-                        <div className="buttonPTW">
-                            <label htmlFor="PTW">Add to PTW:</label>
-                            <input id="PTW" name="PTW" type="checkbox" className="checkmark" onClick={addToPTW} />
+                        <div className="buttonState">
+                            <select name="show" id="showState" onClick={addState} className="dropdownState">
+                                <option id="Add State" value="Add State" className="selected" selected={false} >Add State</option>
+                                <option id="PTW" value="PTW" className="selected" selected={false}>PTW</option>
+                                <option id="Watched" value="Watched" className="selected" selected={false}>Watched</option>
+                            </select>
                         </div>
                         <button className="buttonList" onClick={showUserLists}>Add to List</button>
                     </div>}
