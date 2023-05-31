@@ -103,9 +103,12 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .execute()
     }
 
-    override fun getEpisodeFromEpData(epId: String?) : Episode?{
-        return handle.createQuery("select epimdbid as imdbId, stmdbid as seriesId, name, image as img, season, episode from cinescope.episodesdata ed where ed.epimdbid = :epId")
-            .bind("epId", epId)
+    override fun getEpisodeFromEpData(sId: Int?, season: Int?, epNumber: Int?) : Episode?{
+        return handle.createQuery("select epimdbid as imdbId, stmdbid as seriesId, name, image as img, season, episode from cinescope.episodesdata ed " +
+                "where ed.stmdbid = :sId and ed.season = :season and ed.episode = :epNumber")
+            .bind("sId", sId)
+            .bind("season", season)
+            .bind("epNumber", epNumber)
             .mapTo(Episode::class.java)
             .firstOrNull()
     }

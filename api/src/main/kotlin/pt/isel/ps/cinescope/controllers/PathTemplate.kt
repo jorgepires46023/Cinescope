@@ -26,8 +26,8 @@ object Series{
     const val CHANGE_STATE = "/series/{id}/state"                               // Change state of serie(PTW/WATCHING/WATCHED)
     const val REMOVE_SERIE_STATE = "/series/{id}/state"                         // Removes state from movie
     const val GET_SERIES_BY_STATE = "/series/state/{state}"                     // Gets all series with state PTW
-    const val ADD_WATCHED_EP = "series/{id}/ep/{epid}"                          // Add episode to list of watched episodes
-    const val REMOVE_WATCHED_EP = "series/{id}/ep/{epid}"                       // Remove episode from list of watched episodes
+    const val ADD_WATCHED_EP = "series/{id}/ep"                                 // Add episode to list of watched episodes
+    const val REMOVE_WATCHED_EP = "series/{id}/season/{season}/ep/{ep}"     // Remove episode from list of watched episodes
     const val GET_WATCHED_EP_LIST = "series/{id}/watchedep"                     // Get watched episodes list from series
     const val GET_SERIES_LISTS = "/series/lists"                                // Gets all lists from user
     const val GET_LIST = "/series/list/{id}"                                    // Gets series list

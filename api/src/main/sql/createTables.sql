@@ -43,7 +43,7 @@ create table cinescope.seriesData (
 );
 
 create table cinescope.episodesData (
-    epimdbid varchar(100) primary key,
+    epimdbid varchar(100) primary key,                  /*check if epimdbid should be pk*/
     stmdbid INT NOT NULL references cinescope.seriesData(stmdbid),
     name varchar(100) NOT NULL,
     image varchar(100) NOT NULL,

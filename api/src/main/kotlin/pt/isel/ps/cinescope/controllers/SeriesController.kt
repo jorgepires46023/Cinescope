@@ -37,8 +37,8 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @PostMapping(Series.ADD_WATCHED_EP)
-    fun addWatchedEpisode(@PathVariable id: Int, @PathVariable epid: String, @RequestBody info: SeriesModel.EpisodeModel, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
-        val episode = seriesServices.addWatchedEpisode(tmdbSeriesId = id, epid,info.episodeNumber, info.seasonNumber, bearer)
+    fun addWatchedEpisode(@PathVariable id: Int, @RequestBody info: SeriesModel.EpisodeModel, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val episode = seriesServices.addWatchedEpisode(tmdbSeriesId = id, info.episodeNumber, info.seasonNumber, bearer)
 
         return ResponseEntity
             .status(200)
@@ -46,8 +46,8 @@ class SeriesController(val seriesServices: SeriesServices) {
     }
 
     @DeleteMapping(Series.REMOVE_WATCHED_EP)
-    fun removeWatchedEpisode(@PathVariable id: Int, @PathVariable epid: String, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
-        val episode = seriesServices.removeWatchedEpisode(seriesId = id, epid, bearer)
+    fun removeWatchedEpisode(@PathVariable id: Int, @PathVariable season: Int, @PathVariable ep: Int, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
+        val episode = seriesServices.removeWatchedEpisode(seriesId = id, ep, season, bearer)
 
         return ResponseEntity
             .status(200)

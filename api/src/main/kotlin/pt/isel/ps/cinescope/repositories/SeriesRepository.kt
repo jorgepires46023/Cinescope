@@ -26,7 +26,7 @@ interface SeriesRepository {
 
     fun addEpisodeToEpData(episode: Episode)
 
-    fun getEpisodeFromEpData(epId: String?): Episode?
+    fun getEpisodeFromEpData(sId: Int?, season: Int?, epNumber: Int?): Episode?
 
     fun deleteEpisodeFromWatchedList(eplId: Int?, epId: String?)
 

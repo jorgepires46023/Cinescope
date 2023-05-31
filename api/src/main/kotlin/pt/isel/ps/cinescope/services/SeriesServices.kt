@@ -82,19 +82,17 @@ class SeriesServices(
     }
 
     //TODO dont allow same ep per user
-    fun addWatchedEpisode(tmdbSeriesId: Int?, imdbEpId: String?, epNum: Int?, seasonNum: Int?, bearer: String?){//TODO return
-        if(isNull(tmdbSeriesId) || isNull(imdbEpId) || isNull(epNum) || isNull(seasonNum)){
-            throw BadRequestException("Missing information to add this watched episode")
-        }
-        if(bearer.isNullOrBlank()) {
-            throw BadRequestException("Token cannot be null or Blank")
-        }
+    fun addWatchedEpisode(tmdbSeriesId: Int?, epNum: Int?, seasonNum: Int?, bearer: String?){//TODO return
+        if(isNull(tmdbSeriesId) || isNull(epNum) || isNull(seasonNum)) throw BadRequestException("Missing information to add this watched episode")
+
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+
 
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
             it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, user.id) ?: it.seriesRepository.addSeriesToSeriesUserData(user.id, tmdbSeriesId, SeriesState.Watching)
-            val episode = it.seriesRepository.getEpisodeFromEpData(imdbEpId) ?: run {
+            val episode = it.seriesRepository.getEpisodeFromEpData(tmdbSeriesId, seasonNum, epNum) ?: run {
 
                val episode = if(tmdbSeriesId != null && epNum != null && seasonNum != null) {
                    val epidodeDetailsOutput = searchServices.episodeDetails(tmdbSeriesId, seasonNum, epNum)
@@ -116,20 +114,17 @@ class SeriesServices(
         }
     }
 
-    fun removeWatchedEpisode(seriesId: Int?, imdbEpisodeId: String?, bearer: String?){//TODO return
-        if(isNull(seriesId) || isNull(imdbEpisodeId)){
-            throw BadRequestException("Missing information to remove this watched episode")
-        }
+    fun removeWatchedEpisode(seriesId: Int?, epNum: Int?, seasonNum: Int?, bearer: String?){//TODO return
+        if(isNull(seriesId) || isNull(epNum) || isNull(seasonNum)) throw BadRequestException("Missing information to remove this watched episode")
 
-        if(bearer.isNullOrBlank()) {
-            throw BadRequestException("Token cannot be null or Blank")
-        }
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
+            val episode = it.seriesRepository.getEpisodeFromEpData(seriesId, seasonNum, epNum) ?: throw BadRequestException("Database - episode not found")
             val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)?.epListId
-            it.seriesRepository.deleteEpisodeFromWatchedList(epListId, imdbEpisodeId)
+            it.seriesRepository.deleteEpisodeFromWatchedList(epListId, episode.imdbId)
         }
     }
 
