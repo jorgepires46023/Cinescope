@@ -120,7 +120,7 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .execute()
     }
 
-    override fun changeSeriesState(seriesId: Int, userId: Int, state: SeriesState) {
+    override fun changeSeriesState(seriesId: Int?, userId: Int?, state: SeriesState) {
         handle.createUpdate("update cinescope.seriesuserdata set state = :state " +
                 "where stmdbid = :seriesId and userid = :userId")
             .bind("state", state)

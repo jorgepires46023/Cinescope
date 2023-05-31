@@ -81,38 +81,42 @@ class SeriesServices(
         }
     }
 
-    //TODO dont allow same ep per user
-    fun addWatchedEpisode(tmdbSeriesId: Int?, epNum: Int?, seasonNum: Int?, bearer: String?){//TODO return
-        if(isNull(tmdbSeriesId) || isNull(epNum) || isNull(seasonNum)) throw BadRequestException("Missing information to add this watched episode")
+    //TODO improve
+    fun addWatchedEpisode(seriesId: Int?, epNum: Int?, seasonNum: Int?, bearer: String?){//TODO return
+        if(isNull(seriesId) || isNull(epNum) || isNull(seasonNum)) throw BadRequestException("Missing information to add this watched episode")
 
         if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
-
 
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
-            it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, user.id) ?: it.seriesRepository.addSeriesToSeriesUserData(user.id, tmdbSeriesId, SeriesState.Watching)
-            val episode = it.seriesRepository.getEpisodeFromEpData(tmdbSeriesId, seasonNum, epNum) ?: run {
+            it.seriesRepository.getSeriesFromSeriesData(seriesId) ?: run {
+                val seriesDetails = searchServices.serieDetails(seriesId)
+                val series = Series(seriesDetails?.externalIds?.imdb_id, seriesDetails?.serieDetails?.id, seriesDetails?.serieDetails?.name, seriesDetails?.serieDetails?.poster_path,null)
+                it.seriesRepository.addSeriesToSeriesData(series)
+            }
+            val userSerieData = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)
+            if(userSerieData == null) it.seriesRepository.addSeriesToSeriesUserData(user.id, seriesId, SeriesState.Watching)
+            else if(userSerieData.state != SeriesState.Watching) it.seriesRepository.changeSeriesState(seriesId, user.id, SeriesState.Watching)
 
-               val episode = if(tmdbSeriesId != null && epNum != null && seasonNum != null) {
-                   val epidodeDetailsOutput = searchServices.episodeDetails(tmdbSeriesId, seasonNum, epNum)
-                    Episode(epidodeDetailsOutput?.externalIds?.imdb_id, tmdbSeriesId, epidodeDetailsOutput?.episodeDetails?.name, epidodeDetailsOutput?.episodeDetails?.still_path, seasonNum , epidodeDetailsOutput?.episodeDetails?.episode_number)
-                } else {
-                    throw BadRequestException("Tmdb Id cannot be null")
+            val episode = it.seriesRepository.getEpisodeFromEpData(seriesId, seasonNum, epNum) ?: run {
+                val episode =
+                    if(seriesId != null && epNum != null && seasonNum != null) {
+                        val epidodeDetailsOutput = searchServices.episodeDetails(seriesId, seasonNum, epNum)
+                        Episode(epidodeDetailsOutput?.externalIds?.imdb_id, seriesId, epidodeDetailsOutput?.episodeDetails?.name, epidodeDetailsOutput?.episodeDetails?.still_path, seasonNum , epidodeDetailsOutput?.episodeDetails?.episode_number)
+                    } else
+                        throw BadRequestException("Tmdb Id cannot be null")
+
+                    it.seriesRepository.addEpisodeToEpData(episode)
+                    return@run episode
                 }
 
-                it.seriesRepository.addEpisodeToEpData(episode)
-                return@run episode
-            }
-
-            if (tmdbSeriesId != null) {
-                val seriesUserData = it.seriesRepository.getSeriesFromSeriesUserData(tmdbSeriesId, user.id)
-                it.seriesRepository.addEpisodeToWatchedList(seriesUserData?.epListId, episode.imdbId, user.id)
-            } else {
-                throw BadRequestException("Tmdb Id cannot be null")
+                if (seriesId != null) {
+                    val seriesUserData = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)
+                    it.seriesRepository.addEpisodeToWatchedList(seriesUserData?.epListId, episode.imdbId, user.id)
+                } else throw BadRequestException("Tmdb Id cannot be null")
             }
         }
-    }
 
     fun removeWatchedEpisode(seriesId: Int?, epNum: Int?, seasonNum: Int?, bearer: String?){//TODO return
         if(isNull(seriesId) || isNull(epNum) || isNull(seasonNum)) throw BadRequestException("Missing information to remove this watched episode")

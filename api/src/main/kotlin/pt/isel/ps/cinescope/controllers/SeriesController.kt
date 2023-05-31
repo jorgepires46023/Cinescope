@@ -38,7 +38,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
     @PostMapping(Series.ADD_WATCHED_EP)
     fun addWatchedEpisode(@PathVariable id: Int, @RequestBody info: SeriesModel.EpisodeModel, @RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<*>{
-        val episode = seriesServices.addWatchedEpisode(tmdbSeriesId = id, info.episodeNumber, info.seasonNumber, bearer)
+        val episode = seriesServices.addWatchedEpisode(seriesId = id, info.episodeNumber, info.seasonNumber, bearer)
 
         return ResponseEntity
             .status(200)

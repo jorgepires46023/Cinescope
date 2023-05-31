@@ -30,7 +30,7 @@ interface SeriesRepository {
 
     fun deleteEpisodeFromWatchedList(eplId: Int?, epId: String?)
 
-    fun changeSeriesState(seriesId: Int, userId: Int, state: SeriesState)
+    fun changeSeriesState(seriesId: Int?, userId: Int?, state: SeriesState)
 
     fun getWatchedEpList(epLId: Int): List<Episode>
 
