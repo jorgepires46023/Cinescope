@@ -449,7 +449,7 @@ paths:
           description: User not found
         500:
           description: Internal Server Error
-  /series/{id}/ep/{epid}:
+  /series/{id}/ep:
     post:
       summary: Add episode to list of watched episodes
       tags:
@@ -458,12 +458,6 @@ paths:
         - name: id
           in: path
           description: Serie ID
-          required: true
-          schema:
-            type: integer
-        - name: epid
-          in: path
-          description: Episode List ID
           required: true
           schema:
             type: integer
@@ -486,6 +480,7 @@ paths:
           description: User not found
         500:
           description: Internal Server Error
+  /series/{id}/season/{seasonnum}/ep/{epnum}:
     delete:
       summary: Remove episode to list of watched episodes
       tags:
@@ -497,9 +492,15 @@ paths:
           required: true
           schema:
             type: integer
-        - name: epid
+        - name: seasonnum
           in: path
-          description: Episode List ID
+          description: Season number
+          required: true
+          schema:
+            type: integer
+        - name: epnum
+          in: path
+          description: Episode number
           required: true
           schema:
             type: integer
