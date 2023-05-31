@@ -26,8 +26,10 @@ class SearchServices(val tmdbServices: TmdbService) {
         val externalIds = tmdbServices.getMoviesExternalId(id) ?: return null
         val watchProviders = tmdbServices.getMoviesWatchProviders(id) ?: return null
         val images = tmdbServices.getMovieImages(id) ?: return null
-        val image = images.backdrops.first { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) } //TODO fix !!
-        return MovieDetailsOutput(MovieDetails(movieDetails.id, movieDetails.imdb_id, movieDetails.original_title, movieDetails.overview, movieDetails.poster_path, image.file_path, movieDetails.release_date, movieDetails.runtime, movieDetails.status, movieDetails.title),
+        val image = if(images.backdrops.isNotEmpty())
+            images.backdrops.firstOrNull { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) } //TODO fix !!
+                    else Image(null, null, movieDetails.backdrop_path)
+        return MovieDetailsOutput(MovieDetails(movieDetails.id, movieDetails.imdb_id, movieDetails.original_title, movieDetails.overview, movieDetails.poster_path, image?.file_path ?: movieDetails.backdrop_path, movieDetails.release_date, movieDetails.runtime, movieDetails.status, movieDetails.title),
             watchProviders, externalIds)
     }
 
@@ -37,9 +39,11 @@ class SearchServices(val tmdbServices: TmdbService) {
         val externalIds = tmdbServices.getSeriesExternalId(id) ?: return null
         val watchProviders = tmdbServices.getSeriesWatchProviders(id) ?: return null
         val images = tmdbServices.getSerieImages(id) ?: return null
-        val image = images.backdrops.first { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) } //TODO fix !!
+        val image = if(images.backdrops.isNotEmpty())
+            images.backdrops.firstOrNull { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) } //TODO fix !!
+        else Image(null, null, seriesDetails.backdrop_path)
         return SeriesDetailsOutput(
-            SeriesDetails(seriesDetails.overview, seriesDetails.id, seriesDetails.name, seriesDetails.seasons, seriesDetails.status, seriesDetails.poster_path, image.file_path),
+            SeriesDetails(seriesDetails.overview, seriesDetails.id, seriesDetails.name, seriesDetails.seasons, seriesDetails.status, seriesDetails.poster_path, image?.file_path ?: seriesDetails.backdrop_path),
             watchProviders, externalIds)
     }
 

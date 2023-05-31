@@ -1,10 +1,6 @@
 package pt.isel.ps.cinescope.utils
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Configuration
-import org.springframework.http.codec.ServerCodecConfigurer
 import org.springframework.stereotype.Service
-import org.springframework.web.reactive.config.WebFluxConfigurer
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -25,7 +21,6 @@ class TmdbService {
             }.build()
         )
         .build()
-
 
 
     private fun fetch(path: String): WebClient.ResponseSpec{

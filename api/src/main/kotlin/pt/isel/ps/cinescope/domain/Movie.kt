@@ -1,9 +1,8 @@
 package pt.isel.ps.cinescope.domain
 
-import pt.isel.ps.cinescope.services.exceptions.BadRequestException
 
-data class Movie(val imdbId: String?, val tmdbId: Int?, val name: String?, val img: String?, var state: MovieState? = null)
-data class MovieUserData(val id: Int, val state: MovieState? = null, val lists: List<ListDetails>)
+data class Movie(val imdbId: String?, val tmdbId: Int?, val name: String?, val img: String?, val state: MovieState? = null) //TODO var ou val
+data class MovieUserData(val id: Int, val state: MovieState? = null, val lists: List<ListDetails>?)
 data class MovieOnLists(val mlid: Int, val userid: Int, val name: String, val mtmdbid: Int, val state: String?)
 
 fun checkMovieState(state: String?):Boolean{

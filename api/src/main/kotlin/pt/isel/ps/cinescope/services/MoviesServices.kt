@@ -138,7 +138,7 @@ class MoviesServices(
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         val state = transactionManager.run {
             return@run it.moviesRepository.getMovieState(user.id, movieId)
-        } ?: return null
+        } ?: return MovieUserData(movieId, null, null)
         val res = transactionManager.run {
             return@run it.moviesRepository.getMovieUserData(user.id, movieId)
         }

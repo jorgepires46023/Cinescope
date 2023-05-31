@@ -256,8 +256,7 @@ class SeriesServices(
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
         val state = transactionManager.run{
             return@run it.seriesRepository.getSerieState(user.id, serieId)
-        }
-        if(state == null) return null
+        } ?: return SerieUserData(serieId, null, null)
         val listsWhereSerie = transactionManager.run {
             return@run it.seriesRepository.getListsSerieIsPresent(user.id, serieId)
         }

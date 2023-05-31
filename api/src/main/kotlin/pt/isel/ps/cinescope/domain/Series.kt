@@ -1,7 +1,7 @@
 package pt.isel.ps.cinescope.domain
 
-data class Series(val imdbId: String?, val tmdbId: Int?, val name: String?, val img: String?, val epListId: Int?, var state: SeriesState? = null)
-data class SerieUserData(val id: Int, val state: SeriesState? = null, val lists: List<ListDetails>/*, val episodes: List<Episode>*/)
+data class Series(val imdbId: String?, val tmdbId: Int?, val name: String?, val img: String?, val epListId: Int?, val state: SeriesState? = null) //TODO var ou val
+data class SerieUserData(val id: Int, val state: SeriesState? = null, val lists: List<ListDetails>?/*, val episodes: List<Episode>*/)
 data class SeriesOnLists(val slid: Int, val userId: Int, val name: String, val stmdbid: Int, val state: String?/*, val episodeList: Int*/)
 fun checkSeriesState(state: String?):Boolean{
     if(state.isNullOrBlank()) return false
