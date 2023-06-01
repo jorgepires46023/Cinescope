@@ -14,7 +14,7 @@ import okhttp3.internal.closeQuietly
 import java.lang.reflect.Type
 import java.net.URL
 
-abstract class CinescopeService(
+abstract class CinescopeServices(
     private val _gson: Gson,
     private val _httpClient: OkHttpClient) {
 

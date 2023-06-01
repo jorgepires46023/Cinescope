@@ -15,11 +15,11 @@ import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import java.net.URL
 
-class MoviesService(
+class MoviesServices(
     private val cinescopeURL: URL,
     gson: Gson,
     httpClient: OkHttpClient
-) : CinescopeMoviesService, CinescopeService(gson, httpClient) {
+) : CinescopeMoviesService, CinescopeServices(gson, httpClient) {
     override suspend fun addMovieToList(movieId: Int, listId: Int, token: String) {
         val request = buildRequest(
             url = cinescopeURL

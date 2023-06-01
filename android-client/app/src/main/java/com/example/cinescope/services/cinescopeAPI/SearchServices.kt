@@ -20,11 +20,11 @@ import okhttp3.OkHttpClient
 import java.lang.RuntimeException
 import java.net.URL
 
-class SearchService(
+class SearchServices(
     private val cinescopeURL: URL,
     gson: Gson,
     httpClient: OkHttpClient
-) : CinescopeSearchService, CinescopeService(gson, httpClient) {
+) : CinescopeSearchService, CinescopeServices(gson, httpClient) {
 
     override suspend fun searchByQuery(searchQuery:String): CompleteSearch {
         val request = buildRequest(cinescopeURL

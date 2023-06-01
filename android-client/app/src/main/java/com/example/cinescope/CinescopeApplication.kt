@@ -1,11 +1,11 @@
 package com.example.cinescope
 
 import android.app.Application
-import com.example.cinescope.services.cinescopeAPI.CinescopeService
-import com.example.cinescope.services.cinescopeAPI.MoviesService
-import com.example.cinescope.services.cinescopeAPI.SearchService
-import com.example.cinescope.services.cinescopeAPI.SeriesService
-import com.example.cinescope.services.cinescopeAPI.UsersService
+import com.example.cinescope.services.cinescopeAPI.CinescopeServices
+import com.example.cinescope.services.cinescopeAPI.MoviesServices
+import com.example.cinescope.services.cinescopeAPI.SearchServices
+import com.example.cinescope.services.cinescopeAPI.SeriesServices
+import com.example.cinescope.services.cinescopeAPI.UserServices
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import java.net.URL
@@ -22,18 +22,18 @@ interface DependenciesContainer {
         get() = OkHttpClient()
     val gson: Gson
         get() = Gson()
-    val cinescopeService: CinescopeService
+    val cinescopeServices: CinescopeServices
 }
 private val cinescopeApiHome = URL(CINESCOPE_DOMAIN)
 /**
  * The application class to be used as a Service Locator.
  */
-class TicTacToeApplication : DependenciesContainer, Application() {
+class CinescopeApplication : DependenciesContainer, Application() {
 
-    override val cinescopeService: CinescopeService by lazy {
-        SearchService(cinescopeApiHome, gson, httpClient)
-        UsersService(cinescopeApiHome, gson, httpClient)
-        MoviesService(cinescopeApiHome, gson, httpClient)
-        SeriesService(cinescopeApiHome, gson, httpClient)
+    override val cinescopeServices: CinescopeServices by lazy {
+        SearchServices(cinescopeApiHome, gson, httpClient)
+        UserServices(cinescopeApiHome, gson, httpClient)
+        MoviesServices(cinescopeApiHome, gson, httpClient)
+        SeriesServices(cinescopeApiHome, gson, httpClient)
     }
 }
