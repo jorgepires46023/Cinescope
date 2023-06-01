@@ -1,31 +1,38 @@
 package com.example.cinescope.services.serviceInterfaces
 
-import com.example.cinescope.domain.searches.Series
+import com.example.cinescope.domain.content.ContentList
+import com.example.cinescope.domain.content.EmptyData
+import com.example.cinescope.domain.content.EpisodeData
+import com.example.cinescope.domain.content.ListId
+import com.example.cinescope.domain.content.SeriesData
+import com.example.cinescope.domain.content.UserDataContent
 
 interface CinescopeSeriesService {
 
-    suspend fun addSeriesToList(seriesId: Int, listId: Int): Series
+    suspend fun addSeriesToList(seriesId: Int, listId: Int, token: String): EmptyData
 
-    suspend fun changeSeriesState(seriesId: Int, listId: Int): Series
+    suspend fun changeSeriesState(seriesId: Int, state: String, token: String): EmptyData
 
-    suspend fun getSeriesByState(seriesId: Int, listId: Int): Series
+    suspend fun deleteStateFromSeries(seriesId: Int, token: String): EmptyData
 
-    suspend fun addWatchedEpisode(seriesId: Int, listId: Int): Series
+    suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, token: String): EmptyData
 
-    suspend fun removeWatchedEpisode(seriesId: Int, listId: Int): Series
+    suspend fun addWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String): EmptyData
 
-    suspend fun getWatchedEpList(seriesId: Int, listId: Int): Series
+    suspend fun deleteSeriesList(seriesId: Int, token: String): EmptyData
 
-    suspend fun getSeriesLists(seriesId: Int, listId: Int): Series
+    suspend fun deleteWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String): EmptyData
 
-    suspend fun getSeriesList(seriesId: Int, listId: Int): Series
+    suspend fun getAllSeriesByState(state: String, token: String): List<SeriesData>
 
-    suspend fun createSeriesList(seriesId: Int, listId: Int): Series
+    suspend fun getAllSeriesLists(token: String): List<ContentList>
 
-    suspend fun deleteSeriesList(seriesId: Int, listId: Int): Series
+    suspend fun getSeriesList(listId: Int, token: String): List<SeriesData>
 
-    suspend fun deleteSeriesFromList(seriesId: Int, listId: Int): Series
+    suspend fun createSeriesList(name: String, token: String): ListId
 
-    suspend fun removeSeriesState(seriesId: Int, listId: Int): Series
+    suspend fun getSeriesUserData(seriesId: Int, token: String): List<UserDataContent>
+
+    suspend fun getAllWatchedEpFromSeries(seriesId: Int, token: String): List<EpisodeData>
 
 }
