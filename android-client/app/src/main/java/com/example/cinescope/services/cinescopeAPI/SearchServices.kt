@@ -6,12 +6,12 @@ import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.dtoMappers.toContent
 import com.example.cinescope.services.dtoMappers.toMovies
 import com.example.cinescope.services.dtoMappers.toSeries
-import com.example.cinescope.services.dtos.ContentAPIDto
-import com.example.cinescope.services.dtos.EpisodeInfo
-import com.example.cinescope.services.dtos.MovieInfo
-import com.example.cinescope.services.dtos.SeriesInfo
+import com.example.cinescope.services.dtosMapping.ContentAPIDto
+import com.example.cinescope.services.dtosMapping.EpisodeInfo
+import com.example.cinescope.services.dtosMapping.MovieInfo
+import com.example.cinescope.services.dtosMapping.SeriesInfo
 import com.example.cinescope.services.exceptions.UnexpectedMappingException
-import com.example.cinescope.services.serviceInterfaces.CinescopeSearchService
+import com.example.cinescope.services.serviceInterfaces.CinescopeSearchServices
 import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.joinPathWithVariables
 import com.example.cinescope.utils.send
@@ -24,7 +24,7 @@ class SearchServices(
     private val cinescopeURL: URL,
     gson: Gson,
     httpClient: OkHttpClient
-) : CinescopeSearchService, CinescopeServices(gson, httpClient) {
+) : CinescopeSearchServices, CinescopeServices(gson, httpClient) {
 
     override suspend fun searchByQuery(searchQuery:String): SearchContent {
         val request = buildRequest(cinescopeURL

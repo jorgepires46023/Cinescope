@@ -3,7 +3,7 @@ package com.example.cinescope.services.serviceInterfaces
 import com.example.cinescope.domain.user.Token
 import com.example.cinescope.domain.user.UserInfo
 
-interface CinescopeUsersService {
+interface CinescopeUsersServices {
 
     suspend fun createUser(email: String, pwd: String): Token
 

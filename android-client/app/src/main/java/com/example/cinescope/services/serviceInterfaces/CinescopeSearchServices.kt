@@ -8,7 +8,7 @@ import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.SeriesInfo
 
-interface CinescopeSearchService {
+interface CinescopeSearchServices {
     suspend fun searchByQuery(searchQuery:String): SearchContent
 
     suspend fun getPopularMovies(): List<Movie>

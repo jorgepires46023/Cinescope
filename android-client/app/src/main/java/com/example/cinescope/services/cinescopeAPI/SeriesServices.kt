@@ -1,7 +1,7 @@
 package com.example.cinescope.services.cinescopeAPI
 
 import com.example.cinescope.domain.searches.Series
-import com.example.cinescope.services.serviceInterfaces.CinescopeSeriesService
+import com.example.cinescope.services.serviceInterfaces.CinescopeSeriesServices
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import java.net.URL
@@ -10,7 +10,7 @@ class SeriesServices(
     private val cinescopeURL: URL,
     gson: Gson,
     httpClient: OkHttpClient
-) : CinescopeSeriesService, CinescopeServices(gson, httpClient) {
+) : CinescopeSeriesServices, CinescopeServices(gson, httpClient) {
     override suspend fun addSeriesToList(seriesId: Int, listId: Int): Series {
         TODO("Not yet implemented")
     }

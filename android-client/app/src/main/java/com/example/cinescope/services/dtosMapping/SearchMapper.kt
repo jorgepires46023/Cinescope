@@ -1,12 +1,26 @@
-package com.example.cinescope.services.dtoMappers
+package com.example.cinescope.services.dtosMapping
 
-import com.example.cinescope.domain.searches.SearchContent
-import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.domain.MediaType
+import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.domain.searches.Movie
+import com.example.cinescope.domain.searches.SearchContent
 import com.example.cinescope.domain.searches.Series
-import com.example.cinescope.services.dtos.ContentAPIDto
-import com.example.cinescope.services.dtos.Results
+
+data class ContentAPIDto(
+    val page: Int,
+    val results: List<Results>,
+    val total_results: Int,
+    val total_pages: Int
+)
+
+data class Results(
+    val poster_path: String,
+    val id: Int,
+    val title: String,
+    val name: String,
+    val media_type: String,
+    val popularity: Int
+)
 
 fun ContentAPIDto.toMovies(): List<Movie> {
     val moviesList = mutableListOf<Movie>()

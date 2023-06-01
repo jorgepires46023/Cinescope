@@ -3,7 +3,7 @@ package com.example.cinescope.services.cinescopeAPI
 import com.example.cinescope.domain.user.Token
 import com.example.cinescope.domain.user.UserInfo
 import com.example.cinescope.services.MethodHTTP
-import com.example.cinescope.services.serviceInterfaces.CinescopeUsersService
+import com.example.cinescope.services.serviceInterfaces.CinescopeUsersServices
 import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.send
 import com.google.gson.Gson
@@ -15,7 +15,7 @@ class UserServices(
     private val cinescopeURL: URL,
     gson: Gson,
     httpClient: OkHttpClient
-) : CinescopeUsersService, CinescopeServices(gson, httpClient) {
+) : CinescopeUsersServices, CinescopeServices(gson, httpClient) {
 
     override suspend fun createUser(email: String, pwd: String): Token {
         val body = FormBody.Builder()

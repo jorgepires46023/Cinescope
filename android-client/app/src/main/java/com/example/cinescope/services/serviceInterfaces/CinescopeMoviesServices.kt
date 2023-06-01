@@ -5,9 +5,8 @@ import com.example.cinescope.domain.content.EmptyData
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.MovieData
 import com.example.cinescope.domain.content.UserDataContent
-import com.example.cinescope.services.dtos.MovieUserData
 
-interface CinescopeMoviesService {
+interface CinescopeMoviesServices {
     suspend fun addMovieToList(movieId: Int, listId: Int, token: String): EmptyData
 
     suspend fun changeMovieState(movieId: Int, state: String, token: String): EmptyData
@@ -26,6 +25,6 @@ interface CinescopeMoviesService {
 
     suspend fun createMoviesList(name: String, token: String): ListId
 
-    suspend fun getMovieUserData(movieId: String, token: String): List<UserDataContent>
+    suspend fun getMovieUserData(movieId: Int, token: String): List<UserDataContent>
 
 }

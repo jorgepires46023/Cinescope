@@ -7,7 +7,7 @@ import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.domain.content.UserDataContent
 
-interface CinescopeSeriesService {
+interface CinescopeSeriesServices {
 
     suspend fun addSeriesToList(seriesId: Int, listId: Int, token: String): EmptyData
 
