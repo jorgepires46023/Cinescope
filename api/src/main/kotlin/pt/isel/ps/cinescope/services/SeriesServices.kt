@@ -57,9 +57,8 @@ class SeriesServices(
 
         if(!checkSeriesState(state)) throw BadRequestException("State not valid")
 
-        if(bearer.isNullOrBlank()) {
-            throw BadRequestException("Token cannot be null or Blank")
-        }
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+
 
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
@@ -103,17 +102,17 @@ class SeriesServices(
                 val episode =
                     if(seriesId != null && epNum != null && seasonNum != null) {
                         val epidodeDetailsOutput = searchServices.episodeDetails(seriesId, seasonNum, epNum)
-                        Episode(epidodeDetailsOutput?.externalIds?.imdb_id, seriesId, epidodeDetailsOutput?.episodeDetails?.name, epidodeDetailsOutput?.episodeDetails?.still_path, seasonNum , epidodeDetailsOutput?.episodeDetails?.episode_number)
+                        Episode(null, epidodeDetailsOutput?.externalIds?.imdb_id, seriesId, epidodeDetailsOutput?.episodeDetails?.name, epidodeDetailsOutput?.episodeDetails?.still_path, seasonNum , epidodeDetailsOutput?.episodeDetails?.episode_number)
                     } else
                         throw BadRequestException("Tmdb Id cannot be null")
 
-                    it.seriesRepository.addEpisodeToEpData(episode)
-                    return@run episode
+                    val id = it.seriesRepository.addEpisodeToEpData(episode)
+                    return@run Episode(id, episode.epimdbId, episode.seriesId, episode.name, episode.img, episode.season, episode.episode)
                 }
 
                 if (seriesId != null) {
                     val seriesUserData = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)
-                    it.seriesRepository.addEpisodeToWatchedList(seriesUserData?.epListId, episode.imdbId, user.id)
+                    it.seriesRepository.addEpisodeToWatchedList(seriesUserData?.epListId, episode.epId, user.id)
                 } else throw BadRequestException("Tmdb Id cannot be null")
             }
         }
@@ -128,18 +127,14 @@ class SeriesServices(
         transactionManager.run {
             val episode = it.seriesRepository.getEpisodeFromEpData(seriesId, seasonNum, epNum) ?: throw BadRequestException("Database - episode not found")
             val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)?.epListId
-            it.seriesRepository.deleteEpisodeFromWatchedList(epListId, episode.imdbId)
+            it.seriesRepository.deleteEpisodeFromWatchedList(epListId, episode.epId)
         }
     }
 
     fun getWatchedEpList(seriesId: Int?, bearer: String?): List<Episode> {
-        if(isNull(seriesId)){
-            throw BadRequestException("Missing information to get this list")
-        }
+        if(isNull(seriesId)) throw BadRequestException("Missing information to get this list")
 
-        if(bearer.isNullOrBlank()) {
-            throw BadRequestException("Token cannot be null or Blank")
-        }
+        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 

@@ -43,8 +43,9 @@ create table cinescope.seriesData (
 );
 
 create table cinescope.episodesData (
-    epimdbid varchar(100) primary key,                  /*check if epimdbid should be pk*/
+    epID int primary key GENERATED ALWAYS AS IDENTITY,
     stmdbid INT NOT NULL references cinescope.seriesData(stmdbid),
+    epimdbid varchar (100),
     name varchar(100) NOT NULL,
     image varchar(100) NOT NULL,
     season int NOT NULL,
@@ -60,8 +61,8 @@ create table cinescope.seriesUserData (
 
 create table cinescope.watchedEpisodeList (
     eplid int NOT NULL REFERENCES cinescope.seriesUserData(eplid),
-    epimdbid varchar(100) NOT NULL REFERENCES cinescope.episodesData(epimdbid),
-    primary key (eplid, epimdbid)
+    epid int NOT NULL REFERENCES cinescope.episodesData(epid),
+    primary key (eplid, epid)
 );
 
 create table cinescope.seriesLists (

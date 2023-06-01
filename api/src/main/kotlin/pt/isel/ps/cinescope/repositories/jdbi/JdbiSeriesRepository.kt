@@ -84,27 +84,29 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .execute()
     }
 
-    override fun addEpisodeToWatchedList(eplId: Int?, epId: String?, userId: Int?) {
-        handle.createUpdate("insert into cinescope.watchedepisodelist(eplid, epimdbid) values(:eplId, :epId)")
+    override fun addEpisodeToWatchedList(eplId: Int?, epId: Int?, userId: Int?) {
+        handle.createUpdate("insert into cinescope.watchedepisodelist(eplid, epid) values(:eplId, :epId)")
             .bind("eplId", eplId)
             .bind("epId", epId)
             .execute()
     }
 
-    override fun addEpisodeToEpData(episode: Episode) {
-        handle.createUpdate("insert into cinescope.episodesdata(epimdbid, stmdbid, name, image, season, episode)" +
-                "values(:epImdbId, :seriesId, :name, :image, :season, :episode)")
-            .bind("epImdbId", episode.imdbId)
+    override fun addEpisodeToEpData(episode: Episode): Int? {
+        return handle.createUpdate("insert into cinescope.episodesdata(epid, epimdbid, stmdbid, name, image, season, episode)" +
+                "values(default, :epImdbId, :seriesId, :name, :image, :season, :episode)")
+            .bind("epImdbId", episode.epimdbId)
             .bind("seriesId", episode.seriesId)
             .bind("name", episode.name)
             .bind("image", episode.img)
             .bind("season", episode.season)
             .bind("episode", episode.episode)
-            .execute()
+            .executeAndReturnGeneratedKeys()
+            .mapTo(Int::class.java)
+            .firstOrNull()
     }
 
     override fun getEpisodeFromEpData(sId: Int?, season: Int?, epNumber: Int?) : Episode?{
-        return handle.createQuery("select epimdbid as imdbId, stmdbid as seriesId, name, image as img, season, episode from cinescope.episodesdata ed " +
+        return handle.createQuery("select epId, epimdbid as epimdbId, stmdbid as seriesId, name, image as img, season, episode from cinescope.episodesdata ed " +
                 "where ed.stmdbid = :sId and ed.season = :season and ed.episode = :epNumber")
             .bind("sId", sId)
             .bind("season", season)
@@ -113,8 +115,8 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .firstOrNull()
     }
 
-    override fun deleteEpisodeFromWatchedList(eplId: Int?, epId: String?) {
-        handle.createUpdate("delete from cinescope.watchedepisodelist wel where wel.eplid = :eplId and wel.epimdbid = :epId ")
+    override fun deleteEpisodeFromWatchedList(eplId: Int?, epId: Int?) {
+        handle.createUpdate("delete from cinescope.watchedepisodelist wel where wel.eplid = :eplId and wel.epid = :epId ")
             .bind("eplId", eplId)
             .bind("epId", epId)
             .execute()
@@ -130,9 +132,9 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun getWatchedEpList(epLId: Int): List<Episode> {
-        return handle.createQuery("select wel.epimdbid as imdbId, ed.stmdbid as seriesId, name, image as img, season, episode " +
+        return handle.createQuery("select wel.epid as epId, ed.stmdbid as seriesId, ed.epimdbid, name, image as img, season, episode " +
                     "from cinescope.watchedepisodelist wel inner join cinescope.episodesdata ed " +
-                    "on ed.epimdbid = wel.epimdbid where eplid = :eplid" +
+                    "on ed.epid = wel.epid where eplid = :eplid" +
                     " order by episode asc")
             .bind("eplid", epLId)
             .mapTo(Episode::class.java)

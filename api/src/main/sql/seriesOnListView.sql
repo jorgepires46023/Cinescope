@@ -6,10 +6,10 @@ FROM cinescope.seriesLists sl
 select * from cinescope.seriesOnLists where stmdbid = 2316 and userid = 1;
 
 CREATE VIEW cinescope.WatchedEpisodes AS
-    SELECT sud.eplid, sud.stmdbid, ep.epimdbid, epdata.name, epdata.season, epdata.episode
+    SELECT sud.eplid, sud.stmdbid, ep.epid, epdata.name, epdata.season, epdata.episode
     FROM cinescope.seriesuserdata sud
     INNER JOIN cinescope.watchedepisodelist ep ON sud.eplid = ep.eplid
-    INNER JOIN cinescope.episodesdata epdata ON ep.epimdbid = epdata.epimdbid;
+    INNER JOIN cinescope.episodesdata epdata ON ep.epid = epdata.epid;
 
 select * from cinescope.WatchedEpisodes
 

@@ -1066,7 +1066,7 @@ class SeriesServicesTests {
             assertEquals(wepList[0].season, 1)
             assertEquals(wepList[0].name,"Chapter One: The Vanishing of Will Byers")
             assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
-            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].epimdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
         }
     }
@@ -1269,7 +1269,7 @@ class SeriesServicesTests {
             assertEquals(wepList[0].season, 1)
             assertEquals(wepList[0].name,"Chapter One: The Vanishing of Will Byers")
             assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
-            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].epimdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
 
             seriesServices.removeWatchedEpisode(66732,"tt4593118","bearer ${user?.token.toString()}")
@@ -1327,7 +1327,7 @@ class SeriesServicesTests {
             assertEquals(wepList[0].season, 1)
             assertEquals(wepList[0].name,"Chapter One: The Vanishing of Will Byers")
             assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
-            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].epimdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
 
             assertFailsWith<BadRequestException> {
@@ -1387,7 +1387,7 @@ class SeriesServicesTests {
             assertEquals(wepList[0].season, 1)
             assertEquals(wepList[0].name,"Chapter One: The Vanishing of Will Byers")
             assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
-            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].epimdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
 
             assertFailsWith<BadRequestException> {
@@ -1443,7 +1443,7 @@ class SeriesServicesTests {
             assertEquals(wepList[0].season, 1)
             assertEquals(wepList[0].name, "Chapter One: The Vanishing of Will Byers")
             assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
-            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].epimdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
 
             assertFailsWith<BadRequestException> {
@@ -1503,7 +1503,7 @@ class SeriesServicesTests {
             assertEquals(wepList[0].season, 1)
             assertEquals(wepList[0].name, "Chapter One: The Vanishing of Will Byers")
             assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
-            assertEquals(wepList[0].imdbId, "tt4593118")
+            assertEquals(wepList[0].epimdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
 
             assertFailsWith<NotFoundException> {

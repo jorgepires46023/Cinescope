@@ -22,13 +22,13 @@ interface SeriesRepository {
 
     fun deleteSeriesFromList(listId: Int?, seriesId: Int?, userId: Int?)
 
-    fun addEpisodeToWatchedList(eplId: Int?, epId: String?, userId: Int?)
+    fun addEpisodeToWatchedList(eplId: Int?, epId: Int?, userId: Int?)
 
-    fun addEpisodeToEpData(episode: Episode)
+    fun addEpisodeToEpData(episode: Episode): Int?
 
     fun getEpisodeFromEpData(sId: Int?, season: Int?, epNumber: Int?): Episode?
 
-    fun deleteEpisodeFromWatchedList(eplId: Int?, epId: String?)
+    fun deleteEpisodeFromWatchedList(eplId: Int?, epId: Int?)
 
     fun changeSeriesState(seriesId: Int?, userId: Int?, state: SeriesState)
 
