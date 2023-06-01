@@ -1,14 +1,14 @@
 package com.example.cinescope.services.serviceInterfaces
 
-import com.example.cinescope.domain.CompleteSearch
-import com.example.cinescope.domain.Movie
-import com.example.cinescope.domain.Series
+import com.example.cinescope.domain.searches.SearchContent
+import com.example.cinescope.domain.searches.Movie
+import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.dtos.EpisodeInfo
 import com.example.cinescope.services.dtos.MovieInfo
 import com.example.cinescope.services.dtos.SeriesInfo
 
 interface CinescopeSearchService {
-    suspend fun searchByQuery(searchQuery:String): CompleteSearch
+    suspend fun searchByQuery(searchQuery:String): SearchContent
 
     suspend fun movieDetails(id: Int): MovieInfo
 

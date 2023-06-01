@@ -1,9 +1,9 @@
 package com.example.cinescope.cinescopeservicetests.mockdata
 
-import com.example.cinescope.domain.CompleteSearch
+import com.example.cinescope.domain.searches.SearchContent
 import com.example.cinescope.domain.MediaType
-import com.example.cinescope.domain.Movie
-import com.example.cinescope.domain.Series
+import com.example.cinescope.domain.searches.Movie
+import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.dtos.ContentAPIDto
 import com.example.cinescope.services.dtos.Results
 
@@ -59,7 +59,7 @@ internal val emptyMoviesList = listOf<Movie>()
 
 internal val emptySeriesList = listOf<Series>()
 
-internal val completeSearchObjWithEmptyLists = CompleteSearch(emptyMoviesList, emptySeriesList)
+internal val searchContentObjWithEmptyLists = SearchContent(emptyMoviesList, emptySeriesList)
 
 /** Building Results **/
 
@@ -95,4 +95,4 @@ internal val expectedPopularSeries = listOf(series1, series2)
 
 internal val expectedRecommendedSeries = listOf(series1, series2)
 
-internal val expectedCompleteSearch = CompleteSearch(moviesList, seriesList)
+internal val expectedSearchContent = SearchContent(moviesList, seriesList)

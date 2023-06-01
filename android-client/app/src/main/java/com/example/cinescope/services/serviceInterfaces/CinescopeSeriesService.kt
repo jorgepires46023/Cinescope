@@ -1,6 +1,6 @@
 package com.example.cinescope.services.serviceInterfaces
 
-import com.example.cinescope.domain.Series
+import com.example.cinescope.domain.searches.Series
 
 interface CinescopeSeriesService {
 

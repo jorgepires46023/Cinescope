@@ -1,6 +1,6 @@
 package com.example.cinescope.services.cinescopeAPI
 
-import com.example.cinescope.domain.Series
+import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.serviceInterfaces.CinescopeSeriesService
 import com.google.gson.Gson
 import okhttp3.OkHttpClient

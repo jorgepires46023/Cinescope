@@ -1,7 +1,7 @@
 package com.example.cinescope.services.cinescopeAPI
 
-import com.example.cinescope.domain.Token
-import com.example.cinescope.domain.UserInfo
+import com.example.cinescope.domain.user.Token
+import com.example.cinescope.domain.user.UserInfo
 import com.example.cinescope.services.MethodHTTP
 import com.example.cinescope.services.serviceInterfaces.CinescopeUsersService
 import com.example.cinescope.utils.joinPath

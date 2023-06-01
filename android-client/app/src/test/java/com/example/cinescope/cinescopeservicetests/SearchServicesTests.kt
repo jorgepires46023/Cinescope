@@ -1,9 +1,9 @@
 package com.example.cinescope.cinescopeservicetests
 
 
-import com.example.cinescope.cinescopeservicetests.mockdata.completeSearchObjWithEmptyLists
+import com.example.cinescope.cinescopeservicetests.mockdata.searchContentObjWithEmptyLists
 import com.example.cinescope.cinescopeservicetests.mockdata.emptyResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.expectedCompleteSearch
+import com.example.cinescope.cinescopeservicetests.mockdata.expectedSearchContent
 import com.example.cinescope.cinescopeservicetests.mockdata.expectedPopularMovies
 import com.example.cinescope.cinescopeservicetests.mockdata.expectedPopularSeries
 import com.example.cinescope.cinescopeservicetests.mockdata.expectedRecommendedMovies
@@ -16,8 +16,8 @@ import com.example.cinescope.cinescopeservicetests.mockdata.recommendedSeriesRes
 import com.example.cinescope.cinescopeservicetests.mockdata.searchByQueryResponse
 import com.example.cinescope.cinescopeservicetests.mockdata.series1
 import com.example.cinescope.cinescopeservicetests.mockdata.wrongObjToMap
-import com.example.cinescope.domain.Movie
-import com.example.cinescope.domain.Series
+import com.example.cinescope.domain.searches.Movie
+import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import com.example.cinescope.services.exceptions.UnexpectedResponseException
 import com.example.cinescope.services.exceptions.UnsuccessfulResponseException
@@ -338,7 +338,7 @@ class SearchServicesTests {
             val actual = searchServices.searchByQuery("movieNameExample")
 
             // Assert
-            Assert.assertEquals(expectedCompleteSearch, actual)
+            Assert.assertEquals(expectedSearchContent, actual)
         }
 
     @Test(expected = UnsuccessfulResponseException::class)
@@ -387,6 +387,6 @@ class SearchServicesTests {
             val actual = searchServices.searchByQuery("movieNameExample")
 
             //Assert
-            Assert.assertEquals(completeSearchObjWithEmptyLists, actual)
+            Assert.assertEquals(searchContentObjWithEmptyLists, actual)
         }
 }

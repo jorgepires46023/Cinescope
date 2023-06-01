@@ -1,8 +1,8 @@
 package com.example.cinescope.services.cinescopeAPI
 
-import com.example.cinescope.domain.CompleteSearch
-import com.example.cinescope.domain.Movie
-import com.example.cinescope.domain.Series
+import com.example.cinescope.domain.searches.SearchContent
+import com.example.cinescope.domain.searches.Movie
+import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.dtoMappers.toContent
 import com.example.cinescope.services.dtoMappers.toMovies
 import com.example.cinescope.services.dtoMappers.toSeries
@@ -26,7 +26,7 @@ class SearchServices(
     httpClient: OkHttpClient
 ) : CinescopeSearchService, CinescopeServices(gson, httpClient) {
 
-    override suspend fun searchByQuery(searchQuery:String): CompleteSearch {
+    override suspend fun searchByQuery(searchQuery:String): SearchContent {
         val request = buildRequest(cinescopeURL
             .joinPathWithVariables(Searches.SEARCH_QUERY, listOf(searchQuery) ))
 

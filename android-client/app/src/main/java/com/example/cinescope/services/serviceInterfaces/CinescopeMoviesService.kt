@@ -1,6 +1,5 @@
 package com.example.cinescope.services.serviceInterfaces
 
-import com.example.cinescope.domain.Movie
 import com.example.cinescope.services.dtos.MovieUserData
 
 interface CinescopeMoviesService {

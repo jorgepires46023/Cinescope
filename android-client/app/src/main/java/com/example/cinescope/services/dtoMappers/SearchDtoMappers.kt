@@ -1,10 +1,10 @@
 package com.example.cinescope.services.dtoMappers
 
-import com.example.cinescope.domain.CompleteSearch
-import com.example.cinescope.domain.MediaContent
+import com.example.cinescope.domain.searches.SearchContent
+import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.domain.MediaType
-import com.example.cinescope.domain.Movie
-import com.example.cinescope.domain.Series
+import com.example.cinescope.domain.searches.Movie
+import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.dtos.ContentAPIDto
 import com.example.cinescope.services.dtos.Results
 
@@ -45,7 +45,7 @@ private fun checkAndAdd(results: Results): MediaContent?{
     return null
 }
 
-fun ContentAPIDto.toContent(): CompleteSearch {
+fun ContentAPIDto.toContent(): SearchContent {
     val seriesList = mutableListOf<Series>()
     val moviesList = mutableListOf<Movie>()
 
@@ -55,5 +55,5 @@ fun ContentAPIDto.toContent(): CompleteSearch {
         if(content is Movie) moviesList.add(content)
     }
 
-    return CompleteSearch(moviesList,seriesList)
+    return SearchContent(moviesList,seriesList)
 }

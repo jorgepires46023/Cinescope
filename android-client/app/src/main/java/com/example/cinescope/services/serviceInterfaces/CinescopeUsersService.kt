@@ -1,7 +1,7 @@
 package com.example.cinescope.services.serviceInterfaces
 
-import com.example.cinescope.domain.Token
-import com.example.cinescope.domain.UserInfo
+import com.example.cinescope.domain.user.Token
+import com.example.cinescope.domain.user.UserInfo
 
 interface CinescopeUsersService {
 

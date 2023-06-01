@@ -1,6 +1,5 @@
 package com.example.cinescope.services.dtos
 
-import com.example.cinescope.domain.Movie
 import com.google.gson.annotations.SerializedName
 
 data class MovieListId(val id: Int)
