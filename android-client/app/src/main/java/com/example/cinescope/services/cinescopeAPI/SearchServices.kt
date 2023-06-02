@@ -1,15 +1,19 @@
 package com.example.cinescope.services.cinescopeAPI
 
+import com.example.cinescope.domain.content.SeriesData
+import com.example.cinescope.domain.searches.EpisodeInfo
 import com.example.cinescope.domain.searches.SearchContent
 import com.example.cinescope.domain.searches.Movie
+import com.example.cinescope.domain.searches.MovieInfo
+import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.Series
-import com.example.cinescope.services.dtoMappers.toContent
-import com.example.cinescope.services.dtoMappers.toMovies
-import com.example.cinescope.services.dtoMappers.toSeries
+import com.example.cinescope.domain.searches.SeriesInfo
+import com.example.cinescope.services.MethodHTTP
 import com.example.cinescope.services.dtosMapping.ContentAPIDto
-import com.example.cinescope.services.dtosMapping.EpisodeInfo
-import com.example.cinescope.services.dtosMapping.MovieInfo
-import com.example.cinescope.services.dtosMapping.SeriesInfo
+import com.example.cinescope.services.dtosMapping.ListSeriesData
+import com.example.cinescope.services.dtosMapping.toContent
+import com.example.cinescope.services.dtosMapping.toMovies
+import com.example.cinescope.services.dtosMapping.toSeries
 import com.example.cinescope.services.exceptions.UnexpectedMappingException
 import com.example.cinescope.services.serviceInterfaces.CinescopeSearchServices
 import com.example.cinescope.utils.joinPath
@@ -25,121 +29,108 @@ class SearchServices(
     gson: Gson,
     httpClient: OkHttpClient
 ) : CinescopeSearchServices, CinescopeServices(gson, httpClient) {
-
-    override suspend fun searchByQuery(searchQuery:String): SearchContent {
-        val request = buildRequest(cinescopeURL
-            .joinPathWithVariables(Searches.SEARCH_QUERY, listOf(searchQuery) ))
-
-        val searchContentDto = httpClient.send(request) {response ->
-            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
-        }
-
-        try {
-            return searchContentDto.toContent()
-        } catch (e: RuntimeException){//TODO check if this is RuntimeException
-            throw UnexpectedMappingException()
-        }
+    override suspend fun searchByQuery(searchQuery: String): SearchContent {
+            val request = buildRequest(
+                url = cinescopeURL
+                    .joinPathWithVariables(Searches.SEARCH_QUERY, listOf(searchQuery))
+            )
+            //TODO handle this exceptions with our errors(try-catch)
+            val contentAPIDto = httpClient.send(request){ response ->
+                handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
+            }
+            return contentAPIDto.toContent()
     }
 
-    override suspend fun movieDetails(id: Int): MovieInfo {
-        val request = buildRequest(cinescopeURL
-            .joinPathWithVariables(Searches.MOVIE_DETAILS, listOf(id.toString()) ))
+    override suspend fun getPopularMovies(): List<Movie> {
+        val request = buildRequest(
+            url = cinescopeURL.joinPath(Searches.GET_POPULAR_MOVIES)
+        )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){response ->
+        val contentAPIDto = httpClient.send(request){ response ->
+            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
+        }
+        return contentAPIDto.toMovies()
+    }
+
+    override suspend fun getPopularSeries(): List<Series> {
+        val request = buildRequest(
+            url = cinescopeURL.joinPath(Searches.GET_POPULAR_SERIES)
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        val contentAPIDto = httpClient.send(request){ response ->
+            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
+        }
+        return contentAPIDto.toSeries()
+    }
+
+    override suspend fun getSeriesRecommendations(id: Int): List<Series> {
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Searches.SERIE_RECOMMENDATIONS, listOf(id.toString()))
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        val contentAPIDto = httpClient.send(request){ response ->
+            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
+        }
+        return contentAPIDto.toSeries()
+    }
+
+    override suspend fun getMovieRecommendations(id: Int): List<Movie> {
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Searches.MOVIE_RECOMMENDATIONS, listOf(id.toString()))
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        val contentAPIDto = httpClient.send(request){ response ->
+            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
+        }
+        return contentAPIDto.toMovies()
+    }
+
+    override suspend fun movieDetails(movieId: Int): MovieInfo {
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Searches.MOVIE_DETAILS, listOf(movieId.toString()))
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        return httpClient.send(request){ response ->
             handleResponse(response, MovieInfo::class.java)
         }
     }
 
-    override suspend fun seriesDetails(id: Int): SeriesInfo {
-        val request = buildRequest(cinescopeURL
-            .joinPathWithVariables(Searches.SERIE_DETAILS, listOf(id.toString()) ))
+    override suspend fun seriesDetails(seriesId: Int): SeriesInfo {
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Searches.SERIE_DETAILS, listOf(seriesId.toString()))
+        )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){response ->
+        return httpClient.send(request){ response ->
             handleResponse(response, SeriesInfo::class.java)
         }
     }
 
-    override suspend fun episodeDetails(id: Int, seasonNumber: Int, epNumber: Int): EpisodeInfo {
-        val request = buildRequest(cinescopeURL
-            .joinPathWithVariables(Searches.MOVIE_RECOMMENDATIONS,
-                listOf(id.toString(), seasonNumber.toString(), epNumber.toString())))
-
+    override suspend fun seasonDetails(seriesId: Int, seasonNr: Int): SeasonInfo {
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Searches.SEASON_DETAILS, listOf(seriesId.toString(), seasonNr.toString()))
+        )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){response ->
+        return httpClient.send(request){ response ->
+            handleResponse(response, SeasonInfo::class.java)
+        }
+    }
+
+    override suspend fun episodeDetails(seriesId: Int, seasonNr: Int, epNumber: Int): EpisodeInfo {
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Searches.MOVIE_DETAILS,
+                    listOf(seriesId.toString(),seasonNr.toString(), epNumber.toString()))
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        return httpClient.send(request){ response ->
             handleResponse(response, EpisodeInfo::class.java)
         }
     }
 
-    override suspend fun getPopularMovies(): List<Movie> {
-        val popularMovies = mutableListOf<Movie>()
-        val request = buildRequest(cinescopeURL.joinPath(Searches.GET_POPULAR_MOVIES))
 
-        //TODO handle this exceptions with our errors(try-catch)
-        val popularMoviesDto = httpClient.send(request){response ->
-            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
-        }
-
-        try {
-             popularMovies.addAll(popularMoviesDto.toMovies())
-        } catch (e: RuntimeException){//TODO check if this is RuntimeException
-            throw UnexpectedMappingException()
-        }
-
-        return popularMovies
-    }
-
-    override suspend fun getPopularSeries(): List<Series> {
-        val popularSeries = mutableListOf<Series>()
-        val request = buildRequest(cinescopeURL.joinPath(Searches.GET_POPULAR_SERIES))
-
-        //TODO handle this exceptions with our errors(try-catch)
-        val popularSeriesDto = httpClient.send(request){ response ->
-            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
-        }
-
-        try {
-            popularSeries.addAll(popularSeriesDto.toSeries())
-        } catch (e: RuntimeException){//TODO check if this is RuntimeException
-            throw UnexpectedMappingException()
-        }
-
-        return popularSeries
-    }
-
-    override suspend fun getMovieRecommendations(id:Int): List<Movie> {
-        val recommendedMovies = mutableListOf<Movie>()
-        val request = buildRequest(cinescopeURL.joinPathWithVariables(Searches.MOVIE_RECOMMENDATIONS, listOf(id.toString())))
-
-
-        //TODO handle this exceptions with our errors(try-catch)
-        val recommendedMoviesDto = httpClient.send(request){ response ->
-            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
-        }
-
-        try {
-            recommendedMovies.addAll(recommendedMoviesDto.toMovies())
-        } catch (e: RuntimeException){//TODO check if this is RuntimeException
-            throw UnexpectedMappingException()
-        }
-
-        return recommendedMovies
-    }
-
-    override suspend fun getSeriesRecommendations(id:Int): List<Series> {
-        val recommendedSeries = mutableListOf<Series>()
-        val request = buildRequest(cinescopeURL.joinPathWithVariables(Searches.SERIE_RECOMMENDATIONS, listOf(id.toString())))
-
-        //TODO handle this exceptions with our errors(try-catch)
-        val recommendedSeriesDto = httpClient.send(request){ response ->
-            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
-        }
-
-        try {
-            recommendedSeries.addAll(recommendedSeriesDto.toSeries())
-        } catch (e: RuntimeException){//TODO check if this is RuntimeException
-            throw UnexpectedMappingException()
-        }
-
-        return recommendedSeries
-    }
 }
