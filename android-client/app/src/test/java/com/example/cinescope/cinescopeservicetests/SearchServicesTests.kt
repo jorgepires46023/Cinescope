@@ -36,12 +36,12 @@ class SearchServicesTests {
     @get:Rule
     val testRule = MockWebServerRule()
 
-    val httpClient: OkHttpClient = OkHttpClient()
-    val gson: Gson= Gson()
+    private val httpClient: OkHttpClient = OkHttpClient()
+    private val gson: Gson= Gson()
 
     private val jsonFormatter: Gson = GsonBuilder().create()
 
-    private val JsonMediaType = ("application/json").toMediaType()
+    private val jsonMediaType = ("application/json").toMediaType()
 
     //GET POPULAR MOVIES TESTS
     @Test
@@ -50,7 +50,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( popMovieResponse))
             )
 
@@ -83,7 +83,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
@@ -99,7 +99,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 
@@ -119,7 +119,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( popSeriesResponse))
             )
 
@@ -152,7 +152,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
@@ -168,7 +168,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 
@@ -188,7 +188,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( recommendedMovieResponse))
             )
 
@@ -221,7 +221,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
@@ -237,7 +237,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 
@@ -257,7 +257,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( recommendedSeriesResponse))
             )
 
@@ -290,7 +290,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
@@ -306,7 +306,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 
@@ -326,7 +326,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( searchByQueryResponse))
             )
 
@@ -359,7 +359,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( wrongObjToMap))
             )
 
@@ -375,7 +375,7 @@ class SearchServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( emptyResponse))
             )
 

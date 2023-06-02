@@ -1,7 +1,6 @@
 package com.example.cinescope.services.cinescopeAPI
 
 import com.example.cinescope.domain.content.ContentList
-import com.example.cinescope.domain.content.EmptyData
 import com.example.cinescope.domain.content.EpisodeData
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.SeriesData
@@ -25,7 +24,7 @@ class SeriesServices(
     gson: Gson,
     httpClient: OkHttpClient
 ) : CinescopeSeriesServices, CinescopeServices(gson, httpClient) {
-    override suspend fun addSeriesToList(seriesId: Int, listId: Int, token: String): EmptyData {
+    override suspend fun addSeriesToList(seriesId: Int, listId: Int, token: String) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.ADD_SERIE, listOf(seriesId.toString(),listId.toString())),
@@ -33,12 +32,12 @@ class SeriesServices(
             token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+        httpClient.send(request){ response ->
+            handleEmptyResponse(response)
         }
     }
 
-    override suspend fun changeSeriesState(seriesId: Int, state: String, token: String): EmptyData {
+    override suspend fun changeSeriesState(seriesId: Int, state: String, token: String) {
         val body = FormBody.Builder()
             .add("state", state)
             .build()
@@ -50,12 +49,12 @@ class SeriesServices(
             token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+        httpClient.send(request){ response ->
+            handleEmptyResponse(response)
         }
     }
 
-    override suspend fun deleteStateFromSeries(seriesId: Int, token: String): EmptyData {
+    override suspend fun deleteStateFromSeries(seriesId: Int, token: String) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.REMOVE_SERIE_STATE, listOf(seriesId.toString())),
@@ -64,11 +63,11 @@ class SeriesServices(
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+            handleEmptyResponse(response)
         }
     }
 
-    override suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, token: String): EmptyData {
+    override suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, token: String) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.DELETE_SERIE_FROM_LIST, listOf(seriesId.toString(),listId.toString())),
@@ -77,13 +76,12 @@ class SeriesServices(
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+            handleEmptyResponse(response)
         }
     }
 
     override suspend fun addWatchedEpisode(
-        seriesId: Int, seasonNr: Int, epNumber: Int, token: String
-    ): EmptyData {
+        seriesId: Int, seasonNr: Int, epNumber: Int, token: String) {
         val body = FormBody.Builder()
             .add("season_number", seasonNr.toString())
             .add("episode_number", epNumber.toString())
@@ -96,12 +94,12 @@ class SeriesServices(
             token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+        httpClient.send(request){ response ->
+            handleEmptyResponse(response)
         }
     }
 
-    override suspend fun deleteSeriesList(listId: Int, token: String): EmptyData {
+    override suspend fun deleteSeriesList(listId: Int, token: String) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.DELETE_LIST, listOf(listId.toString())),
@@ -110,13 +108,12 @@ class SeriesServices(
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+            handleEmptyResponse(response)
         }
     }
 
     override suspend fun deleteWatchedEpisode(
-        seriesId: Int, seasonNr: Int, epNumber: Int, token: String
-    ): EmptyData {
+        seriesId: Int, seasonNr: Int, epNumber: Int, token: String) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.REMOVE_WATCHED_EP,
@@ -126,7 +123,7 @@ class SeriesServices(
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+            handleEmptyResponse(response)
         }
     }
 

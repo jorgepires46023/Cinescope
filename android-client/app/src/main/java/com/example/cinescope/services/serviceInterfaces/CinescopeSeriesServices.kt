@@ -1,7 +1,6 @@
 package com.example.cinescope.services.serviceInterfaces
 
 import com.example.cinescope.domain.content.ContentList
-import com.example.cinescope.domain.content.EmptyData
 import com.example.cinescope.domain.content.EpisodeData
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.SeriesData
@@ -9,19 +8,19 @@ import com.example.cinescope.domain.content.UserDataContent
 
 interface CinescopeSeriesServices {
 
-    suspend fun addSeriesToList(seriesId: Int, listId: Int, token: String): EmptyData
+    suspend fun addSeriesToList(seriesId: Int, listId: Int, token: String)
 
-    suspend fun changeSeriesState(seriesId: Int, state: String, token: String): EmptyData
+    suspend fun changeSeriesState(seriesId: Int, state: String, token: String)
 
-    suspend fun deleteStateFromSeries(seriesId: Int, token: String): EmptyData
+    suspend fun deleteStateFromSeries(seriesId: Int, token: String)
 
-    suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, token: String): EmptyData
+    suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, token: String)
 
-    suspend fun addWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String): EmptyData
+    suspend fun addWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String)
 
-    suspend fun deleteSeriesList(listId: Int, token: String): EmptyData
+    suspend fun deleteSeriesList(listId: Int, token: String)
 
-    suspend fun deleteWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String): EmptyData
+    suspend fun deleteWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String)
 
     suspend fun getAllSeriesByState(state: String, token: String): List<SeriesData>
 

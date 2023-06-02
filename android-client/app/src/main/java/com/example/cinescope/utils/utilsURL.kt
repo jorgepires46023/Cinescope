@@ -30,11 +30,6 @@ fun URL.joinPathWithVariables(path: String, variables: List<String>): URL{
 }
 /** Validates if the elements inside the list contain equal strings and match pathVariables list provided **/
 fun validatePathVariables(list: List<String>, variablesList: List<String>):Boolean{
-    println("List")
-    println(list)
-    println("Variables List")
-    println(variablesList)
-
     val predicate: (String) -> Boolean = {it.first()=='{'}
     list.count(predicate)
     if(list.count(predicate) != variablesList.size) throw MismatchingPathVariablesException()

@@ -1,21 +1,20 @@
 package com.example.cinescope.services.serviceInterfaces
 
 import com.example.cinescope.domain.content.ContentList
-import com.example.cinescope.domain.content.EmptyData
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.MovieData
 import com.example.cinescope.domain.content.UserDataContent
 
 interface CinescopeMoviesServices {
-    suspend fun addMovieToList(movieId: Int, listId: Int, token: String): EmptyData
+    suspend fun addMovieToList(movieId: Int, listId: Int, token: String)
 
-    suspend fun changeMovieState(movieId: Int, state: String, token: String): EmptyData
+    suspend fun changeMovieState(movieId: Int, state: String, token: String)
 
-    suspend fun deleteStateFromMovie(movieId: Int, token: String): EmptyData
+    suspend fun deleteStateFromMovie(movieId: Int, token: String)
 
-    suspend fun deleteMovieFromList(movieId: Int, listId: Int, token: String): EmptyData
+    suspend fun deleteMovieFromList(movieId: Int, listId: Int, token: String)
 
-    suspend fun deleteMoviesList(listId: Int, token: String): EmptyData
+    suspend fun deleteMoviesList(listId: Int, token: String)
 
     suspend fun getAllMoviesByState(state: String, token: String): List<MovieData>
 

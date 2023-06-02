@@ -45,7 +45,7 @@ abstract class CinescopeServices(
         return try {
             if (response.isSuccessful && contentType == JsonMediaType) {
                 gson.fromJson<T>(body.string(), type)
-            }else {
+            } else {
                 throw UnsuccessfulResponseException(response)
             }
         } catch (e: JsonSyntaxException) {
@@ -53,5 +53,14 @@ abstract class CinescopeServices(
         } finally {
             response.body?.closeQuietly()
         }
+    }
+
+    internal fun handleEmptyResponse(response: Response){
+        try {
+            if(!response.isSuccessful) throw UnsuccessfulResponseException(response)
+        }finally {
+            response.body?.closeQuietly()
+        }
+
     }
 }

@@ -25,12 +25,12 @@ class UserServicesTests {
     @get:Rule
     val testRule = MockWebServerRule()
 
-    val httpClient: OkHttpClient = OkHttpClient()
-    val gson: Gson = Gson()
+    private val httpClient: OkHttpClient = OkHttpClient()
+    private val gson: Gson = Gson()
 
     private val jsonFormatter: Gson = GsonBuilder().create()
 
-    private val JsonMediaType = ("application/json").toMediaType()
+    private val jsonMediaType = ("application/json").toMediaType()
 
     //CREATE USER TESTS
     @Test
@@ -39,7 +39,7 @@ class UserServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( createUserResponse))
             )
 
@@ -59,7 +59,7 @@ class UserServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( loginResponse))
             )
 
@@ -79,7 +79,7 @@ class UserServicesTests {
             // Arrange
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", JsonMediaType)
+                .setHeader("content-type", jsonMediaType)
                 .setBody(jsonFormatter.toJson( getUserInfoResponse))
             )
 

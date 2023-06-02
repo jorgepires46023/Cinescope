@@ -1,7 +1,6 @@
 package com.example.cinescope.services.cinescopeAPI
 
 import com.example.cinescope.domain.content.ContentList
-import com.example.cinescope.domain.content.EmptyData
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.MovieData
 import com.example.cinescope.domain.content.UserDataContent
@@ -23,20 +22,22 @@ class MoviesServices(
     gson: Gson,
     httpClient: OkHttpClient
 ) : CinescopeMoviesServices, CinescopeServices(gson, httpClient) {
-    override suspend fun addMovieToList(movieId: Int, listId: Int, token: String): EmptyData {
+    override suspend fun addMovieToList(movieId: Int, listId: Int, token: String) {
+        val body = FormBody.Builder().build()
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Movies.ADD_MOVIE, listOf(movieId.toString(),listId.toString())),
             method = MethodHTTP.POST,
+            body = body,
             token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+        httpClient.send(request){ response ->
+            handleEmptyResponse(response)
         }
     }
 
-    override suspend fun changeMovieState(movieId: Int, state: String, token: String): EmptyData {
+    override suspend fun changeMovieState(movieId: Int, state: String, token: String) {
         val body = FormBody.Builder()
             .add("state", state)
             .build()
@@ -47,12 +48,12 @@ class MoviesServices(
             body = body,
             token = token
         )
-        return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+        httpClient.send(request){ response ->
+            handleEmptyResponse(response)
         }
     }
 
-    override suspend fun deleteStateFromMovie(movieId: Int, token: String): EmptyData {
+    override suspend fun deleteStateFromMovie(movieId: Int, token: String) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Movies.REMOVE_MOVIE_STATE, listOf(movieId.toString())),
@@ -60,12 +61,12 @@ class MoviesServices(
             token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+        httpClient.send(request){ response ->
+            handleEmptyResponse(response)
         }
     }
 
-    override suspend fun deleteMovieFromList(movieId: Int, listId: Int, token: String): EmptyData {
+    override suspend fun deleteMovieFromList(movieId: Int, listId: Int, token: String) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Movies.DELETE_MOVIE_FROM_LIST, listOf(listId.toString(),movieId.toString())),
@@ -73,12 +74,12 @@ class MoviesServices(
             token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+        httpClient.send(request){ response ->
+            handleEmptyResponse(response)
         }
     }
 
-    override suspend fun deleteMoviesList(listId: Int, token: String): EmptyData {
+    override suspend fun deleteMoviesList(listId: Int, token: String) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Movies.DELETE_LIST, listOf(listId.toString())),
@@ -86,8 +87,8 @@ class MoviesServices(
             token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
-        return httpClient.send(request){ response ->
-            handleResponse(response, EmptyData::class.java)
+        httpClient.send(request){ response ->
+            handleEmptyResponse(response)
         }
     }
 
