@@ -482,7 +482,7 @@ paths:
           description: Internal Server Error
   /series/{id}/season/{seasonnum}/ep/{epnum}:
     delete:
-      summary: Remove episode to list of watched episodes
+      summary: Remove episode from list of watched episodes
       tags:
         - Series
       parameters:
@@ -1030,6 +1030,8 @@ components:
     Episode:
       type: object
       properties:
+        epID:
+          type: integer
         imdbID:
           type: string
         seriesID:
