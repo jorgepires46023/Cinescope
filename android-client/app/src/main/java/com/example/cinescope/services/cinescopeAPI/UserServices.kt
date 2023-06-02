@@ -52,8 +52,10 @@ class UserServices(
     }
 
     override suspend fun getUserInfo(token: String): UserInfo {
+        //TODO to be decided how we will handle this request: token vs id
         val request = buildRequest(
-            url = cinescopeURL.joinPath(Users.GET_USER_INFO)
+            url = cinescopeURL.joinPath(Users.GET_USER_INFO),
+            token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->

@@ -7,6 +7,8 @@ import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.dtosMapping.ContentAPIDto
 import com.example.cinescope.services.dtosMapping.Results
 
+
+/** Simple Data **/
 internal val movie1 = Movie(1, "Movie1", "testImg1")
 internal val movie2 = Movie(2, "Movie2", "testImg2")
 

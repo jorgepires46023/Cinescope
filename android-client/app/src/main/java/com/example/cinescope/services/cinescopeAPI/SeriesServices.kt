@@ -214,5 +214,4 @@ class SeriesServices(
         }
         return listEpisodeDataObj.list
     }
-
 }
