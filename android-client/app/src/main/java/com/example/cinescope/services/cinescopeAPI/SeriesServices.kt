@@ -7,10 +7,16 @@ import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.services.MethodHTTP
+import com.example.cinescope.services.dtosMapping.ListEpisodeData
+import com.example.cinescope.services.dtosMapping.ListOfContentList
+import com.example.cinescope.services.dtosMapping.ListOfUserDataContent
+import com.example.cinescope.services.dtosMapping.ListSeriesData
 import com.example.cinescope.services.serviceInterfaces.CinescopeSeriesServices
+import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.joinPathWithVariables
 import com.example.cinescope.utils.send
 import com.google.gson.Gson
+import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import java.net.URL
 
@@ -33,68 +39,180 @@ class SeriesServices(
     }
 
     override suspend fun changeSeriesState(seriesId: Int, state: String, token: String): EmptyData {
-        TODO("Not yet implemented")
+        val body = FormBody.Builder()
+            .add("state", state)
+            .build()
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.CHANGE_STATE, listOf(seriesId.toString())),
+            method = MethodHTTP.POST,
+            body= body,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        return httpClient.send(request){ response ->
+            handleResponse(response, EmptyData::class.java)
+        }
     }
 
     override suspend fun deleteStateFromSeries(seriesId: Int, token: String): EmptyData {
-        TODO("Not yet implemented")
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.REMOVE_SERIE_STATE, listOf(seriesId.toString())),
+            method = MethodHTTP.DELETE,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        return httpClient.send(request){ response ->
+            handleResponse(response, EmptyData::class.java)
+        }
     }
 
-    override suspend fun deleteSeriesFromList(
-        seriesId: Int,
-        listId: Int,
-        token: String
-    ): EmptyData {
-        TODO("Not yet implemented")
+    override suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, token: String): EmptyData {
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.DELETE_SERIE_FROM_LIST, listOf(seriesId.toString(),listId.toString())),
+            method = MethodHTTP.DELETE,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        return httpClient.send(request){ response ->
+            handleResponse(response, EmptyData::class.java)
+        }
     }
 
     override suspend fun addWatchedEpisode(
-        seriesId: Int,
-        seasonNr: Int,
-        epNumber: Int,
-        token: String
+        seriesId: Int, seasonNr: Int, epNumber: Int, token: String
     ): EmptyData {
-        TODO("Not yet implemented")
+        val body = FormBody.Builder()
+            .add("season_number", seasonNr.toString())
+            .add("episode_number", epNumber.toString())
+            .build()
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.ADD_WATCHED_EP, listOf(seriesId.toString())),
+            method = MethodHTTP.POST,
+            body = body,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        return httpClient.send(request){ response ->
+            handleResponse(response, EmptyData::class.java)
+        }
     }
 
-    override suspend fun deleteSeriesList(seriesId: Int, token: String): EmptyData {
-        TODO("Not yet implemented")
+    override suspend fun deleteSeriesList(listId: Int, token: String): EmptyData {
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.DELETE_LIST, listOf(listId.toString())),
+            method = MethodHTTP.DELETE,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        return httpClient.send(request){ response ->
+            handleResponse(response, EmptyData::class.java)
+        }
     }
 
     override suspend fun deleteWatchedEpisode(
-        seriesId: Int,
-        seasonNr: Int,
-        epNumber: Int,
-        token: String
+        seriesId: Int, seasonNr: Int, epNumber: Int, token: String
     ): EmptyData {
-        TODO("Not yet implemented")
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.REMOVE_WATCHED_EP,
+                    listOf(seriesId.toString(), seasonNr.toString(), epNumber.toString())),
+            method = MethodHTTP.DELETE,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        return httpClient.send(request){ response ->
+            handleResponse(response, EmptyData::class.java)
+        }
     }
 
     override suspend fun getAllSeriesByState(state: String, token: String): List<SeriesData> {
-        TODO("Not yet implemented")
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.ADD_SERIE, listOf(state)),
+            method = MethodHTTP.GET,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        val listSeriesDataObj = httpClient.send(request){ response ->
+            handleResponse<ListSeriesData>(response, ListSeriesData::class.java)
+        }
+        return listSeriesDataObj.list
     }
 
     override suspend fun getAllSeriesLists(token: String): List<ContentList> {
-        TODO("Not yet implemented")
+        val request = buildRequest(
+            url = cinescopeURL.joinPath(Series.GET_SERIES_LISTS),
+            method = MethodHTTP.GET,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        val listContentListObj = httpClient.send(request){ response ->
+            handleResponse<ListOfContentList>(response, ListOfContentList::class.java)
+        }
+        return listContentListObj.list
     }
 
     override suspend fun getSeriesList(listId: Int, token: String): List<SeriesData> {
-        TODO("Not yet implemented")
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.GET_LIST, listOf(listId.toString())),
+            method = MethodHTTP.GET,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        val listSeriesDataObj = httpClient.send(request){ response ->
+            handleResponse<ListSeriesData>(response, ListSeriesData::class.java)
+        }
+        return listSeriesDataObj.list
     }
 
     override suspend fun createSeriesList(name: String, token: String): ListId {
-        TODO("Not yet implemented")
+        val body = FormBody.Builder()
+            .add("name", name)
+            .build()
+        val request = buildRequest(
+            url = cinescopeURL.joinPath(Series.CREATE_LIST),
+            method = MethodHTTP.POST,
+            body = body,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        return httpClient.send(request){ response ->
+            handleResponse(response, ListId::class.java)
+        }
     }
 
     override suspend fun getSeriesUserData(seriesId: Int, token: String): List<UserDataContent> {
-        TODO("Not yet implemented")
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.SERIE_USER_DATA, listOf(seriesId.toString())),
+            method = MethodHTTP.GET,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        val listOfUserDataContentObj = httpClient.send(request){ response ->
+            handleResponse<ListOfUserDataContent>(response, ListOfUserDataContent::class.java)
+        }
+        return listOfUserDataContentObj.list
     }
 
-    override suspend fun getAllWatchedEpFromSeries(
-        seriesId: Int,
-        token: String
-    ): List<EpisodeData> {
-        TODO("Not yet implemented")
+    override suspend fun getAllWatchedEpFromSeries(seriesId: Int, token: String): List<EpisodeData> {
+        val request = buildRequest(
+            url = cinescopeURL
+                .joinPathWithVariables(Series.ADD_SERIE, listOf(seriesId.toString())),
+            method = MethodHTTP.GET,
+            token = token
+        )
+        //TODO handle this exceptions with our errors(try-catch)
+        val listEpisodeDataObj = httpClient.send(request){ response ->
+            handleResponse<ListEpisodeData>(response, ListEpisodeData::class.java)
+        }
+        return listEpisodeDataObj.list
     }
 
 }

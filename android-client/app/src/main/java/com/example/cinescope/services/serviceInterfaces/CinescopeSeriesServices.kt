@@ -19,7 +19,7 @@ interface CinescopeSeriesServices {
 
     suspend fun addWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String): EmptyData
 
-    suspend fun deleteSeriesList(seriesId: Int, token: String): EmptyData
+    suspend fun deleteSeriesList(listId: Int, token: String): EmptyData
 
     suspend fun deleteWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String): EmptyData
 
