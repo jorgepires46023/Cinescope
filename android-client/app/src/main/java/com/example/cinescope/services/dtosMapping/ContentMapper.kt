@@ -6,12 +6,12 @@ import com.example.cinescope.domain.content.MovieData
 import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.domain.content.UserDataContent
 
-data class ListMovieData(val list: List<MovieData>)
+data class ListMovieData(val results: List<MovieData>)
 
-data class ListSeriesData(val list: List<SeriesData>)
+data class ListSeriesData(val results: List<SeriesData>)
 
-data class ListEpisodeData(val list: List<EpisodeData>)
+data class ListEpisodeData(val results: List<EpisodeData>)
 
-data class ListOfContentList(val list: List<ContentList>)
+data class ListOfContentList(val results: List<ContentList>)
 
-data class ListOfUserDataContent(val list: List<UserDataContent>)
+data class ListOfUserDataContent(val results: List<UserDataContent>)

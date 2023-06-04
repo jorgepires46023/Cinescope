@@ -104,7 +104,7 @@ class MoviesServices(
             handleResponse<ListMovieData>(response, ListMovieData::class.java)
         }
 
-        return listMovieDataObj.list
+        return listMovieDataObj.results
     }
 
     override suspend fun getAllMoviesLists(token: String): List<ContentList> {
@@ -117,7 +117,7 @@ class MoviesServices(
         val listOfContentListObj = httpClient.send(request){ response ->
             handleResponse<ListOfContentList>(response, ListOfContentList::class.java)
         }
-        return listOfContentListObj.list
+        return listOfContentListObj.results
     }
 
     override suspend fun getMoviesList(listId: Int, token: String): List<MovieData> {
@@ -132,7 +132,7 @@ class MoviesServices(
             handleResponse<ListMovieData>(response, ListMovieData::class.java)
         }
 
-        return listMovieDataObj.list
+        return listMovieDataObj.results
     }
 
     override suspend fun createMoviesList(name: String, token: String): ListId {
@@ -162,7 +162,7 @@ class MoviesServices(
         val listOfUserDataContent = httpClient.send(request){ response ->
             handleResponse<ListOfUserDataContent>(response, ListOfUserDataContent::class.java)
         }
-        return listOfUserDataContent.list
+        return listOfUserDataContent.results
     }
 
 }

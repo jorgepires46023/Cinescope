@@ -25,10 +25,12 @@ class SeriesServices(
     httpClient: OkHttpClient
 ) : CinescopeSeriesServices, CinescopeServices(gson, httpClient) {
     override suspend fun addSeriesToList(seriesId: Int, listId: Int, token: String) {
+        val body = FormBody.Builder().build()
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.ADD_SERIE, listOf(seriesId.toString(),listId.toString())),
             method = MethodHTTP.POST,
+            body = body,
             token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
@@ -130,15 +132,17 @@ class SeriesServices(
     override suspend fun getAllSeriesByState(state: String, token: String): List<SeriesData> {
         val request = buildRequest(
             url = cinescopeURL
-                .joinPathWithVariables(Series.ADD_SERIE, listOf(state)),
+                .joinPathWithVariables(Series.GET_SERIES_BY_STATE, listOf(state)),
             method = MethodHTTP.GET,
             token = token
         )
         //TODO handle this exceptions with our errors(try-catch)
         val listSeriesDataObj = httpClient.send(request){ response ->
+            println("Test inside response handler")
+            println(response.body)
             handleResponse<ListSeriesData>(response, ListSeriesData::class.java)
         }
-        return listSeriesDataObj.list
+        return listSeriesDataObj.results
     }
 
     override suspend fun getAllSeriesLists(token: String): List<ContentList> {
@@ -151,7 +155,7 @@ class SeriesServices(
         val listContentListObj = httpClient.send(request){ response ->
             handleResponse<ListOfContentList>(response, ListOfContentList::class.java)
         }
-        return listContentListObj.list
+        return listContentListObj.results
     }
 
     override suspend fun getSeriesList(listId: Int, token: String): List<SeriesData> {
@@ -165,7 +169,7 @@ class SeriesServices(
         val listSeriesDataObj = httpClient.send(request){ response ->
             handleResponse<ListSeriesData>(response, ListSeriesData::class.java)
         }
-        return listSeriesDataObj.list
+        return listSeriesDataObj.results
     }
 
     override suspend fun createSeriesList(name: String, token: String): ListId {
@@ -195,13 +199,13 @@ class SeriesServices(
         val listOfUserDataContentObj = httpClient.send(request){ response ->
             handleResponse<ListOfUserDataContent>(response, ListOfUserDataContent::class.java)
         }
-        return listOfUserDataContentObj.list
+        return listOfUserDataContentObj.results
     }
 
     override suspend fun getAllWatchedEpFromSeries(seriesId: Int, token: String): List<EpisodeData> {
         val request = buildRequest(
             url = cinescopeURL
-                .joinPathWithVariables(Series.ADD_SERIE, listOf(seriesId.toString())),
+                .joinPathWithVariables(Series.GET_WATCHED_EP_LIST, listOf(seriesId.toString())),
             method = MethodHTTP.GET,
             token = token
         )
@@ -209,6 +213,6 @@ class SeriesServices(
         val listEpisodeDataObj = httpClient.send(request){ response ->
             handleResponse<ListEpisodeData>(response, ListEpisodeData::class.java)
         }
-        return listEpisodeDataObj.list
+        return listEpisodeDataObj.results
     }
 }

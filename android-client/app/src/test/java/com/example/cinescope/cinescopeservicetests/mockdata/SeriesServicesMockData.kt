@@ -5,6 +5,10 @@ import com.example.cinescope.domain.content.EpisodeData
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.domain.content.UserDataContent
+import com.example.cinescope.services.dtosMapping.ListEpisodeData
+import com.example.cinescope.services.dtosMapping.ListOfContentList
+import com.example.cinescope.services.dtosMapping.ListOfUserDataContent
+import com.example.cinescope.services.dtosMapping.ListSeriesData
 
 /** Simple Data **/
 const val fakeUserToken = "1904-02-28"
@@ -35,17 +39,17 @@ val userDataForSeriesData2 = UserDataContent(88, fakeSeriesState, listOfSeries1)
 
 /** Responses to enqueue in MockServer **/
 
-val getAllSeriesByStateResponse = listOf(seriesData1, seriesData2)
+val getAllSeriesByStateResponse = ListSeriesData(listOf(seriesData1, seriesData2))
 
-val getAllSeriesListsResponse = listOf(seriesList1, seriesList2)
+val getAllSeriesListsResponse = ListOfContentList(listOf(seriesList1, seriesList2))
 
-val getSeriesListResponse = listOf(seriesData1, seriesData2)
+val getSeriesListResponse = ListSeriesData(listOf(seriesData1, seriesData2))
 
 val createSeriesListResponse = ListId(fakeSeriesId)
 
-val getSeriesUserDataResponse = listOf(userDataForSeriesData2, userDataForSeriesData1)
+val getSeriesUserDataResponse = ListOfUserDataContent(listOf(userDataForSeriesData2, userDataForSeriesData1))
 
-val getAllWatchedEpFromSeriesResponse = listOf(epData1, epData2)
+val getAllWatchedEpFromSeriesResponse = ListEpisodeData(listOf(epData1, epData2))
 
 /** Expected results from SearchService methods **/
 
