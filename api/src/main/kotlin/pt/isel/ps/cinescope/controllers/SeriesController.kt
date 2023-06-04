@@ -3,6 +3,7 @@ package pt.isel.ps.cinescope.controllers
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import pt.isel.ps.cinescope.controllers.models.ListOutput
 import pt.isel.ps.cinescope.controllers.models.SeriesModel
 import pt.isel.ps.cinescope.services.SeriesServices
 
@@ -30,10 +31,9 @@ class SeriesController(val seriesServices: SeriesServices) {
     @GetMapping(Series.GET_SERIES_BY_STATE)
     fun getSeriesByState(@RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String, @PathVariable state: String): ResponseEntity<*>{
         val series = seriesServices.getSeriesFromUserByState(bearer, state)
-
         return ResponseEntity
             .status(200)
-            .body(series)
+            .body(ListOutput(series))
     }
 
     @PostMapping(Series.ADD_WATCHED_EP)
@@ -60,7 +60,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
         return ResponseEntity
             .status(200)
-            .body(list)
+            .body(ListOutput(list))
     }
 
 
@@ -70,7 +70,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
         return ResponseEntity
             .status(200)
-            .body(lists)
+            .body(ListOutput(lists))
     }
 
     @GetMapping(Series.GET_LIST)
@@ -79,7 +79,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
         return ResponseEntity
             .status(200)
-            .body(list)
+            .body(ListOutput(list))
     }
 
     @PostMapping(Series.CREATE_LIST)

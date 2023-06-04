@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.function.ServerRequest.Headers
+import pt.isel.ps.cinescope.controllers.models.ListOutput
 import pt.isel.ps.cinescope.controllers.models.MoviesModel
 import pt.isel.ps.cinescope.services.MoviesServices
 
@@ -33,7 +34,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
         return ResponseEntity
             .status(200)
-            .body(lists)
+            .body(ListOutput(lists))
     }
 
 
@@ -43,7 +44,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
         return ResponseEntity
             .status(200)
-            .body(lists)
+            .body(ListOutput(lists))
     }
 
     @GetMapping(Movies.GET_LIST)
@@ -52,7 +53,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
         return ResponseEntity
             .status(200)
-            .body(list)
+            .body(ListOutput(list))
     }
 
     @PostMapping(Movies.CREATE_LIST)

@@ -1045,6 +1045,7 @@ components:
         episode:
           type: integer
       required:
+        - epID
         - tmdbID
         - name
         - img

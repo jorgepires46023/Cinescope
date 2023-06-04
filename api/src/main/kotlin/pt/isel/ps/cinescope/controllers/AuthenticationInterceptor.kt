@@ -11,12 +11,12 @@ class AuthenticationInterceptor(private val tokenProcessor: TokenProcessor): Han
         // enforce authentication
         val token = request.getHeader(NAME_AUTHORIZATION_HEADER)
         val user = tokenProcessor.processToken(token)
-        if (user == null) {
+        return if (user == null) {
             response.status = 401
             response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, TokenProcessor.SCHEME)
-            return false
+            false
         } else {
-            return true
+            true
         }
     }
 

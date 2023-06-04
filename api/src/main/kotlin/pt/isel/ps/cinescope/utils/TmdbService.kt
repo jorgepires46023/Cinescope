@@ -5,7 +5,9 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import pt.isel.ps.cinescope.domain.*
+import pt.isel.ps.cinescope.services.exceptions.InternalServerErrorException
 
+//TODO acrescentar tratamento de erros lancados pela api externa
 
 const val TMDB_API_KEY = "api_key=1f54ddc9f7ff5ecab4807e013dddc65b"
 const val TMDB_URL = "https://api.themoviedb.org/3/"
@@ -40,13 +42,15 @@ class TmdbService {
         fetch("movie/$mid/external_ids?$TMDB_API_KEY").bodyToMono<ExternalIds>().block()
 
     fun getSerieDetails(sid: Int) =
-        fetch("tv/$sid?$TMDB_API_KEY").bodyToMono<SeriesDetails>().block()
+        fetch("tv/$sid?$TMDB_API_KEY").bodyToMono<SeriesDetails>()
+            //.onErrorMap { e -> throw e.cause ?: InternalServerErrorException("external api") }
+            .block()
 
     fun getSerieImages(sid: Int) =
-        fetch("/tv/$sid/images?$TMDB_API_KEY").bodyToMono<ImagesResponse>().block()
+        fetch("tv/$sid/images?$TMDB_API_KEY").bodyToMono<ImagesResponse>().block()
 
     fun getMovieImages(sid: Int) =
-        fetch("/movie/$sid/images?$TMDB_API_KEY").bodyToMono<ImagesResponse>().block()
+        fetch("movie/$sid/images?$TMDB_API_KEY").bodyToMono<ImagesResponse>().block()
 
     fun getSeasonDetails(sid: Int, seasonNum: Int) =
         fetch("tv/$sid/season/$seasonNum?$TMDB_API_KEY").bodyToMono<SeasonDetails>().block()
@@ -58,7 +62,7 @@ class TmdbService {
         fetch("tv/$sid/season/$seasonNum/episode/$epNum?$TMDB_API_KEY").bodyToMono<EpisodeDetails>().block()
 
     fun getSeasonWatchProviders(sid: Int, season: Int) =
-        fetch("/tv/$sid/season/$season/watch/providers?$TMDB_API_KEY").bodyToMono<WatchProviders>().block()
+        fetch("tv/$sid/season/$season/watch/providers?$TMDB_API_KEY").bodyToMono<WatchProviders>().block()
 
     fun getSeriesExternalId(sid: Int) =
         fetch("tv/$sid/external_ids?$TMDB_API_KEY").bodyToMono<ExternalIds>().block()
