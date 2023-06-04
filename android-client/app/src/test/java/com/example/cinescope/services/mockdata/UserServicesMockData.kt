@@ -1,4 +1,4 @@
-package com.example.cinescope.cinescopeservicetests.mockdata
+package com.example.cinescope.services.mockdata
 
 import com.example.cinescope.domain.user.Token
 import com.example.cinescope.domain.user.UserInfo

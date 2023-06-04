@@ -1,4 +1,4 @@
-package com.example.cinescope.cinescopeservicetests.mockdata
+package com.example.cinescope.services.mockdata
 
 import com.example.cinescope.domain.searches.SearchContent
 import com.example.cinescope.domain.MediaType

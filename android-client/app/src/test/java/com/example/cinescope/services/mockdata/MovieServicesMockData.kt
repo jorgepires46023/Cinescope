@@ -1,4 +1,4 @@
-package com.example.cinescope.cinescopeservicetests.mockdata
+package com.example.cinescope.services.mockdata
 
 import com.example.cinescope.domain.MovieState
 import com.example.cinescope.domain.content.ContentList

@@ -1,14 +1,14 @@
-package com.example.cinescope.cinescopeservicetests
+package com.example.cinescope.services
 
-import com.example.cinescope.cinescopeservicetests.mockdata.createUserResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.emailRuiBorders
-import com.example.cinescope.cinescopeservicetests.mockdata.expectedCreateUserResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.expectedGetUserInfoResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.expectedLoginResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.getUserInfoResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.loginResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.pwdRuiBorders
-import com.example.cinescope.cinescopeservicetests.mockdata.tokenRuiBorders
+import com.example.cinescope.services.mockdata.createUserResponse
+import com.example.cinescope.services.mockdata.emailRuiBorders
+import com.example.cinescope.services.mockdata.expectedCreateUserResponse
+import com.example.cinescope.services.mockdata.expectedGetUserInfoResponse
+import com.example.cinescope.services.mockdata.expectedLoginResponse
+import com.example.cinescope.services.mockdata.getUserInfoResponse
+import com.example.cinescope.services.mockdata.loginResponse
+import com.example.cinescope.services.mockdata.pwdRuiBorders
+import com.example.cinescope.services.mockdata.tokenRuiBorders
 import com.example.cinescope.services.cinescopeAPI.UserServices
 import com.example.cinescope.testutils.MockWebServerRule
 import com.google.gson.Gson

@@ -1,21 +1,21 @@
-package com.example.cinescope.cinescopeservicetests
+package com.example.cinescope.services
 
 
-import com.example.cinescope.cinescopeservicetests.mockdata.searchContentObjWithEmptyLists
-import com.example.cinescope.cinescopeservicetests.mockdata.emptyResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.expectedSearchContent
-import com.example.cinescope.cinescopeservicetests.mockdata.expectedPopularMovies
-import com.example.cinescope.cinescopeservicetests.mockdata.expectedPopularSeries
-import com.example.cinescope.cinescopeservicetests.mockdata.expectedRecommendedMovies
-import com.example.cinescope.cinescopeservicetests.mockdata.expectedRecommendedSeries
-import com.example.cinescope.cinescopeservicetests.mockdata.movie1
-import com.example.cinescope.cinescopeservicetests.mockdata.popMovieResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.popSeriesResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.recommendedMovieResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.recommendedSeriesResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.searchByQueryResponse
-import com.example.cinescope.cinescopeservicetests.mockdata.series1
-import com.example.cinescope.cinescopeservicetests.mockdata.wrongObjToMap
+import com.example.cinescope.services.mockdata.searchContentObjWithEmptyLists
+import com.example.cinescope.services.mockdata.emptyResponse
+import com.example.cinescope.services.mockdata.expectedSearchContent
+import com.example.cinescope.services.mockdata.expectedPopularMovies
+import com.example.cinescope.services.mockdata.expectedPopularSeries
+import com.example.cinescope.services.mockdata.expectedRecommendedMovies
+import com.example.cinescope.services.mockdata.expectedRecommendedSeries
+import com.example.cinescope.services.mockdata.movie1
+import com.example.cinescope.services.mockdata.popMovieResponse
+import com.example.cinescope.services.mockdata.popSeriesResponse
+import com.example.cinescope.services.mockdata.recommendedMovieResponse
+import com.example.cinescope.services.mockdata.recommendedSeriesResponse
+import com.example.cinescope.services.mockdata.searchByQueryResponse
+import com.example.cinescope.services.mockdata.series1
+import com.example.cinescope.services.mockdata.wrongObjToMap
 import com.example.cinescope.domain.searches.Movie
 import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.cinescopeAPI.SearchServices
