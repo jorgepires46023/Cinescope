@@ -151,9 +151,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/ListOutputMovies'
+
         400:
           description: Invalid parameters
         401:
@@ -175,9 +174,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ListDetails'
+                $ref: '#/components/schemas/ListOutputListDetails'
         401:
           description: Unauthorized
         404:
@@ -204,9 +201,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/ListOutputMovies'
         400:
           description: Invalid parameters
         401:
@@ -321,9 +316,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MovieUserData'
+                $ref: '#/components/schemas/MovieUserData'
         400:
           description: Invalid parameters
         401:
@@ -438,9 +431,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Serie'
+                $ref: '#/components/schemas/ListOutputSeries'
         400:
           description: Invalid parameters
         401:
@@ -537,9 +528,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Episode'
+                $ref: '#/components/schemas/ListOutputEpisodes'
         400:
           description: Invalid parameters
         401:
@@ -561,9 +550,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ListDetails'
+                $ref: '#/components/schemas/ListOutputListDetails'
         400:
           description: Invalid parameters
         401:
@@ -619,9 +606,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Serie'
+                $ref: '#/components/schemas/ListOutputSeries'
         400:
           description: Invalid parameters
         401:
@@ -705,9 +690,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SerieUserData'
+                $ref: '#/components/schemas/SerieUserData'
         400:
           description: Invalid parameters
         401:
@@ -1046,7 +1029,7 @@ components:
           type: integer
       required:
         - epID
-        - tmdbID
+        - seriesID
         - name
         - img
         - state
@@ -1283,6 +1266,34 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ListDetails'
+    ListOutputMovies:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Movie'
+    ListOutputListDetails:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListDetails'
+    ListOutputSeries:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Serie'
+    ListOutputEpisodes:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Episode'
 
 
   securitySchemes:
