@@ -5,16 +5,20 @@ import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.MovieData
 import com.example.cinescope.domain.content.UserDataContent
+import com.example.cinescope.services.dtosMapping.ListMovieData
+import com.example.cinescope.services.dtosMapping.ListOfContentList
+import com.example.cinescope.services.dtosMapping.ListOfUserDataContent
 
 /** Simple Data **/
 const val fakeToken = "1904-02-28"
 const val fakeMovieId = 1
 const val fakeListId = 2
 const val fakeListName = "Some Name"
+const val fakeMovieState = "SomeState"
 
-val movieData1 = MovieData(99, "123", "imgpath1", "Movie1", MovieState.WATCHED.state)
-val movieData2 = MovieData(88, "456", "imgpath2", "Movie2", MovieState.WATCHED.state)
-val movieData3 = MovieData(77, "789", "imgpath3", "Movie3", MovieState.PTW.state)
+val movieData1 = MovieData(99, "123", "imgpath1", "Movie1", fakeMovieState)
+val movieData2 = MovieData(88, "456", "imgpath2", "Movie2", fakeMovieState)
+val movieData3 = MovieData(77, "789", "imgpath3", "Movie3", fakeMovieState)
 
 val movieList1 = ContentList(1, "Action Movies")
 val movieList2 = ContentList(2, "Comedy Movies")
@@ -32,15 +36,15 @@ val userDataForMovieData3 = UserDataContent(77, MovieState.PTW.state, listWhichC
 
 /** Responses to enqueue in MockServer **/
 
-val getAllMoviesByStateResponse = listOf(movieData1, movieData2) //When state = "Watched"
+val getAllMoviesByStateResponse = ListMovieData(listOf(movieData1, movieData2)) //When state = "Watched"
 
-val getAllMoviesListsResponse = listOf(movieList1, movieList2, movieList3)
+val getAllMoviesListsResponse = ListOfContentList(listOf(movieList1, movieList2, movieList3))
 
-val getMoviesListResponse = listOf(movieData3, movieData2)
+val getMoviesListResponse = ListMovieData(listOf(movieData3, movieData2))
 
 val createMoviesListResponse = listId1
 
-val getMovieUserDataResponse = listOf(userDataForMovieData2, userDataForMovieData3)
+val getMovieUserDataResponse = ListOfUserDataContent(listOf(userDataForMovieData2, userDataForMovieData3))
 
 /** Expected results from SearchService methods **/
 

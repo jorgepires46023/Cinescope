@@ -22,7 +22,7 @@ const val fakeSeriesState = "Some State"
 const val episodeListId = 38
 
 val seriesData1 = SeriesData(fakeSeriesId, "123", "Series1", "imgpath1", episodeListId, fakeSeriesState)
-val seriesData2 = SeriesData(fakeSeriesId, "123", "Series1", "imgpath1", episodeListId, fakeSeriesState)
+val seriesData2 = SeriesData(fakeSeriesId, "124", "Series2", "imgpath2", episodeListId, fakeSeriesState)
 
 val epData1 = EpisodeData(1,1, "39", "Episode5", "imgPath", 10, 5)
 val epData2 = EpisodeData(1,1, "39", "Episode6", "imgPath", 10, 6)

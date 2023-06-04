@@ -123,7 +123,7 @@ class SearchServices(
     override suspend fun episodeDetails(seriesId: Int, seasonNr: Int, epNumber: Int): EpisodeInfo {
         val request = buildRequest(
             url = cinescopeURL
-                .joinPathWithVariables(Searches.MOVIE_DETAILS,
+                .joinPathWithVariables(Searches.EPISODE_DETAILS,
                     listOf(seriesId.toString(),seasonNr.toString(), epNumber.toString()))
         )
         //TODO handle this exceptions with our errors(try-catch)

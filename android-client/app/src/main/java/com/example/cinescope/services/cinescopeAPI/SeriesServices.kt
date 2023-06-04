@@ -138,8 +138,6 @@ class SeriesServices(
         )
         //TODO handle this exceptions with our errors(try-catch)
         val listSeriesDataObj = httpClient.send(request){ response ->
-            println("Test inside response handler")
-            println(response.body)
             handleResponse<ListSeriesData>(response, ListSeriesData::class.java)
         }
         return listSeriesDataObj.results
