@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { getPopularMovies, getPopularSeries } from "../RequestsHelpers/SearchRequestsHelper"
 import { useEffect, useState } from "react"
 import { EMPTY_LIST, List } from "../utils/Types"
+import { getMovie, getSerie } from "../utils/Tools"
 
 export function Homepage() {
 
@@ -26,13 +27,6 @@ export function Homepage() {
         getPopularSeriesInfo()
     }, [])
     
-    function getMovie(movieId: number) {
-        navigate(`/movies/${movieId}`, )
-    }
-
-    function getSerie(serieId: number) {
-        navigate(`/series/${serieId}`)
-    }
     
     return (
         <div className="pageDiv">
@@ -41,7 +35,7 @@ export function Homepage() {
                 
                 <div className="popularContentGrid">
                     {moviesList.results.map(movie =>
-                        <div className="cardContent" onClick={() => getMovie(movie.id)} key={movie.id}>
+                        <div className="cardContent" onClick={() => getMovie(movie.id, navigate)} key={movie.id}>
                              <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} className="imgPopular" />
                              <div className="cardOverlay">
                                 <p>{movie.title}</p>
@@ -57,7 +51,7 @@ export function Homepage() {
                 
                 <div className="popularContentGrid" >
                     {seriesList.results.map(series =>
-                        <div className="cardContent" onClick={() => getSerie(series.id)} key={series.id}>
+                        <div className="cardContent" onClick={() => getSerie(series.id, navigate)} key={series.id}>
                             <img src={`https://image.tmdb.org/t/p/w500${series.poster_path}`} alt={series.title} className="imgPopular" />
                             <div className="cardOverlay">
                                 <p>{series.name}</p>

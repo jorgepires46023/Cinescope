@@ -1,5 +1,4 @@
 import * as React from "react"
-import { NavBar } from "./navbar/Navbar"
 import { Link, useNavigate } from "react-router-dom"
 import { login } from "../RequestsHelpers/UserRequestsHelper"
 import { useContext, useState } from "react"
@@ -11,7 +10,7 @@ export function Login() {
 
     const [User, setUser] = useState<LoginInfo>(EMPTY_LOGIN_INFO)
 
-    const [errMsg, setErrMsg] = useState(true);
+    const [errMsg, setErrMsg] = useState(false);
 
     const navigate = useNavigate()
 
@@ -27,7 +26,7 @@ export function Login() {
             userInfo.setUserId(user.id)
             navigate("/home")
         } else {
-            setErrMsg(false)
+            setErrMsg(true)
         }
     }
 
@@ -44,11 +43,15 @@ export function Login() {
                 </div>
                 <form className="cardForm" onSubmit={handleLogin}>
                     <div className="inputDiv">
-                        <input type="text" id="email" placeholder="E-mail" className="emailInput" onChange={handleChange} value={User.email} /><br />
+                        <input required type="text" id="email" placeholder="E-mail" className="emailInput" onChange={handleChange} value={User.email} /><br />
                     </div>
                     <div className="inputDiv">
-                        <input type="password" id="password" placeholder="Password" className="passwdInput" onChange={handleChange} value={User.password} /><br></br><br />
+                        <input required type="password" id="password" placeholder="Password" className="passwdInput" onChange={handleChange} value={User.password} /><br></br><br />
                     </div>
+                    {errMsg && <div className="errorDiv">
+                        <h6 className='errorMsg'>Something when wrong. Please try again.</h6>
+                        <button className="errorButton" onClick={() => setErrMsg(false)}> X </button>
+                    </div>}
                     <input type="submit" className="submitButton" value="Login" />
                     <div className="hrDiv">
                         <hr className="hrClass" />

@@ -81,7 +81,14 @@ export async function createMoviesList(name: string, token: string) {
             name: name
         })
         })
-        .then(res => res.json())
+        .then(res => {
+            if(res.status == 200) {
+                return res.json()
+            } else {
+                throw new Error("Create List Failed");
+            }
+        })
+
 }
 
 export async function deleteMoviesList(listId: number, token: string) {

@@ -12,6 +12,11 @@ import { Series } from './components/Series';
 import { SearchResults } from './components/SearchResults';
 import { Profile } from './components/Profile';
 import { Logout } from './components/Logout';
+import { EpisodesDetails } from './components/EpisodesDetails';
+import { Lists } from './components/Lists';
+import { MoviesListDetails } from './components/MoviesListDetails';
+import { SeriesListDetails } from './components/SeriesListDetails';
+import { CreateList } from './components/CreateList';
 
 const routes = createBrowserRouter([
     {
@@ -38,7 +43,7 @@ const routes = createBrowserRouter([
                 "path": "/movies",
                 "element": <Movies />,
                 "children": [
-                    
+
                 ]
             },
             {
@@ -49,7 +54,12 @@ const routes = createBrowserRouter([
                 "path": "/series",
                 "element": <Series />,
                 "children": [
+                    
                 ]
+            },
+            {
+                "path": "/series/:serieId/season/:season/episode/:episodeNum",
+                "element": <EpisodesDetails />,
             },
             {
                 "path": "/series/:serieId",
@@ -62,6 +72,22 @@ const routes = createBrowserRouter([
             {
                 "path": "/profile",
                 "element": <Profile />
+            },
+            {
+                "path": "/lists",
+                "element": <Lists />
+            },
+            {
+                "path": "/movieslists/:listId",
+                "element": <MoviesListDetails />
+            },
+            {
+                "path": "/serieslists/:listId",
+                "element": <SeriesListDetails />
+            },
+            {
+                "path": "/createlist",
+                "element": <CreateList />
             }
         ]
     }

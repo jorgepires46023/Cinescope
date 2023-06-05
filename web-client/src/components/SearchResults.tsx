@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { search } from "../RequestsHelpers/SearchRequestsHelper";
 import { useEffect, useState } from "react";
 import { EMPTY_SEARCH_RESULTS, SearchResults } from "../utils/Types";
+import { IMAGE_DOMAIN, handleError } from "../utils/Tools";
 
 export function SearchResults() {
     const { query } = useParams()
@@ -19,11 +20,6 @@ export function SearchResults() {
     useEffect(() => {
         getSearchResults()
     }, [query])
-
-    function handleError(ev: React.BaseSyntheticEvent) {
-        ev.currentTarget.src = "/Not Found poster.png"
-
-    }
 
     function getContent(mediaType: string, id: number) {
         if(mediaType == "movie") {
@@ -44,7 +40,7 @@ export function SearchResults() {
                 {searchResults.results.map((result) => {
                     if (result.media_type != "person") {
                         return <div className="cardContent" onClick={() => getContent(result.media_type, result.id)} key={result.id}>
-                            <img src={`https://image.tmdb.org/t/p/w500${result.poster_path}`} alt="Not Found poster.png" onError={handleError} className="imgPopular" />
+                            <img src={`${IMAGE_DOMAIN}${result.poster_path}`} alt="Not Found poster.png" onError={handleError} className="imgPopular" />
                             <div className="cardOverlay">
                                 <p>{result.title ? result.title : result.name}</p>
                             </div>

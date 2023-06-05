@@ -2,7 +2,7 @@ import * as React from "react";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getMoviesDetails } from "../RequestsHelpers/SearchRequestsHelper";
-import { EMPTY_MOVIE_DETAILS_RESULTS, EMPTY_MOVIE_USER_DATA, EMPTY_PROVIDERS_INFO, EMPTY_USER_LISTS_ELEMS, /* EMPTY_USER_LISTS, */ MovieDetailsResults, MovieUserData, ProviderInfo, /* UserLists, */ UserListsElems } from "../utils/Types";
+import { EMPTY_LIST_RESULTS_USER_LISTS, EMPTY_MOVIE_DETAILS_RESULTS, EMPTY_CONTENT_USER_DATA, EMPTY_PROVIDERS_INFO, EMPTY_USER_LISTS_ELEMS, ListResults, /* EMPTY_USER_LISTS, */ MovieDetailsResults, ContentUserData, ProviderInfo, /* UserLists, */ UserListsElems } from "../utils/Types";
 import { BACKDROP_IMAGE_DOMAIN, IMAGE_DOMAIN, handleError } from "../utils/Tools";
 import { UserContext } from "./UserProvider";
 import { addMovieToList, changeMovieState, deleteMovieFromList, deleteStateFormMovie, getMoviesListByState, getMoviesLists, getMoviesUserData } from "../RequestsHelpers/MoviesRequestsHelper";
@@ -14,13 +14,13 @@ export function MoviesDetails() {
 
     const [showInfo, setShowInfo] = useState<Array<ProviderInfo>>([EMPTY_PROVIDERS_INFO])
 
-    const [showLists, setShowLists] = useState<Array<UserListsElems>>([EMPTY_USER_LISTS_ELEMS])
+    const [showLists, setShowLists] = useState<ListResults<UserListsElems>>(EMPTY_LIST_RESULTS_USER_LISTS)
 
     const [showListsDiv, setShowListsDiv] = useState<boolean>(false)
 
     const [isChecked, setIsChecked] = useState<boolean>(false)
 
-    const [movieStateInfo, setMovieStateInfo] = useState<MovieUserData>(EMPTY_MOVIE_USER_DATA)
+    const [movieStateInfo, setMovieStateInfo] = useState<ContentUserData>(EMPTY_CONTENT_USER_DATA)
 
     const { movieId } = useParams()
 
@@ -34,17 +34,16 @@ export function MoviesDetails() {
         }
 
         if (userInfo.token) {
+            const select: HTMLSelectElement = document.querySelector('#showState')
             try {
                 const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
-                
+
                 if (movieStateInfo) {
                     setMovieStateInfo(movieStateInfo)
-                    const select: HTMLSelectElement = document.querySelector('#showState');
                     select.options.namedItem(movieStateInfo.state).selected = true
                 }
             } catch (error) {
                 if (error.status == 404) {
-                    const select: HTMLSelectElement = document.querySelector('#showState')
                     select.options.namedItem("Add State").selected = true
                 }
             }
@@ -75,18 +74,15 @@ export function MoviesDetails() {
     async function showUserLists(ev) {
 
         const lists = await getMoviesLists(userInfo.token)
+        try {
+            const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
+            setMovieStateInfo(movieStateInfo)
+        } catch (error) {
+        
+        }
 
         setShowLists(lists)
-
         setShowListsDiv(true)
-
-        /* movieStateInfo.lists.map(list => {
-            console.log(list.name)
-            const checkbox = document.getElementById(`${list.name}`) as HTMLInputElement;
-            console.log(checkbox)
-            checkbox.checked = true
-        }
-        ) */
     }
 
     async function addState(ev) {
@@ -102,32 +98,48 @@ export function MoviesDetails() {
 
         if (state == "Add State") {
             await deleteStateFormMovie(+movieId, userInfo.token)
+            const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
+            setMovieStateInfo(movieStateInfo)
+            showLists.results.map(list =>
+                showChecked(list.id)
+            )
         }
     }
 
     async function addToList(ev, listId: number) {
         const checked = ev.currentTarget.checked
+        const checkbox = document.getElementById(`${listId}`) as HTMLInputElement;
         if (checked) {
             await addMovieToList(+movieId, listId, userInfo.token)
+
+            try {
+                const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
+                const select: HTMLSelectElement = document.querySelector('#showState')
+                select.options.namedItem(movieStateInfo.state).selected = true
+            } catch (error) {}
+
+            checkbox.checked = true
         } else {
             await deleteMovieFromList(listId, +movieId, userInfo.token)
-           
+            checkbox.checked = false
         }
     }
 
     function showChecked(listId: number) {
-        const list = movieStateInfo.lists.find(list => list.id === listId)
-        if(list) {
-            return true
-        } else {
-            return false
+        if (movieStateInfo.lists) {
+            const list = movieStateInfo.lists.find(list => list.id === listId)
+            if (list) {
+                return true
+            } else {
+                return false
+            }
         }
     }
 
     return (
         <div className="pageDiv" style={{ backgroundImage: `url(${BACKDROP_IMAGE_DOMAIN}/${movie.movieDetails.backdrop_path})` }}>
             {
-                showListsDiv && 
+                showListsDiv &&
                 <div className="showListsDiv">
                     <div className="listsTitleDiv">
                         <button className="exitLists" onClick={() => setShowListsDiv(false)}> {"<"}</button>
@@ -137,16 +149,16 @@ export function MoviesDetails() {
                     <div className="showListsGrid">
 
                         {
-                            showLists.map(list =>
+                            showLists.results.map(list =>
                                 <div className="showListInfo">
                                     <div className="listInfo">
                                         <label htmlFor={list.name}>{list.name}</label>
-                                        <input id={list.name} name={list.name} type="checkbox" checked={showChecked(list.id)} onChange={(event) => addToList(event, list.id)} className="checkmarkLists" />
+                                        <input id={`${list.id}`} name={list.name} type="checkbox" checked={showChecked(list.id)} onClick={(event) => addToList(event, list.id)} className="checkmarkLists" />
                                     </div>
                                 </div>
                             )
                         }
-                        
+
                     </div>
                 </div>
             }
@@ -155,7 +167,7 @@ export function MoviesDetails() {
                     <img src={`${IMAGE_DOMAIN}/${movie.movieDetails.poster_path}`} alt={movie.movieDetails.title} onError={handleError} className="posterImg" />
                     {userInfo.token && <div className="buttonsDiv">
                         <div className="buttonState">
-                            <select name="show" id="showState" onClick={addState} className="dropdownState">
+                            <select name="show" id="showState" onChange={addState} className="dropdownState">
                                 <option id="Add State" value="Add State" className="selected" selected={false} >Add State</option>
                                 <option id="PTW" value="PTW" className="selected" selected={false}>PTW</option>
                                 <option id="Watched" value="Watched" className="selected" selected={false}>Watched</option>
@@ -204,7 +216,7 @@ export function MoviesDetails() {
                             </div>
                             {movie.watchProviders.results.PT &&
                                 <div className="dropdownDiv">
-                                    <select name="show" id="show" onClick={showSelected} className="dropdown">
+                                    <select name="show" id="show" onChange={showSelected} className="dropdown">
                                         <option value="stream" className="selected">Stream</option>
                                         <option value="buy" className="selected">Buy</option>
                                         <option value="rent" className="selected">Rent</option>

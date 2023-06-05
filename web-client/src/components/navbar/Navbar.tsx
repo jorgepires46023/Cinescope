@@ -23,7 +23,7 @@ export function NavBar() {
                 {/*Links quando User NÃO está com Login Feito*/}
                 { !loggedIn && <Link className='iselLink' to="/login">Login/Create User</Link> }
                 {/*Links quando User está com Login Feito */}
-                { loggedIn && <Link className='iselLink' to={"/user/" + userInfo.userId}>Lists</Link>}
+                { loggedIn && <Link className='iselLink' to={"/lists"}>Lists</Link>}
                 { loggedIn && <Link className='iselLink' to="/profile">Profile</Link> }
                 { loggedIn && <Link className='iselLink' to="/logout">Logout</Link>}
                 

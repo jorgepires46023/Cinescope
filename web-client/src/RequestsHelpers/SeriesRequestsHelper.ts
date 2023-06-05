@@ -47,8 +47,8 @@ export async function getSeriesByState(state: string, token: string) {
         .then(res => res.json())
 }
 
-export async function addWatchedEpisode(serieId: number, epId: string, epNum: number, seasonNum: number, token: string) {
-    return await fetch(`${DOMAIN_URL}/series/${serieId}/ep/${epId}`, {
+export async function addWatchedEpisode(serieId: number, epNum: number, seasonNum: number, token: string) {
+    return await fetch(`${DOMAIN_URL}/series/${serieId}/ep`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -62,13 +62,17 @@ export async function addWatchedEpisode(serieId: number, epId: string, epNum: nu
         .then(res => res.json())
 }
 
-export async function removeWatchedEpisode(serieId: number, epId: string, token: string) {
-    return await fetch(`${DOMAIN_URL}/series/${serieId}/ep/${epId}`, {
+export async function removeWatchedEpisode(serieId: number, epNum: number, seasonNum: number, token: string) {
+    return await fetch(`${DOMAIN_URL}series/${serieId}/season/${seasonNum}/ep/${epNum}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             "Authorization":`Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({
+            episodeNumber: epNum,
+            seasonNumber: seasonNum
+        })
         })
         .then(res => res.json())
 }
@@ -117,7 +121,13 @@ export async function createSeriesList(name: string, token: string) {
             name: name
         })
         })
-        .then(res => res.json())
+        .then(res => {
+            if(res.status == 200) {
+                return res.json()
+            } else {
+                throw new Error("Create List Failed");
+            }
+        })
 }
 
 export async function deleteSeriesList(listId: number, token: string) {
@@ -134,6 +144,17 @@ export async function deleteSeriesList(listId: number, token: string) {
 export async function deleteSerieFromList(listId: number, serieId: number, token: string) {
     return await fetch(`${DOMAIN_URL}/series/list/${listId}/serie/${serieId}`, {
         method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization":`Bearer ${token}`
+        }
+        })
+        .then(res => res.json())
+}
+
+export async function getSeriesUserData(serieId: number, token: string) {
+    return await fetch(`${DOMAIN_URL}/series/${serieId}`, {
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization":`Bearer ${token}`

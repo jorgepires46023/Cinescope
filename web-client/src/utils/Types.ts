@@ -135,7 +135,7 @@ export type Episode = {
 }
 
 export type SeasonDetails = {
-    air_date: string ,
+    air_date: string,
     episodes: [Episode],
     season_number: number
 }
@@ -145,13 +145,65 @@ export type UserListsElems = {
     name: string
 }
 
-export type MovieUserData = {
+export type ContentUserData = {
     id: number,
     state: string,
     lists: [UserListsElems]
 }
-    
-/*                        Empty Objects                          */ 
+
+export type WatchedEpisode = {
+    imdbID: string,
+    seriesID: number,
+    name: string,
+    img: string,
+    season: number,
+    episode: number
+}
+
+export type EpisodeDetails = {
+    air_date: string,
+    episode_number: number,
+    id: number,
+    name: string,
+    overview: string,
+    still_path: string
+}
+
+export type EpisodeDetailsResults = {
+    episodeDetails: EpisodeDetails,
+    externalIds: ExternalIds
+}
+
+export type Content = {
+    imdbId: string,
+    tmdbId: number,
+    name: string,
+    img: string,
+    state: string
+}
+
+export type ContentIndexs = {
+    init: number,
+    end: number
+}
+
+export type NewListInfo = {
+    type: string,
+    name: string
+}
+
+export type ListResults<T> = {
+    results: [T]
+}
+
+/*                        Init Objects                          */
+
+export const INIT_INDEXS: ContentIndexs = {
+    init: 0,
+    end: 4
+}
+
+/*                        Empty Objects                          */
 
 export const EMPTY_EXTERNAL_IDS: ExternalIds = {
     imdb_id: "",
@@ -299,8 +351,56 @@ export const EMPTY_USER_LISTS_ELEMS: UserListsElems = {
     name: ""
 }
 
-export const EMPTY_MOVIE_USER_DATA: MovieUserData = {
+export const EMPTY_CONTENT_USER_DATA: ContentUserData = {
     id: 0,
     state: "",
     lists: [EMPTY_USER_LISTS_ELEMS]
+}
+
+export const EMPTY_WATCHED_EPISODE: WatchedEpisode = {
+    imdbID: "",
+    seriesID: 0,
+    name: "",
+    img: "",
+    season: 0,
+    episode: 0
+}
+
+export const EMPTY_EPISODE_DETAILS: EpisodeDetails = {
+    air_date: "",
+    episode_number: 0,
+    id: 0,
+    name: "",
+    overview: "",
+    still_path: ""
+}
+
+export const EMPTY_EPISODE_DETAILS_RESULT: EpisodeDetailsResults = {
+    episodeDetails: EMPTY_EPISODE_DETAILS,
+    externalIds: EMPTY_EXTERNAL_IDS
+}
+
+export const EMPTY_CONTENT: Content = {
+    imdbId: "",
+    tmdbId: 0,
+    name: "",
+    img: "",
+    state: ""
+}
+
+export const EMPTY_NEW_LIST_INFO: NewListInfo = {
+    type: "Movies",
+    name: ""
+}
+
+export const EMPTY_LIST_RESULTS_USER_LISTS: ListResults<UserListsElems> = {
+    results: [EMPTY_USER_LISTS_ELEMS]
+}
+
+export const EMPTY_LIST_RESULTS: ListResults<Content> = {
+    results: [EMPTY_CONTENT]
+}
+
+export const EMPTY_LIST_RESULTS_WATCHED_EPISODES: ListResults<WatchedEpisode> = {
+    results: [EMPTY_WATCHED_EPISODE]
 }
