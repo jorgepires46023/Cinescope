@@ -4,6 +4,7 @@ package pt.isel.ps.cinescope.repositories.jdbi
 import org.jdbi.v3.core.Handle
 import pt.isel.ps.cinescope.domain.User
 import pt.isel.ps.cinescope.repositories.UsersRepository
+import pt.isel.ps.cinescope.services.exceptions.InternalServerErrorException
 import java.util.*
 
 class  JdbiUsersRepository (private val handle: Handle): UsersRepository {
@@ -15,14 +16,14 @@ class  JdbiUsersRepository (private val handle: Handle): UsersRepository {
 
     override fun insertUser(user: User): Int? =
         handle.createUpdate("insert into cinescope.users(userid, token, name, email, password, state) " +
-                "values (DEFAULT, DEFAULT, :name, :email, :password, :state)")
-            .bind("name", user.name)
-            .bind("email", user.email)
-            .bind("password", user.password)
-            .bind("state", user.state)
-            .executeAndReturnGeneratedKeys()
-            .mapTo(Int::class.java)
-            .firstOrNull()
+                        "values (DEFAULT, DEFAULT, :name, :email, :password, :state)")
+                .bind("name", user.name)
+                .bind("email", user.email)
+                .bind("password", user.password)
+                .bind("state", user.state)
+                .executeAndReturnGeneratedKeys()
+                .mapTo(Int::class.java)
+                .firstOrNull()
 
     override fun removeUser(id: Int) {
         handle.createUpdate("update cinescope.users set state = :state where userid = :userid")

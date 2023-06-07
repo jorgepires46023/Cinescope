@@ -10,13 +10,19 @@ class AuthenticationInterceptor(private val tokenProcessor: TokenProcessor): Han
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         // enforce authentication
         val token = request.getHeader(NAME_AUTHORIZATION_HEADER)
-        val user = tokenProcessor.processToken(token)
-        return if (user == null) {
+        return if (token == null) {
             response.status = 401
             response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, TokenProcessor.SCHEME)
             false
         } else {
-            true
+            try {
+                tokenProcessor.processToken(token)
+                true
+            } catch (e: Exception) {
+                response.status = 401
+                response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, TokenProcessor.SCHEME)
+                false
+            }
         }
     }
 

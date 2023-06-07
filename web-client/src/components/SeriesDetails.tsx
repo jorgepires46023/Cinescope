@@ -25,7 +25,7 @@ export function SeriesDetails() {
 
     const [seriesStateInfo, setSeriesStateInfo] = useState<ContentUserData>(EMPTY_CONTENT_USER_DATA)
 
-    const [watchedList, setWatchedList] = useState<ListResults<WatchedEpisode>>(EMPTY_LIST_RESULTS_WATCHED_EPISODES)
+    const [watchedList, setWatchedList] = useState<ListResults<WatchedEpisode>>({results: null})
 
     const { serieId } = useParams()
 
@@ -35,8 +35,8 @@ export function SeriesDetails() {
         setSerie(serieDetails)
 
         const season = await getSeasonDetails(+serieId, 1)
-
         setShowInfoSeason(season)
+        
         if (season) {
             const select: HTMLSelectElement = document.querySelector('#season')
             select.options.namedItem("1").selected = true
@@ -62,7 +62,6 @@ export function SeriesDetails() {
             }
 
             const watchedListInfo = await getWatchedEpisodesList(+serieId, userInfo.token)
-            console.log(watchedListInfo)
             setWatchedList(watchedListInfo)
         }
     }
@@ -76,6 +75,9 @@ export function SeriesDetails() {
         const seasonNum = ev.target.value
 
         const season = await getSeasonDetails(+serieId, seasonNum)
+
+        const watchedListInfo = await getWatchedEpisodesList(+serieId, userInfo.token)
+        setWatchedList(watchedListInfo)
 
         setShowInfoSeason(season)
     }
@@ -144,6 +146,9 @@ export function SeriesDetails() {
             showLists.results.map(list =>
                 showChecked(list.id)
             )
+
+            const watchedListInfo = await getWatchedEpisodesList(+serieId, userInfo.token)
+            setWatchedList(watchedListInfo)
         }
     }
 
@@ -155,6 +160,7 @@ export function SeriesDetails() {
             checkbox.checked = true
             try {
                 const movieStateInfo = await getSeriesUserData(+serieId, userInfo.token)
+                
                 const select: HTMLSelectElement = document.querySelector('#showState')
                 select.options.namedItem(movieStateInfo.state).selected = true
             } catch (error) { }
@@ -165,10 +171,8 @@ export function SeriesDetails() {
     }
 
     function showCheckedEpisode(episodeNum: number, episodeSeason: number) {
-
-        if (watchedList && seriesStateInfo.state) {
+        if (watchedList.results != null) {
             const ep = watchedList.results.find(episode => episode.episode == episodeNum && episode.season == episodeSeason)
-
             if (ep) {
                 return true
             } else {

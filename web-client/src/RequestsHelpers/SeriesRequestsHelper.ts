@@ -5,9 +5,9 @@ export async function addSerieToList(serieId: number, listId: number, token: str
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
-        })
+    })
         .then(res => res.json())
 }
 
@@ -16,12 +16,12 @@ export async function changeSerieState(serieId: number, state: string, token: st
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
             state: state
         })
-        })
+    })
         .then(res => res.json())
 }
 
@@ -30,9 +30,9 @@ export async function removeSerieState(serieId: number, token: string) {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
-        })
+    })
         .then(res => res.json())
 }
 
@@ -41,9 +41,9 @@ export async function getSeriesByState(state: string, token: string) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
-        })
+    })
         .then(res => res.json())
 }
 
@@ -52,13 +52,13 @@ export async function addWatchedEpisode(serieId: number, epNum: number, seasonNu
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
             episodeNumber: epNum,
             seasonNumber: seasonNum
         })
-        })
+    })
         .then(res => res.json())
 }
 
@@ -67,13 +67,13 @@ export async function removeWatchedEpisode(serieId: number, epNum: number, seaso
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
             episodeNumber: epNum,
             seasonNumber: seasonNum
         })
-        })
+    })
         .then(res => res.json())
 }
 
@@ -82,10 +82,19 @@ export async function getWatchedEpisodesList(serieId: number, token: string) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
-        })
-        .then(res => res.json())
+    })
+        .then(res => {
+            if (res.status == 200) {
+                return res.json()
+            }
+            if(res.status == 404) {
+                throw new Error("Not Found")
+            }
+        }
+        )
+        .catch(() => {return { results: null }})
 }
 
 export async function getSeriesLists(token: string) {
@@ -93,9 +102,9 @@ export async function getSeriesLists(token: string) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
-        })
+    })
         .then(res => res.json())
 }
 
@@ -104,9 +113,9 @@ export async function getSeriesList(listId: number, token: string) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
-        })
+    })
         .then(res => res.json())
 }
 
@@ -115,14 +124,14 @@ export async function createSeriesList(name: string, token: string) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
             name: name
         })
-        })
+    })
         .then(res => {
-            if(res.status == 200) {
+            if (res.status == 200) {
                 return res.json()
             } else {
                 throw new Error("Create List Failed");
@@ -135,9 +144,9 @@ export async function deleteSeriesList(listId: number, token: string) {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
-        })
+    })
         .then(res => res.json())
 }
 
@@ -146,9 +155,9 @@ export async function deleteSerieFromList(listId: number, serieId: number, token
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
-        })
+    })
         .then(res => res.json())
 }
 
@@ -157,8 +166,8 @@ export async function getSeriesUserData(serieId: number, token: string) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
         }
-        })
+    })
         .then(res => res.json())
 }
