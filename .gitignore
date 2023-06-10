@@ -2,3 +2,4 @@ web-client/node_modules/
 web-client/dist/
 web-client/package-lock.json
 .DS_Store
+android-client/app/src/main/java/com/example/cinescope/IgnoredIpAdressFile.kt

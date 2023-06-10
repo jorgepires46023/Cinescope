@@ -52,7 +52,7 @@ private fun checkAndAdd(results: Results): MediaContent?{
     if(results.media_type == MediaType.Movie.type){
         return Movie(
             movieId = results.id,
-            _name = results.name,
+            _name = results.title,
             _imgPath = results.poster_path
         )
     }

@@ -20,12 +20,12 @@ interface CinescopeSearchServices {
     //TODO check if we will implement this functionalities
     suspend fun getMovieRecommendations(id:Int): List<Movie>
 
-    suspend fun movieDetails(movieId: Int): MovieInfo
+    suspend fun getMovieDetails(movieId: Int): MovieInfo
 
-    suspend fun seriesDetails(seriesId: Int): SeriesInfo
+    suspend fun getSeriesDetails(seriesId: Int): SeriesInfo
 
-    suspend fun seasonDetails(seriesId: Int, seasonNr: Int): SeasonInfo
+    suspend fun getSeasonDetails(seriesId: Int, seasonNr: Int): SeasonInfo
 
-    suspend fun episodeDetails(seriesId: Int, seasonNr: Int, epNumber: Int): EpisodeInfo
+    suspend fun getEpisodeDetails(seriesId: Int, seasonNr: Int, epNumber: Int): EpisodeInfo
 
 }

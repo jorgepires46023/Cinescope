@@ -31,10 +31,13 @@ import okhttp3.mockwebserver.MockResponse
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
+import java.net.URL
 
 class SearchServicesTests {
     @get:Rule
     val testRule = MockWebServerRule()
+
+
 
     private val httpClient: OkHttpClient = OkHttpClient()
     private val gson: Gson= Gson()
@@ -54,6 +57,8 @@ class SearchServicesTests {
                 .setBody(jsonFormatter.toJson( popMovieResponse))
             )
 
+            //val cinescopeAPI = "http://localhost:9000"
+            //val searchServices = SearchServices(URL(cinescopeAPI), gson, httpClient)
             val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act

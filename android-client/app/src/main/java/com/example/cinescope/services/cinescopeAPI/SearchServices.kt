@@ -1,6 +1,6 @@
 package com.example.cinescope.services.cinescopeAPI
 
-import com.example.cinescope.domain.content.SeriesData
+import android.util.Log
 import com.example.cinescope.domain.searches.EpisodeInfo
 import com.example.cinescope.domain.searches.SearchContent
 import com.example.cinescope.domain.searches.Movie
@@ -8,20 +8,16 @@ import com.example.cinescope.domain.searches.MovieInfo
 import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.domain.searches.SeriesInfo
-import com.example.cinescope.services.MethodHTTP
 import com.example.cinescope.services.dtosMapping.ContentAPIDto
-import com.example.cinescope.services.dtosMapping.ListSeriesData
 import com.example.cinescope.services.dtosMapping.toContent
 import com.example.cinescope.services.dtosMapping.toMovies
 import com.example.cinescope.services.dtosMapping.toSeries
-import com.example.cinescope.services.exceptions.UnexpectedMappingException
 import com.example.cinescope.services.serviceInterfaces.CinescopeSearchServices
 import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.joinPathWithVariables
 import com.example.cinescope.utils.send
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
-import java.lang.RuntimeException
 import java.net.URL
 
 class SearchServices(
@@ -87,7 +83,7 @@ class SearchServices(
         return contentAPIDto.toMovies()
     }
 
-    override suspend fun movieDetails(movieId: Int): MovieInfo {
+    override suspend fun getMovieDetails(movieId: Int): MovieInfo {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Searches.MOVIE_DETAILS, listOf(movieId.toString()))
@@ -98,18 +94,21 @@ class SearchServices(
         }
     }
 
-    override suspend fun seriesDetails(seriesId: Int): SeriesInfo {
+    override suspend fun getSeriesDetails(seriesId: Int): SeriesInfo {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Searches.SERIE_DETAILS, listOf(seriesId.toString()))
         )
+        Log.v("TRENDING TEST", "Before sending request")
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
+            Log.v("TRENDING TEST", "Before handling Response")
             handleResponse(response, SeriesInfo::class.java)
+
         }
     }
 
-    override suspend fun seasonDetails(seriesId: Int, seasonNr: Int): SeasonInfo {
+    override suspend fun getSeasonDetails(seriesId: Int, seasonNr: Int): SeasonInfo {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Searches.SEASON_DETAILS, listOf(seriesId.toString(), seasonNr.toString()))
@@ -120,7 +119,7 @@ class SearchServices(
         }
     }
 
-    override suspend fun episodeDetails(seriesId: Int, seasonNr: Int, epNumber: Int): EpisodeInfo {
+    override suspend fun getEpisodeDetails(seriesId: Int, seasonNr: Int, epNumber: Int): EpisodeInfo {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Searches.EPISODE_DETAILS,
