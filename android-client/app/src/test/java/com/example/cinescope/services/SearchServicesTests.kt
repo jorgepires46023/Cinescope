@@ -392,4 +392,14 @@ class SearchServicesTests {
             //Assert
             Assert.assertEquals(searchContentObjWithEmptyLists, actual)
         }
+    @Test
+    fun `getMovieDetails returns MovieInfo when response is understood`(): Unit =
+        runBlocking {
+            val cinescopeAPI = "http://localhost:9000"
+            val searchServices = SearchServices(URL(cinescopeAPI), gson, httpClient)
+            //324857 -> Spiderman Into the Spiderverse Id
+            val movieInfo = searchServices.getMovieDetails(324857)
+            println(movieInfo)
+
+        }
 }

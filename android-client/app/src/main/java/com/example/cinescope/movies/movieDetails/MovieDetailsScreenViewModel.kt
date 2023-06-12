@@ -9,8 +9,9 @@ import com.example.cinescope.domain.searches.MovieInfo
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import kotlinx.coroutines.launch
 
-class MovieDetailsScreenViewModel(private val searchServices: SearchServices):ViewModel() {
-    private var loading by mutableStateOf(false)
+class MovieDetailsScreenViewModel(private val searchServices: SearchServices): ViewModel() {
+    var loading by mutableStateOf(false)
+        private set
 
     var movie by mutableStateOf<MovieInfo?>(null)
         private set
@@ -29,5 +30,9 @@ class MovieDetailsScreenViewModel(private val searchServices: SearchServices):Vi
                 loading = false
             }
         }
+    }
+
+    fun clearError(){
+        error=null
     }
 }

@@ -39,7 +39,11 @@ class MovieDetailsActivity: ComponentActivity() {
 
         setContent{
             MovieDetailsScreen(
-                movie = viewModel.movie
+                state = MovieDetailsState(
+                    movie = viewModel.movie,
+                    loading = viewModel.loading,
+                    error = viewModel.error
+                )
             )
         }
     }
