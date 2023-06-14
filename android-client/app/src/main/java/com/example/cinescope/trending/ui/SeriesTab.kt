@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.trending.TrendingScreenState
 import com.example.cinescope.ui.AlertError
-import com.example.cinescope.ui.ContentCard
+import com.example.cinescope.ui.GridRow
 
 @Composable
 fun SeriesTab(
@@ -33,7 +33,7 @@ fun SeriesTab(
                     val series1 = state.popSeries[i]
                     val series2 = if (i + 1 < state.popSeries.size) state.popSeries[i+1] else null
                     val series3 = if (i + 2 < state.popSeries.size) state.popSeries[i+2] else null
-                    ContentCard(content1 = series1, content2 = series2, content3 = series3, onGetSeriesDetails)
+                    GridRow(content1 = series1, content2 = series2, content3 = series3, onGetSeriesDetails)
                 }
             }else{
                 Text(text = "Cannot Render Series")
