@@ -1,5 +1,6 @@
 package pt.isel.ps.cinescope.controllers
 
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.cinescope.controllers.models.LoginInputModel
@@ -48,9 +49,12 @@ class UsersController(val usersService: UsersServices) {
     @PostMapping(Users.LOGIN)
     fun login(@RequestBody info: LoginInputModel): ResponseEntity<*>{
         val user = usersService.login(info.email, info.password)
+        val cookie = HttpHeaders()
+        cookie.add(HttpHeaders.SET_COOKIE, "userToken=${user.token}; Max-Age=-1")
 
         return ResponseEntity
             .status(200)
+            .headers(cookie)
             .body(user)
     }
 

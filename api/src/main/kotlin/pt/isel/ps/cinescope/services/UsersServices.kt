@@ -59,7 +59,7 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
     }
 */
 
-    fun login(email: String?, password: String?): User? {
+    fun login(email: String?, password: String?): User {
         if (email.isNullOrBlank() || password.isNullOrBlank()) {
             throw BadRequestException("You must provide valid email or password")
         }
