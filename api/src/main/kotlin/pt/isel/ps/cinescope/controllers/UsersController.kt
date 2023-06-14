@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*
 import pt.isel.ps.cinescope.controllers.models.LoginInputModel
 import pt.isel.ps.cinescope.controllers.models.UserInputModel
 import pt.isel.ps.cinescope.services.UsersServices
+import java.util.Date
 
 @RestController
 class UsersController(val usersService: UsersServices) {
@@ -50,7 +51,8 @@ class UsersController(val usersService: UsersServices) {
     fun login(@RequestBody info: LoginInputModel): ResponseEntity<*>{
         val user = usersService.login(info.email, info.password)
         val cookie = HttpHeaders()
-        cookie.add(HttpHeaders.SET_COOKIE, "userToken=${user.token}; Max-Age=-1")
+        val time = 30*24*60*60 //1 month
+        cookie.add(HttpHeaders.SET_COOKIE, "userToken=${user.token}; Max-Age=$time")
 
         return ResponseEntity
             .status(200)

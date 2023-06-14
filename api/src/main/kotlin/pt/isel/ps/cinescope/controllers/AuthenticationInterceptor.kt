@@ -9,16 +9,16 @@ import org.springframework.web.servlet.HandlerInterceptor
 class AuthenticationInterceptor(private val tokenProcessor: TokenProcessor): HandlerInterceptor{
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
 
-        val userCookie = request.cookies.find { c -> c.name == "userToken" }
+        val token = request.cookies.find { c -> c.name == "userToken" }
         // enforce authentication
-        val token = request.getHeader(NAME_AUTHORIZATION_HEADER)
+        //val token = request.getHeader(NAME_AUTHORIZATION_HEADER)
         return if (token == null) {
             response.status = 401
             response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, TokenProcessor.SCHEME)
             false
         } else {
             try {
-                tokenProcessor.processToken(token)
+                tokenProcessor.processToken(token.value)
                 true
             } catch (e: Exception) {
                     response.status = 401
