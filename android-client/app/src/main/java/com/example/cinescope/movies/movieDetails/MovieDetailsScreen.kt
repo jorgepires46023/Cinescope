@@ -25,8 +25,12 @@ import androidx.compose.ui.unit.sp
 import com.example.cinescope.TAG
 import com.example.cinescope.domain.searches.MovieInfo
 import com.example.cinescope.ui.BottomBar
+import com.example.cinescope.ui.ContentPoster
+import com.example.cinescope.ui.DescriptionCard
 import com.example.cinescope.ui.ImageUrl
+import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.WatchProviders
 import com.example.cinescope.ui.theme.CinescopeTheme
 
 data class MovieDetailsState(
@@ -63,69 +67,15 @@ fun MovieDetailsScreen(
                 ) {
                     if (!state.loading) {
                         if (state.movie != null) {
-                            Text(
-                                text = state.movie.movieDetails.title,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 24.sp,
-                                modifier = Modifier.padding(bottom = 8.dp)
+                            Title(title = state.movie.movieDetails.title)
+                            ContentPoster(
+                                imgPath = state.movie.movieDetails.imgPath,
+                                height = 448.dp
                             )
-                            Row(
-                                modifier = Modifier
-                                    .height(448.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                ImageUrl(path = state.movie.movieDetails.imgPath)
-                            }
-                            Card(
-                                border = BorderStroke(2.dp, Color.Black),
-                                modifier = Modifier.padding(4.dp)
-                            ) {
-                                Text(
-                                    text = state.movie.movieDetails.description,
-                                    modifier = Modifier.padding(8.dp),
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
                             Text(text = "Duration: " + state.movie.movieDetails.duration + " min")
-                            Card(
-                                border = BorderStroke(2.dp, Color.Black),
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "Available in:",
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(4.dp)
-                                )
-                                Row(modifier = Modifier.padding(4.dp)) {
-                                    Text(text = "Streaming Services")
-                                    if (state.movie.watchProviders.results.flatrate != null) {
-                                        state.movie.watchProviders.results.flatrate.map { service ->
-                                            Text(text = service.providerName)
-                                            ImageUrl(path = service.logoPath)
-                                        }
-                                    }
-                                }
-                                Row(modifier = Modifier.padding(4.dp)) {
-                                    Text(text = "Buy")
-                                    state.movie.watchProviders.results.buy?.map { service ->
-                                        Row {
-                                            Log.v(TAG,service.providerName)
-                                            Text(text = service.providerName)
-                                            //ImageUrl(path = service.logoPath)
-                                        }
-                                    }
-                                }
-                                Row(modifier = Modifier.padding(4.dp)) {
-                                    Text(text = "Renting Services")
-                                    state.movie.watchProviders.results.rent?.map { service ->
-                                        Row {
-                                            Text(text = service.providerName)
-                                            //ImageUrl(path = service.logoPath)
-                                        }
-                                    }
-                                }
+                            DescriptionCard(state.movie.movieDetails.description)
+                            if (state.movie.watchProviders.results.PT != null) { //TODO check if we should do something if there isn't any provider info
+                                WatchProviders(providers = state.movie.watchProviders.results.PT)
                             }
                         } else {
                             Text(text = "Cannot Render Movie Details")
