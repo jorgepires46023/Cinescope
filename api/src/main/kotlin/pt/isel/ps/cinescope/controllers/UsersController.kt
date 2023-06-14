@@ -51,8 +51,8 @@ class UsersController(val usersService: UsersServices) {
     fun login(@RequestBody info: LoginInputModel): ResponseEntity<*>{
         val user = usersService.login(info.email, info.password)
         val cookie = HttpHeaders()
-        val time = 30*24*60*60 //1 month
-        cookie.add(HttpHeaders.SET_COOKIE, "userToken=${user.token}; Max-Age=$time")
+        val time = 30*24*60*60 //1 month\
+        cookie.add(HttpHeaders.SET_COOKIE, "userToken=${user.token}; Max-Age=$time; path=/")
 
         return ResponseEntity
             .status(200)

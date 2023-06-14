@@ -187,19 +187,18 @@ export function MoviesDetails() {
                     </div>
                 </div>
                 <div className="apiDiv">
-                    <div className="apiInfo">
+                    {movie.externalIds.imdb_id && <div className="apiInfo" onClick={() => window.open(`http://www.imdb.com/title/${movie.externalIds.imdb_id}`)}>
                         <img src="/imdb logo.png" alt="Imdb" className="apiLogo" />
                         <h2 className="apiTitle">IMDB</h2>
-                    </div>
-                    <div className="apiInfo">
+                    </div>}
+                    {movie.externalIds.twitter_id && <div className="apiInfo" onClick={() => window.open(`http://www.twitter.com/${movie.externalIds.twitter_id}`)}>
                         <img src="/twitter logo.png" alt="Twitter" className="apiLogo" />
                         <h2 className="apiTitle">Twitter</h2>
-                    </div>
-                    <div className="apiInfo">
+                    </div>}
+                    {movie.externalIds.facebook_id && <div className="apiInfo" onClick={() => window.open(`http://www.facebook.com/${movie.externalIds.facebook_id}`)}>
                         <img src="/Facebook logo.png" alt="Facebook" className="apiLogo" />
                         <h2 className="apiTitle">Facebook</h2>
-                    </div>
-
+                    </div>}
                 </div>
             </div>
             <div className="watchProvidersDiv">

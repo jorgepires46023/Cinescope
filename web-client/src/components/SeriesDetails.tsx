@@ -232,18 +232,18 @@ export function SeriesDetails() {
                     </div>
                 </div>
                 <div className="apiDiv">
-                    <div className="apiInfo">
+                    {serie.externalIds.imdb_id && <div className="apiInfo" onClick={() => window.open(`http://www.imdb.com/title/${serie.externalIds.imdb_id}`)}>
                         <img src="/imdb logo.png" alt="Imdb" className="apiLogo" />
                         <h2 className="apiTitle">IMDB</h2>
-                    </div>
-                    <div className="apiInfo">
+                    </div>}
+                    {serie.externalIds.twitter_id && <div className="apiInfo" onClick={() => window.open(`http://www.twitter.com/${serie.externalIds.twitter_id}`)}>
                         <img src="/twitter logo.png" alt="Twitter" className="apiLogo" />
                         <h2 className="apiTitle">Twitter</h2>
-                    </div>
-                    <div className="apiInfo">
+                    </div>}
+                    {serie.externalIds.facebook_id && <div className="apiInfo" onClick={() => window.open(`http://www.facebook.com/${serie.externalIds.facebook_id}`)}>
                         <img src="/Facebook logo.png" alt="Facebook" className="apiLogo" />
                         <h2 className="apiTitle">Facebook</h2>
-                    </div>
+                    </div>}
                 </div>
             </div>
             <div className="watchProvidersDivSeries">

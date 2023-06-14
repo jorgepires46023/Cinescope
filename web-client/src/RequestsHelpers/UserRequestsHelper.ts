@@ -19,9 +19,10 @@ export async function createUser(name: string, email: string, password: string) 
 export async function getUserById(userId: number, token: string) {
     return await fetch(`${DOMAIN_URL}/users/${userId}`, {
         method: "GET",
+        credentials: 'include',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+        
         }
     })
         .then(res => res.json())
@@ -32,8 +33,8 @@ export async function editUser(userId: number, name: string, email: string, pass
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify({
             name: name,
             email: email,
@@ -46,9 +47,9 @@ export async function editUser(userId: number, name: string, email: string, pass
 export async function removeUser(userId: number, token: string) {
     return await fetch(`${DOMAIN_URL}/users/${userId}/edit`, {
         method: "PUT",
+        credentials: 'include',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
         }
     })
         .then(res => res.json())

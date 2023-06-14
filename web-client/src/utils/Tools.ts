@@ -5,6 +5,15 @@ export const IMAGE_DOMAIN = "https://image.tmdb.org/t/p/w500"
 
 export const BACKDROP_IMAGE_DOMAIN = "https://image.tmdb.org/t/p/original"
 
+export function getCookie(cookieName: string) {
+    return document.cookie.indexOf(`${cookieName}=`) != -1 ? true : false
+
+} 
+
+export function removeCookie(cookieName: string) {
+    return document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+} 
+
 export function handleError(ev: React.BaseSyntheticEvent) {
     ev.currentTarget.src = "/Not Found poster.png"
 
