@@ -33,7 +33,7 @@ export function MoviesDetails() {
             setShowInfo(movieDetails.watchProviders.results.PT.flatrate)
         }
 
-        if (userInfo.token) {
+        if (userToken) {
             const select: HTMLSelectElement = document.querySelector('#showState')
             try {
                 const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
