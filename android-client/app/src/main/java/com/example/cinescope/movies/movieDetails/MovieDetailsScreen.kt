@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.searches.MovieInfo
-import com.example.cinescope.ui.BottomBar
+import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.ContentPoster
 import com.example.cinescope.ui.DescriptionCard
 import com.example.cinescope.ui.Title
