@@ -4,6 +4,7 @@ import { login } from "../RequestsHelpers/UserRequestsHelper"
 import { useContext, useState } from "react"
 import { UserContext } from "./UserProvider"
 import { EMPTY_LOGIN_INFO, LoginInfo } from "../utils/Types"
+import { useCookies } from "react-cookie"
 
 export function Login() {
     const userInfo = useContext(UserContext)
@@ -22,9 +23,7 @@ export function Login() {
         const user = await login(User.email, User.password)
 
         if (user != undefined) {
-            userInfo.setToken(user.token)
-            userInfo.setUserId(user.id)
-            navigate("/home")
+            navigate(-1)
         } else {
             setErrMsg(true)
         }

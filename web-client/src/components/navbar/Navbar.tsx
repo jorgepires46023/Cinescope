@@ -3,11 +3,16 @@ import { Link } from "react-router-dom"
 import { SearchBar } from "./SearchBar"
 import { useContext } from "react"
 import { UserContext } from "../UserProvider"
+import { getCookie } from "../../utils/Tools"
+ 
+
 //import { DarkModeToggleButton } from "./DarkModeToggleButton"
 
 export function NavBar() {
-    const userInfo = useContext(UserContext)
-    const loggedIn: boolean = userInfo.token != null
+   
+    let loggedIn = getCookie('userToken')
+
+    console.log(loggedIn) 
     return (
         <div className='iselnavbar'>
             <div className="iselGroupLeft">

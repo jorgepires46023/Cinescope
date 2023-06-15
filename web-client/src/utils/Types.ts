@@ -42,7 +42,7 @@ export type ProviderInfo = {
 export type MovieDetailsResults = {
     movieDetails: MovieDetails,
     watchProviders: WatchProviders,
-    externalIds: ExternalIds | {}
+    externalIds: ExternalIds
 }
 
 export type User = {
