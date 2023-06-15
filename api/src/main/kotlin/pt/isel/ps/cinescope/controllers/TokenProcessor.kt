@@ -12,14 +12,14 @@ class TokenProcessor(private val usersService: UsersServices) {
         if (token.isNullOrBlank()) {
             throw BadRequestException("Token cannot be null or blank")
         }
-        val split = token.trim().split(" ")
-        if (split.size != 2) {
-            return null
-        }
-        if (split[0].lowercase() != SCHEME) {
-            return null
-        }
-        return usersService.getUserByToken(split[1])
+//        val split = token.trim().split(" ")
+//        if (split.size != 2) {
+//            return null
+//        }
+//        if (split[0].lowercase() != SCHEME) {
+//            return null
+//        }
+        return usersService.getUserByToken(token)
     }
 
     companion object {

@@ -77,7 +77,8 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
     fun getUserByToken(usertoken: String?): User?{
         if(usertoken.isNullOrBlank()) throw BadRequestException("token cant be null")
         return transactionManager.run{
-            return@run it.userRepository.getUserByToken(usertoken) ?: throw NotFoundException("user not found")
+            val user = it.userRepository.getUserByToken(usertoken) ?:throw NotFoundException("user not found")
+            return@run user
         }
     }
 

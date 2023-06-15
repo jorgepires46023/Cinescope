@@ -17,14 +17,7 @@ class AuthenticationInterceptor(private val tokenProcessor: TokenProcessor): Han
             response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, TokenProcessor.SCHEME)
             false
         } else {
-            try {
-                tokenProcessor.processToken(token.value)
-                true
-            } catch (e: Exception) {
-                    response.status = 401
-                response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, TokenProcessor.SCHEME)
-                false
-            }
+            return token.value != null
         }
     }
 
