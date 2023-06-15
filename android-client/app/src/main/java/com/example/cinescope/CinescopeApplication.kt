@@ -1,7 +1,6 @@
 package com.example.cinescope
 
 import android.app.Application
-import com.example.cinescope.services.cinescopeAPI.CinescopeServices
 import com.example.cinescope.services.cinescopeAPI.MoviesServices
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import com.example.cinescope.services.cinescopeAPI.SeriesServices
@@ -13,9 +12,7 @@ import okhttp3.OkHttpClient
 import java.net.URL
 
 const val TAG = "CinescopeApp"
-private const val CINESCOPE_DOMAIN = myAdress
-    //"http://10.0.2.2:9000" -> Adress to access API in emulator device
-    //"http://localhost:9000"
+private const val CINESCOPE_DOMAIN = emulatorAddress
 
 /**
  * The contract for the object that holds all the globally relevant dependencies.

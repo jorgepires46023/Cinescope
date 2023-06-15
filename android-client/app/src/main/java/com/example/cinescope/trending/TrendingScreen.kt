@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.cinescope.domain.searches.Movie
 import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.trending.ui.TrendingTabs
-import com.example.cinescope.ui.BottomBar
+import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.theme.CinescopeTheme
 

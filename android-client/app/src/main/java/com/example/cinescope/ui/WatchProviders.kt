@@ -26,22 +26,22 @@ fun WatchProviders(providers: PT) {
             .fillMaxWidth()
     ) {
         Column {
-            Row(modifier = Modifier.padding(smallPadding)) {
-                CardTitle(title = "Streaming Services")//TODO translation
-            }
             if (providers.flatrate != null) {
+                Row(modifier = Modifier.padding(smallPadding)) {
+                    CardTitle(title = "Streaming Services")//TODO translation
+                }
                 ProviderContent(providers = providers.flatrate)
             }
-            Row(modifier = Modifier.padding(smallPadding)) {
-                CardTitle(title = "Buy Services")//TODO translation
-            }
             if (providers.buy != null) {
+                Row(modifier = Modifier.padding(smallPadding)) {
+                    CardTitle(title = "Buy Services")//TODO translation
+                }
                 ProviderContent(providers = providers.buy)
             }
-            Row(modifier = Modifier.padding(smallPadding)) {
-                CardTitle(title = "Renting Services")//TODO translation
-            }
             if (providers.rent != null) {
+                Row(modifier = Modifier.padding(smallPadding)) {
+                    CardTitle(title = "Renting Services")//TODO translation
+                }
                 ProviderContent(providers = providers.rent)
             }
         }

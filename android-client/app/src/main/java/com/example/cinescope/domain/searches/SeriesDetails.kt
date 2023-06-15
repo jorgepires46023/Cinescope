@@ -7,5 +7,6 @@ data class SeriesDetails(
     val name: String,
     val seasons: List<SeasonDetails>,
     val status: String,
-    @SerializedName("poster_path") val imgPath: String
+    @SerializedName("poster_path") val imgPath: String,
+    @SerializedName("overview") val description: String
 )
