@@ -38,7 +38,11 @@ class SeriesDetailsActivity: ComponentActivity() {
 
         setContent{
             SeriesDetailsScreen(
-                series = viewModel.series
+                state = SeriesDetailsState(
+                    series = viewModel.series,
+                    loading = viewModel.loading,
+                    error = viewModel.error
+                )
             )
         }
     }

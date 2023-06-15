@@ -99,12 +99,8 @@ class SearchServices(
             url = cinescopeURL
                 .joinPathWithVariables(Searches.SERIE_DETAILS, listOf(seriesId.toString()))
         )
-        Log.v("TRENDING TEST", "Before sending request")
-        //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
-            Log.v("TRENDING TEST", "Before handling Response")
             handleResponse(response, SeriesInfo::class.java)
-
         }
     }
 

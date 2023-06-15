@@ -10,7 +10,8 @@ import com.example.cinescope.services.cinescopeAPI.SearchServices
 import kotlinx.coroutines.launch
 
 class SeriesDetailsScreenViewModel(private val searchServices: SearchServices): ViewModel() {
-    private var loading by mutableStateOf(false)
+    var loading by mutableStateOf(false)
+        private set
 
     var series by mutableStateOf<SeriesInfo?>(null)
         private set

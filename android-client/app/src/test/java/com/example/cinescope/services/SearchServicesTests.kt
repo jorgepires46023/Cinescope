@@ -402,4 +402,14 @@ class SearchServicesTests {
             println(movieInfo)
 
         }
+
+    @Test
+    fun `getSeriesDetails returns SeriesInfo when response is understood`(): Unit =
+        runBlocking {
+            val cinescopeAPI = "http://localhost:9000"
+            val searchServices = SearchServices(URL(cinescopeAPI), gson, httpClient)
+            //60735 -> The Flash series Id
+            val seriesInfo = searchServices.getSeriesDetails(60735)
+            println(seriesInfo)
+        }
 }

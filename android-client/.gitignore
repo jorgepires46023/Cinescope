@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+android-client/app/src/main/java/com/example/cinescope/IgnoredIpAdressFile.kt
