@@ -4,14 +4,17 @@ import { UserContext } from "./UserProvider";
 import { useNavigate } from "react-router-dom";
 import { getUserById } from "../RequestsHelpers/UserRequestsHelper";
 import { User, EMPTY_USER } from "../utils/Types"
+import { getCookie } from "../utils/Tools";
 
 export function Profile() {
     const userInfo = useContext(UserContext)
     const navigate = useNavigate()
 
+    const userToken = getCookie("userToken")
+
     const [User, setUser] = useState<User>(EMPTY_USER)
 
-    if (!userInfo.token || !userInfo.userId) {
+    if (!userToken) {
         navigate("/login")
     }
 
