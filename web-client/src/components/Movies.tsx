@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "./UserProvider";
 import { getMoviesListByState } from "../RequestsHelpers/MoviesRequestsHelper";
 import { ContentIndexs, EMPTY_CONTENT, INIT_INDEXS, Content, ListResults, EMPTY_LIST_RESULTS } from "../utils/Types";
-import { IMAGE_DOMAIN, getMovie, getShowArray, next, previous } from "../utils/Tools";
+import { IMAGE_DOMAIN, getCookie, getMovie, getShowArray, next, previous } from "../utils/Tools";
 
 
 export function Movies() {
@@ -24,6 +24,8 @@ export function Movies() {
 
     const [contentIndexsWatched, setContextIndexsWatched] = useState<ContentIndexs>(INIT_INDEXS)
 
+    const userToken = getCookie("userToken")
+
     async function getMoviesByState() {
 
         const ptwMoviesInfo = await getMoviesListByState("PTW", userInfo.token)
@@ -40,7 +42,7 @@ export function Movies() {
     }
 
     useEffect(() => {
-        if (!userInfo.token) {
+        if (!userToken) {
             navigate("/login")
         } else {
             getMoviesByState()

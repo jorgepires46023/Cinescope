@@ -4,7 +4,7 @@ import { login } from "../RequestsHelpers/UserRequestsHelper"
 import { useContext, useState } from "react"
 import { UserContext } from "./UserProvider"
 import { EMPTY_LOGIN_INFO, LoginInfo } from "../utils/Types"
-import { useCookies } from "react-cookie"
+
 
 export function Login() {
     const userInfo = useContext(UserContext)

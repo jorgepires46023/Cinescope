@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getMoviesDetails } from "../RequestsHelpers/SearchRequestsHelper";
 import { EMPTY_LIST_RESULTS_USER_LISTS, EMPTY_MOVIE_DETAILS_RESULTS, EMPTY_CONTENT_USER_DATA, EMPTY_PROVIDERS_INFO, EMPTY_USER_LISTS_ELEMS, ListResults, /* EMPTY_USER_LISTS, */ MovieDetailsResults, ContentUserData, ProviderInfo, /* UserLists, */ UserListsElems } from "../utils/Types";
-import { BACKDROP_IMAGE_DOMAIN, IMAGE_DOMAIN, handleError } from "../utils/Tools";
+import { BACKDROP_IMAGE_DOMAIN, IMAGE_DOMAIN, getCookie, handleError } from "../utils/Tools";
 import { UserContext } from "./UserProvider";
 import { addMovieToList, changeMovieState, deleteMovieFromList, deleteStateFormMovie, getMoviesListByState, getMoviesLists, getMoviesUserData } from "../RequestsHelpers/MoviesRequestsHelper";
 
@@ -18,11 +18,11 @@ export function MoviesDetails() {
 
     const [showListsDiv, setShowListsDiv] = useState<boolean>(false)
 
-    const [isChecked, setIsChecked] = useState<boolean>(false)
-
     const [movieStateInfo, setMovieStateInfo] = useState<ContentUserData>(EMPTY_CONTENT_USER_DATA)
 
     const { movieId } = useParams()
+
+    const userToken = getCookie("userToken")
 
     async function getMovieDetailsInfo() {
         const movieDetails = await getMoviesDetails(+movieId)
@@ -165,7 +165,7 @@ export function MoviesDetails() {
             <div className="infoDiv" >
                 <div className="posterDiv">
                     <img src={`${IMAGE_DOMAIN}/${movie.movieDetails.poster_path}`} alt={movie.movieDetails.title} onError={handleError} className="posterImg" />
-                    {userInfo.token && <div className="buttonsDiv">
+                    {userToken && <div className="buttonsDiv">
                         <div className="buttonState">
                             <select name="show" id="showState" onChange={addState} className="dropdownState">
                                 <option id="Add State" value="Add State" className="selected" selected={false} >Add State</option>

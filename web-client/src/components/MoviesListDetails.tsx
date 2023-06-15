@@ -3,7 +3,7 @@ import { UserContext } from "./UserProvider";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getMoviesList } from "../RequestsHelpers/MoviesRequestsHelper";
-import { IMAGE_DOMAIN, getMovie, getShowArray, next, previous } from "../utils/Tools";
+import { IMAGE_DOMAIN, getCookie, getMovie, getShowArray, next, previous } from "../utils/Tools";
 import { Content, ContentIndexs, EMPTY_CONTENT, EMPTY_LIST_RESULTS, INIT_INDEXS, ListResults } from "../utils/Types";
 
 
@@ -20,6 +20,7 @@ export function MoviesListDetails() {
     const [contentIndexs, setContentIndexs] = useState<ContentIndexs>(INIT_INDEXS)
 
     const [showMovies, setShowMovies] = useState<Array<Content>>([EMPTY_CONTENT])
+
 
     async function getListDetails() {
         const listInfo = await getMoviesList(+listId, userInfo.token)

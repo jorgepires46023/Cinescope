@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserProvider";
 import { useContext, useEffect, useState } from "react";
 import { Content, ContentIndexs, EMPTY_CONTENT, EMPTY_LIST_RESULTS, INIT_INDEXS, ListResults } from "../utils/Types";
-import { IMAGE_DOMAIN, getSerie, getShowArray, next, previous } from "../utils/Tools";
+import { IMAGE_DOMAIN, getCookie, getSerie, getShowArray, next, previous } from "../utils/Tools";
 import { getSeriesByState } from "../RequestsHelpers/SeriesRequestsHelper";
 
 
@@ -31,6 +31,8 @@ export function Series() {
 
     const [contentIndexsWatching, setContextIndexsWatching] = useState<ContentIndexs>(INIT_INDEXS)
 
+    const userToken = getCookie("userToken")
+
     async function getSeriesByStateInfo() {
 
         const ptwSeriesInfo = await getSeriesByState("PTW", userInfo.token)
@@ -47,7 +49,7 @@ export function Series() {
     }
 
     useEffect(() => {
-        if (!userInfo.token) {
+        if (!userToken) {
             navigate("/login")
         } else {
             getSeriesByStateInfo()

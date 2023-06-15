@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BACKDROP_IMAGE_DOMAIN, IMAGE_DOMAIN, handleError } from "../utils/Tools";
+import { BACKDROP_IMAGE_DOMAIN, IMAGE_DOMAIN, getCookie, handleError } from "../utils/Tools";
 import { EMPTY_LIST_RESULTS_USER_LISTS, EMPTY_LIST_RESULTS_WATCHED_EPISODES, EMPTY_CONTENT_USER_DATA, EMPTY_PROVIDERS_INFO, EMPTY_SEASON_DETAILS_RESULTS, EMPTY_SERIE_DETAILS_RESULTS, ListResults, ContentUserData, ProviderInfo, SeasonDetailsResults, SerieDetailsResults, UserListsElems, WatchedEpisode } from "../utils/Types";
 import { getSeasonDetails, getSeriesDetails } from "../RequestsHelpers/SearchRequestsHelper";
 import { addSerieToList, addWatchedEpisode, changeSerieState, deleteSerieFromList, getSeriesLists, getSeriesUserData, getWatchedEpisodesList, removeSerieState, removeWatchedEpisode } from "../RequestsHelpers/SeriesRequestsHelper";
@@ -28,6 +28,8 @@ export function SeriesDetails() {
     const [watchedList, setWatchedList] = useState<ListResults<WatchedEpisode>>({results: null})
 
     const { serieId } = useParams()
+
+    const userToken = getCookie("userToken")
 
     async function getSeriesDetailsInfo() {
         const serieDetails = await getSeriesDetails(+serieId)
@@ -210,7 +212,7 @@ export function SeriesDetails() {
             <div className="infoDiv">
                 <div className="posterDiv">
                     <img src={`${IMAGE_DOMAIN}/${serie.serieDetails.poster_path}`} alt={serie.serieDetails.name} onError={handleError} className="posterImg" />
-                    {userInfo.token && <div className="buttonsDiv">
+                    {userToken && <div className="buttonsDiv">
                         <div className="buttonState">
                             <select name="show" id="showState" onChange={addState} className="dropdownState">
                                 <option id="Add State" value="Add State" className="selected" selected={false} >Add State</option>
@@ -297,7 +299,7 @@ export function SeriesDetails() {
                                                 <p>{`${episode.episode_number}: `}{episode.name}</p>
                                                 <div className="episodeButtons">
                                                     <button className="episodeInfoButton" onClick={() => navigate(`/series/${serieId}/season/${showInfoSeason.seasonDetails.season_number}/episode/${episode.episode_number}`)}>Episode Info</button>
-                                                    {userInfo.token && <div className="addEpisode">
+                                                    {userToken && <div className="addEpisode">
                                                         <label htmlFor={episode.name}> Add: </label>
                                                         <input id={`${showInfoSeason.seasonDetails.season_number}${episode.id}`} name={episode.name} type="checkbox" checked={showCheckedEpisode(episode.episode_number, showInfoSeason.seasonDetails.season_number)} onClick={(event) => addToWatchedList(event, episode.id, episode.episode_number, showInfoSeason.seasonDetails.season_number)} className="checkmarkEpisodes" />
                                                     </div>}
