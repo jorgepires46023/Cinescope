@@ -5,7 +5,6 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import pt.isel.ps.cinescope.domain.*
-import pt.isel.ps.cinescope.services.exceptions.InternalServerErrorException
 
 //TODO acrescentar tratamento de erros lancados pela api externa
 

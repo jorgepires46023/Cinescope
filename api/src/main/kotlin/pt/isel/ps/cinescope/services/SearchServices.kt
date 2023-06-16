@@ -2,11 +2,8 @@ package pt.isel.ps.cinescope.services
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.cinescope.domain.*
-import pt.isel.ps.cinescope.domain.Result
 import pt.isel.ps.cinescope.utils.TmdbService
 
-//TODO serieDetails/MovieDetails permitir null object ou lancar exception?
-//TODO serieDetails/MovieDetails external id request (se ja tiver em db nao faz sentido realizar)
 
 @Component
 class SearchServices(val tmdbServices: TmdbService) {
@@ -26,9 +23,10 @@ class SearchServices(val tmdbServices: TmdbService) {
         val externalIds = tmdbServices.getMoviesExternalId(id) ?: return null
         val watchProviders = tmdbServices.getMoviesWatchProviders(id) ?: return null
         val images = tmdbServices.getMovieImages(id) ?: return null
-        val image = if(images.backdrops.isNotEmpty())
-            images.backdrops.firstOrNull { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) } //TODO fix !!
-                    else Image(null, null, movieDetails.backdrop_path)
+        val image =
+            if(images.backdrops.isNotEmpty())
+                images.backdrops.firstOrNull { s -> (s.height != null && s.height >= 1080)  && (s.width != null && s.width >= 1920) }
+            else Image(null, null, movieDetails.backdrop_path ?: "")
         return MovieDetailsOutput(MovieDetails(movieDetails.id, movieDetails.imdb_id, movieDetails.original_title, movieDetails.overview, movieDetails.poster_path, image?.file_path ?: movieDetails.backdrop_path, movieDetails.release_date, movieDetails.runtime, movieDetails.status, movieDetails.title),
             watchProviders, externalIds)
     }
@@ -39,9 +37,10 @@ class SearchServices(val tmdbServices: TmdbService) {
         val externalIds = tmdbServices.getSeriesExternalId(id) ?: return null
         val watchProviders = tmdbServices.getSeriesWatchProviders(id) ?: return null
         val images = tmdbServices.getSerieImages(id) ?: return null
-        val image = if(images.backdrops.isNotEmpty())
-            images.backdrops.firstOrNull { s -> (s.height?.compareTo(1080)!! >= 0)  && (s.width?.compareTo(1920)!! >= 0) } //TODO fix !!
-        else Image(null, null, seriesDetails.backdrop_path)
+        val image =
+            if(images.backdrops.isNotEmpty())
+                images.backdrops.firstOrNull { s -> (s.height != null && s.height >= 1080)  && (s.width != null && s.width >= 1920)}
+            else Image(null, null, seriesDetails.backdrop_path?: "")
         return SeriesDetailsOutput(
             SeriesDetails(seriesDetails.overview, seriesDetails.id, seriesDetails.name, seriesDetails.seasons, seriesDetails.status, seriesDetails.poster_path, image?.file_path ?: seriesDetails.backdrop_path),
             watchProviders, externalIds)
@@ -61,34 +60,26 @@ class SearchServices(val tmdbServices: TmdbService) {
         return EpisodeDetailOutput(episodeDetails, externalIds)
     }
 
-    fun getPopularMovies(page: Int?): Search?{
+    fun getPopularMovies(page: Int?): Search? {
         val p = page ?: 1
-        val movies = tmdbServices.getPopularMovies(p)
-        if (movies != null)
-            movies.results?.forEach { it.media_type = "movie" }
-        return movies
+        return tmdbServices.getPopularMovies(p)
     }
 
-    fun getPopularSeries(page: Int?): Search?{
+    fun getPopularSeries(page: Int?): Search? {
         val p = page ?: 1
-        val series = tmdbServices.getPopularSeries(p)
-        if (series != null)
-            series.results?.forEach {it.media_type = "tv"}
-        return series
+        return tmdbServices.getPopularSeries(p)
     }
 
-    fun getMovieRecommendations(id:Int?, page: Int?): Search?{
+    fun getMovieRecommendations(id: Int?, page: Int?): Search? {
         val p = page ?: 1
-        if(id == null) return null
-        val movies = tmdbServices.getMovieRecommendations(id, p)
-        return movies
+        if (id == null) return null
+        return tmdbServices.getMovieRecommendations(id, p)
     }
 
-    fun getSerieRecommendations(id: Int?, page: Int?): Search?{
+    fun getSerieRecommendations(id: Int?, page: Int?): Search? {
         val p = page ?: 1
-        if(id == null) return null
-        val series = tmdbServices.getSerieRecommendations(id, p)
-        return series
+        if (id == null) return null
+        return tmdbServices.getSerieRecommendations(id, p)
     }
 
 }

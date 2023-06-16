@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Search(val page: Int?, val results: Array<Result>?, val total_results: Int?, val total_pages: Int?)
 
-//TODO ficar apenas com title
-data class Result(val poster_path: String?, val id: Int?, val title: String?, val name: String?, var media_type: String?, val popularity: Int?)
+data class Result(val poster_path: String?, val id: Int?, val title: String?, val name: String?, val media_type: String?, val popularity: Int?)
 
 data class MovieDetails(
     val id: Int?,
@@ -68,7 +67,7 @@ data class EpisodeDetails(val air_date: String?, val episode_number: Int?, val i
 
 data class WatchProviders(val id: Int?, val results: CountriesInfo?)
 
-data class CountriesInfo(@JsonProperty("PT") val pt: CountryProviders?) //TODO outros paises
+data class CountriesInfo(@JsonProperty("PT") val pt: CountryProviders?)
 
 data class CountryProviders(val flatrate: Array<ProviderInfo>?, val rent: Array<ProviderInfo>?, val buy: Array<ProviderInfo>?)
 
