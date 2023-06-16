@@ -11,13 +11,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
-const val TRENDING_IDX = 2
+
 @Composable
 fun BottomBar(
-    onSearchRequested: (()-> Unit)? = null //on Search icon touched will trigger this function
+    onSearchRequested: (()-> Unit)? = null, //on Search icon touched will trigger this function
+    navController: NavController
 ){
     val items = getNavItems()
-    val selectedItem = remember{ mutableStateOf(items[TRENDING_IDX]) }
+
     NavigationBar(
         containerColor = Color.LightGray,
         modifier = Modifier.fillMaxWidth()
@@ -27,9 +28,10 @@ fun BottomBar(
                 selected = selectedItem.value == item,
                 icon = { Icon(imageVector = item.icon, contentDescription = null)},
                 label = { Text(text = item.label) },
+                enabled = selectedItem.value != item,
                 onClick = {
                     selectedItem.value = item
-                    //TODO(Add navigation to another activity)
+                    item.clazz?.let { navController.navigate(it) }//TODO not delete while has null classes
                 }
             )
         }

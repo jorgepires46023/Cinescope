@@ -1,8 +1,8 @@
 package com.example.cinescope.trending
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -15,6 +15,14 @@ const val TRENDING_ACTIVITY_TAG = "Trending Activity"
 class TrendingActivity: ComponentActivity() {
     private val dependencies by lazy { application as DependenciesContainer}
 
+    companion object{
+        fun navigate(origin: Context){
+            with(origin){
+                val intent = Intent(this, TrendingActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }
 
     private val viewModel: TrendingScreenViewModel by viewModels {
         viewModelInit{
@@ -24,6 +32,8 @@ class TrendingActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        dependencies.navController
         viewModel.getPopularMovies()
         viewModel.getPopularSeries()
 
@@ -41,7 +51,8 @@ class TrendingActivity: ComponentActivity() {
                 onGetSeriesDetails = {seriesId ->
                     SeriesDetailsActivity.navigate(this, seriesId = seriesId)
                 },
-                onError = { viewModel.clearError() }
+                onError = { viewModel.clearError() },
+                navController = dependencies.navController
             )
         }
     }

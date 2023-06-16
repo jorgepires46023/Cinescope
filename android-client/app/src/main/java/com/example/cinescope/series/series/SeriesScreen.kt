@@ -13,6 +13,7 @@ import com.example.cinescope.series.series.ui.SeriesTabs
 import com.example.cinescope.trending.ui.TrendingTabs
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
+import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
 
 data class SeriesScreenState(
@@ -26,6 +27,7 @@ data class SeriesScreenState(
 @Composable
 fun SeriesScreen(
     state: SeriesScreenState,
+    navController: NavController,
     onSearchRequested: () -> Unit = {},
     onSeriesPTW: () -> Unit = {},
     onSeriesWatching: () -> Unit = {},
@@ -42,7 +44,8 @@ fun SeriesScreen(
             },
             bottomBar = {
                 BottomBar(
-                    onSearchRequested = onSearchRequested
+                    onSearchRequested = onSearchRequested,
+                    navController = navController
                 )
             }
         ) { innerPadding ->

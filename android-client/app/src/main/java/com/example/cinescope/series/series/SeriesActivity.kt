@@ -30,9 +30,9 @@ class SeriesActivity: ComponentActivity() {
 
         val fakeToken = "someToken"//TODO Add user info to get credentials to make this request
 
-        viewModel.getPTWSeries(fakeToken)
-        viewModel.getWatchingSeries(fakeToken)
-        viewModel.getWatchedSeries(fakeToken)
+        //viewModel.getPTWSeries(fakeToken)
+        //viewModel.getWatchingSeries(fakeToken)
+        //viewModel.getWatchedSeries(fakeToken)
 
         setContent{
             SeriesScreen(
@@ -43,6 +43,7 @@ class SeriesActivity: ComponentActivity() {
                     error = viewModel.error,
                     loading = viewModel.loading
                 ),
+                navController = dependencies.navController,
                 onError = { viewModel.clearError() }
             )
         }

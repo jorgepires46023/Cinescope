@@ -14,6 +14,7 @@ import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.trending.ui.TrendingTabs
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
 
 data class TrendingScreenState(
@@ -27,6 +28,7 @@ data class TrendingScreenState(
 @Composable
 fun TrendingScreen(
     state: TrendingScreenState,
+    navController: NavController,
     onSearchRequested: () -> Unit = { },
     onGetMovieDetails: (id: Int) -> Unit = {},
     onGetSeriesDetails: (id: Int) -> Unit = {},
@@ -42,7 +44,8 @@ fun TrendingScreen(
             },
             bottomBar = {
                 BottomBar(
-                    onSearchRequested = onSearchRequested
+                    onSearchRequested = onSearchRequested,
+                    navController = navController
                 )
             }
         ){
@@ -56,24 +59,5 @@ fun TrendingScreen(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun TrendingScreenPreview() {
-
-    CinescopeTheme {
-        TrendingScreen(
-            state = TrendingScreenState(
-                popMovies = listOf(
-                    Movie(1, "SpiderMan", "img1"),
-                    Movie(2, "SpiderMan 2", "img2")
-                ),
-                popSeries = null,
-                loading = false,
-                error = null
-            )
-        )
     }
 }

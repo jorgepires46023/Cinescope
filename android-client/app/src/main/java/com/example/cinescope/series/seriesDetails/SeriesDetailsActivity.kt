@@ -42,7 +42,8 @@ class SeriesDetailsActivity: ComponentActivity() {
                     series = viewModel.series,
                     loading = viewModel.loading,
                     error = viewModel.error
-                )
+                ),
+                navController = dependencies.navController
             )
         }
     }

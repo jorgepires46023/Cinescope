@@ -8,7 +8,7 @@ data class MovieDetails(
     @SerializedName("original_title") val name: String,
     @SerializedName("overview") val description: String,
     @SerializedName("poster_path") val imgPath: String,
-    @SerializedName("release_date") val releaseDate: String,
+    @SerializedName("date") val releaseDate: String,
     @SerializedName("runtime") val duration: String,
     val status: String,
     val title: String

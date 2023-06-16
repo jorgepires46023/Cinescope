@@ -43,7 +43,8 @@ class MovieDetailsActivity: ComponentActivity() {
                     movie = viewModel.movie,
                     loading = viewModel.loading,
                     error = viewModel.error
-                )
+                ),
+                navController = dependencies.navController
             )
         }
     }

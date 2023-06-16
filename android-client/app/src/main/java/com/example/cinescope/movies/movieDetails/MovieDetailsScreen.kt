@@ -20,6 +20,7 @@ import com.example.cinescope.ui.DescriptionCard
 import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.WatchProviders
+import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
 
 data class MovieDetailsState(
@@ -31,6 +32,7 @@ data class MovieDetailsState(
 @Composable
 fun MovieDetailsScreen(
     state: MovieDetailsState,
+    navController: NavController,
     onSearchRequested: () -> Unit = { }
 ) {
     CinescopeTheme {
@@ -43,7 +45,8 @@ fun MovieDetailsScreen(
             },
             bottomBar = {
                 BottomBar(
-                    onSearchRequested = onSearchRequested
+                    onSearchRequested = onSearchRequested,
+                    navController = navController
                 )
             }
         ) { innerPadding ->
