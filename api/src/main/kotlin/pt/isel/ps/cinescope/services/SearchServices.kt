@@ -27,7 +27,7 @@ class SearchServices(val tmdbServices: TmdbService) {
             if(images.backdrops.isNotEmpty())
                 images.backdrops.firstOrNull { s -> (s.height != null && s.height >= 1080)  && (s.width != null && s.width >= 1920) }
             else Image(null, null, movieDetails.backdrop_path ?: "")
-        return MovieDetailsOutput(MovieDetails(movieDetails.id, movieDetails.imdb_id, movieDetails.original_title, movieDetails.overview, movieDetails.poster_path, image?.file_path ?: movieDetails.backdrop_path, movieDetails.release_date, movieDetails.runtime, movieDetails.status, movieDetails.title),
+        return MovieDetailsOutput(MovieDetails(movieDetails.id, movieDetails.imdb_id, movieDetails.original_title, movieDetails.overview, movieDetails.poster_path, image?.file_path ?: movieDetails.backdrop_path, movieDetails.release_date, movieDetails.runtime, movieDetails.status, movieDetails.title, movieDetails.date),
             watchProviders, externalIds)
     }
 

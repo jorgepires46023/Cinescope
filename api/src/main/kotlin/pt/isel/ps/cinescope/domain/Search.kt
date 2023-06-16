@@ -1,6 +1,7 @@
 package pt.isel.ps.cinescope.domain
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.text.SimpleDateFormat
 
 data class Search(val page: Int?, val results: Array<Result>?, val total_results: Int?, val total_pages: Int?)
 
@@ -16,8 +17,18 @@ data class MovieDetails(
     val release_date: String?,
     val runtime: Int?,
     val status: String?,
-    val title: String?
+    val title: String?,
+    val date: String? = reformatDate(release_date)
 )
+
+
+fun reformatDate(release_date: String?): String?{
+    if(release_date == null) return null
+    val inputFormat = SimpleDateFormat("yyyy-mm-dd")
+    val outputFormat = SimpleDateFormat("dd-mm-yyyy")
+    val date = inputFormat.parse(release_date)
+    return outputFormat.format(date)
+}
 
 data class MovieDetailsOutput(
     val movieDetails: MovieDetails,
@@ -63,7 +74,14 @@ data class Seasons(val episode_count: Int?, val id: Int?, val name: String?, val
 
 data class SeasonDetails(val air_date: String?, val episodes: Array<EpisodeDetails>?, val season_number: Int?)
 
-data class EpisodeDetails(val air_date: String?, val episode_number: Int?, val id: Int?, val name: String?, val overview: String?, val still_path:String?)
+data class EpisodeDetails(
+    val air_date: String?,
+    val episode_number: Int?,
+    val id: Int?, val name: String?,
+    val overview: String?,
+    val still_path:String?,
+    val date: String? = reformatDate(air_date)
+    )
 
 data class WatchProviders(val id: Int?, val results: CountriesInfo?)
 
