@@ -44,7 +44,6 @@ fun SeriesScreen(
             },
             bottomBar = {
                 BottomBar(
-                    onSearchRequested = onSearchRequested,
                     navController = navController
                 )
             }

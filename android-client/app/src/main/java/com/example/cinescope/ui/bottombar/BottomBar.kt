@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun BottomBar(
-    onSearchRequested: (()-> Unit)? = null, //on Search icon touched will trigger this function
     navController: NavController
 ){
     val items = getNavItems()

@@ -14,7 +14,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import java.net.URL
 
-private const val CINESCOPE_DOMAIN = "https://b1b1-2001-818-e880-a700-55b6-f4dd-7540-73af.ngrok-free.app"
+private const val CINESCOPE_DOMAIN = "https://dea8-2001-818-e880-a700-64d6-717b-4018-631.ngrok-free.app"
 
 /**
  * The contract for the object that holds all the globally relevant dependencies.

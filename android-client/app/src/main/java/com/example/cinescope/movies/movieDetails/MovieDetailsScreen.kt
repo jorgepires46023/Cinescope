@@ -45,7 +45,6 @@ fun MovieDetailsScreen(
             },
             bottomBar = {
                 BottomBar(
-                    onSearchRequested = onSearchRequested,
                     navController = navController
                 )
             }

@@ -44,7 +44,6 @@ fun TrendingScreen(
             },
             bottomBar = {
                 BottomBar(
-                    onSearchRequested = onSearchRequested,
                     navController = navController
                 )
             }
