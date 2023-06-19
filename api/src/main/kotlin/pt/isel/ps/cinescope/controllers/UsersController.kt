@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.cinescope.controllers.models.LoginInputModel
 import pt.isel.ps.cinescope.controllers.models.UserInputModel
+import pt.isel.ps.cinescope.controllers.models.UserOutputModel
+import pt.isel.ps.cinescope.domain.User
 import pt.isel.ps.cinescope.services.UsersServices
 import java.util.Date
 
@@ -14,10 +16,11 @@ class UsersController(val usersService: UsersServices) {
     @PostMapping(Users.CREATE_USER)
     fun createUser(@RequestBody info: UserInputModel): ResponseEntity<*> {
         val user = usersService.createUser(info.name, info.email, info.password)
-
+        val cookie = createCookie(user)
         return ResponseEntity
-                .status(201)
-                .body(user)
+            .status(201)
+            .headers(cookie)
+            .body(UserOutputModel(user.name, user.email))
     }
 
     @PutMapping(Users.DELETE_USER)
@@ -41,23 +44,25 @@ class UsersController(val usersService: UsersServices) {
     @GetMapping(Users.GET_USER_INFO)
     fun getUserInfo(@PathVariable id: Int): ResponseEntity<*> {
         val user = usersService.getUserById(id)
-
         return ResponseEntity
             .status(200)
-            .body(user)
+            .body(UserOutputModel(user.name, user.email))
     }
 
     @PostMapping(Users.LOGIN)
     fun login(@RequestBody info: LoginInputModel): ResponseEntity<*>{
         val user = usersService.login(info.email, info.password)
-        val cookie = HttpHeaders()
-        val time = 30*24*60*60 //1 month\
-        cookie.add(HttpHeaders.SET_COOKIE, "userToken=${user.token}; Max-Age=$time; path=/")
-
+        val cookie = createCookie(user)
         return ResponseEntity
             .status(200)
             .headers(cookie)
-            .body(user)
+            .body(UserOutputModel(user.name, user.email))
     }
 
+    fun createCookie(user: User): HttpHeaders{
+        val cookie = HttpHeaders()
+        val time = 30*24*60*60 //1 month
+        cookie.add(HttpHeaders.SET_COOKIE, "userToken=${user.token}; Max-Age=$time; path=/")
+        return cookie
+    }
 }
