@@ -44,7 +44,7 @@ abstract class CinescopeServices(
             .build()
 
     internal fun handleCookie(response: Response): Cookie {
-        val cookie = response.headers["set-cookie"] ?: throw CookieNotFoundResponseException("Cookie not found")
+        val cookie = response.headers["Set-Cookie"] ?: throw CookieNotFoundResponseException("Cookie not found")
         return cookieParser(cookie) ?: throw CookieParsingException("Error parsing cookie")
     }
     /** It handles response content **/

@@ -1,6 +1,5 @@
 package com.example.cinescope.utils
 
-import com.google.gson.Gson
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 

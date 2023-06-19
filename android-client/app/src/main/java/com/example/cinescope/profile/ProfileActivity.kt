@@ -25,9 +25,8 @@ class ProfileActivity: ComponentActivity() {
 
         val loggedIn = dependencies.tokenRepo.user != null
 
-
         setContent {
-            Toast.makeText(this, "LoggedIn: $loggedIn", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "LoggedIn: $loggedIn", Toast.LENGTH_SHORT).show() //TODO remove this Toast
             ProfileScreen(
                 loggedIn = loggedIn,
                 error = viewModel.error,

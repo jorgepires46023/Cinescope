@@ -28,7 +28,9 @@ class UserServices(
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
-            handleResponse(response, User::class.java)
+            val cookie = handleCookie(response)
+            val userInfo = handleResponse<UserInfo>(response, UserInfo::class.java)
+            User(cookie, userInfo.email, userInfo.name )
         }
     }
 
