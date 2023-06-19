@@ -1,10 +1,14 @@
 package com.example.cinescope.services.cinescopeAPI
 
 import com.example.cinescope.services.MethodHTTP
+import com.example.cinescope.services.exceptions.CookieNotFoundResponseException
+import com.example.cinescope.services.exceptions.CookieParsingException
 import com.example.cinescope.services.exceptions.UnexpectedResponseException
 import com.example.cinescope.services.exceptions.UnsuccessfulResponseException
+import com.example.cinescope.utils.cookieParser
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import okhttp3.Cookie
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -39,6 +43,10 @@ abstract class CinescopeServices(
             }
             .build()
 
+    internal fun handleCookie(response: Response): Cookie {
+        val cookie = response.headers["set-cookie"] ?: throw CookieNotFoundResponseException("Cookie not found")
+        return cookieParser(cookie) ?: throw CookieParsingException("Error parsing cookie")
+    }
     /** It handles response content **/
     internal fun <T> handleResponse(response: Response, type: Type): T {
         val body = response.body

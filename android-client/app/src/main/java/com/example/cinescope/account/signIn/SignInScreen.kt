@@ -62,7 +62,7 @@ fun SignInScreen(
                 var email by rememberSaveable{ mutableStateOf("") }
                 var password by rememberSaveable{ mutableStateOf("") }
 
-                val credentials = validateCredentialsOrNull(email, password) //TODO validate this info
+                val credentials = validateCredentialsOrNull(email, password)
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()

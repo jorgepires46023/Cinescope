@@ -49,7 +49,7 @@ class CinescopeApplication : DependenciesContainer, Application() {
         GsonBuilder().create()
     }
     override val tokenRepo: TokenRepository
-        get() = UserRepositorySharedPrefs(this)
+        get() = UserRepositorySharedPrefs(this, gson)
 
     override val searchServices: SearchServices by lazy {
         SearchServices(cinescopeApiHome, gson, httpClient)

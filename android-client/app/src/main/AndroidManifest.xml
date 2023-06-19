@@ -34,6 +34,7 @@
         <activity android:name=".series.series.SeriesActivity"/>
         <activity android:name=".profile.ProfileActivity"/>
         <activity android:name=".account.signIn.SignInActivity"/>
+        <activity android:name=".account.signUp.SignUpActivity"/>
     </application>
 
 </manifest>

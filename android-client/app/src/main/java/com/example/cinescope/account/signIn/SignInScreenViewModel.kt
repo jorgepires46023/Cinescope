@@ -26,7 +26,7 @@ class SignInScreenViewModel(
         viewModelScope.launch {
             try {
                 loading = true
-                tokenRepository.userToken = userServices.login(email, pwd)
+                tokenRepository.user = userServices.login(email, pwd)
                 signedIn = true
             } catch(e: Exception){
                 error = e.message

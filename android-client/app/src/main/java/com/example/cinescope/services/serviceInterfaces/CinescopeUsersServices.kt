@@ -1,13 +1,13 @@
 package com.example.cinescope.services.serviceInterfaces
 
-import com.example.cinescope.domain.user.Token
+import com.example.cinescope.domain.user.User
 import com.example.cinescope.domain.user.UserInfo
 
 interface CinescopeUsersServices {
 
-    suspend fun createUser(email: String, pwd: String): Token
+    suspend fun createUser(name: String, email: String, pwd: String): User
 
-    suspend fun login(email: String, pwd: String): Token
+    suspend fun login(email: String, pwd: String): User
 
     suspend fun getUserInfo(token: String): UserInfo
 

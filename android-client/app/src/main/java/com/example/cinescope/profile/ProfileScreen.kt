@@ -2,12 +2,16 @@ package com.example.cinescope.profile
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
@@ -22,6 +26,7 @@ fun ProfileScreen(
     onError: () -> Unit,
     onSearchRequested: () -> Unit = {},
     onLoginRequest: () -> Unit = {},
+    onSignUpRequest: () -> Unit = {},
     onLogoutRequest: () -> Unit = {},
     navController: NavController
 ) {
@@ -45,8 +50,20 @@ fun ProfileScreen(
                 .fillMaxSize()
             ){
                 if(!loggedIn){
-                    Button(onClick = { onLoginRequest() }) {
-                        Text(text = "Login")
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row {
+                            Button(onClick = { onLoginRequest() }) {
+                                Text(text = "Login")
+                            }
+                        }
+                        Row {
+                            Button(onClick = { onSignUpRequest() }) {
+                                Text(text = "Create Account")
+                            }
+                        }
                     }
                 }else{
                     Button(onClick = {

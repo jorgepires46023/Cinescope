@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
 import com.example.cinescope.account.signIn.SignInActivity
+import com.example.cinescope.account.signUp.SignUpActivity
 import com.example.cinescope.utils.viewModelInit
 
 class ProfileActivity: ComponentActivity() {
@@ -22,7 +23,7 @@ class ProfileActivity: ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val loggedIn = dependencies.tokenRepo.userToken != null
+        val loggedIn = dependencies.tokenRepo.user != null
 
 
         setContent {
@@ -34,9 +35,10 @@ class ProfileActivity: ComponentActivity() {
                 navController = dependencies.navController,
                 onLoginRequest = { SignInActivity.navigate(this) },
                 onLogoutRequest = {
-                    dependencies.tokenRepo.userToken = null
+                    dependencies.tokenRepo.user = null
                     startActivity(intent)
-                    }
+                },
+                onSignUpRequest = { SignUpActivity.navigate(this) }
             )
         }
     }
