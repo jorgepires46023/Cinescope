@@ -9,6 +9,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
 import java.lang.reflect.Type
@@ -30,6 +31,7 @@ abstract class CinescopeServices(
     ) =
         Request.Builder()
             .url(url)
+            .header("Content-Type", JsonMediaType.toString())
             .method(method.type, body)
             .let {
                 if (token == null) it
@@ -54,6 +56,9 @@ abstract class CinescopeServices(
             response.body?.closeQuietly()
         }
     }
+
+    internal fun Any.toJsonBody(): RequestBody =
+        gson.toJson(this).toRequestBody(JsonMediaType)
 
     internal fun handleEmptyResponse(response: Response){
         try {

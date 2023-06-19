@@ -35,7 +35,9 @@ fun SignInScreen(
     onSignInRequest: (UserCredentials) -> Unit = {}, //TODO delete this default {}?
     onError: () -> Unit = {},
     loading: Boolean,
-    error: String?
+    error: String?,
+    signedIn: Boolean,
+    onSignInSuccessful: () -> Unit = {}
 ) {
     val spacerHeight = 16.dp
     CinescopeTheme {
@@ -93,7 +95,8 @@ fun SignInScreen(
                         Text(text = "Login")//TODO refactor this after translation
                     }
                 }
-            if(error != null) AlertError(error = error, dismiss = onError)
+                if(signedIn) onSignInSuccessful()
+                if(error != null) AlertError(error = error, dismiss = onError)
             }
         }
     }

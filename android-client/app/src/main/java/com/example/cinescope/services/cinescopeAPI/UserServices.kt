@@ -1,6 +1,7 @@
 package com.example.cinescope.services.cinescopeAPI
 
 import com.example.cinescope.domain.user.Token
+import com.example.cinescope.domain.user.UserCredentials
 import com.example.cinescope.domain.user.UserInfo
 import com.example.cinescope.services.MethodHTTP
 import com.example.cinescope.services.serviceInterfaces.CinescopeUsersServices
@@ -18,15 +19,12 @@ class UserServices(
 ) : CinescopeUsersServices, CinescopeServices(gson, httpClient) {
 
     override suspend fun createUser(email: String, pwd: String): Token {
-        val body = FormBody.Builder()
-            .add("email", email)
-            .add("password", pwd)
-            .build()
+        val user = UserCredentials(email = email, password = pwd)
 
         val request = buildRequest(
             url = cinescopeURL.joinPath(Users.CREATE_USER),
             method = MethodHTTP.POST,
-            body = body
+            body = user.toJsonBody()
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
@@ -35,15 +33,12 @@ class UserServices(
     }
 
     override suspend fun login(email: String, pwd: String): Token {
-        val body = FormBody.Builder()
-            .add("email", email)
-            .add("password", pwd)
-            .build()
+        val user = UserCredentials(email = email, password = pwd)
 
         val request = buildRequest(
             url = cinescopeURL.joinPath(Users.LOGIN),
             method = MethodHTTP.POST,
-            body = body
+            body = user.toJsonBody()
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->

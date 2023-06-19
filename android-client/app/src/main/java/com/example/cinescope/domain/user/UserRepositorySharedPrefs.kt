@@ -22,8 +22,10 @@ class UserRepositorySharedPrefs(private val context: Context): TokenRepository {
             if(value == null)
                 prefs.edit()
                     .remove(userTokenKey)
+                    .apply()
             else
                 prefs.edit()
                     .putString(userTokenKey, value.token)
+                    .apply()
         }
 }

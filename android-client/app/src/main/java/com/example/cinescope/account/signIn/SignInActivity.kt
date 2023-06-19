@@ -1,5 +1,7 @@
 package com.example.cinescope.account.signIn
 
+import android.content.Context
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -14,6 +16,14 @@ class SignInActivity: ComponentActivity() {
             SignInScreenViewModel(dependencies.tokenRepo, dependencies.userServices)
         }
     }
+    companion object {
+        fun navigate(origin: Context){
+            with(origin){
+                val intent = Intent(this, SignInActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -24,9 +34,11 @@ class SignInActivity: ComponentActivity() {
                 onError = { viewModel.clearError() },
                 loading = viewModel.loading,
                 error = viewModel.error,
-                onSignInRequest = {credentials ->
+                onSignInRequest = { credentials ->
                     viewModel.signIn(credentials.email, credentials.password)
-                }
+                },
+                signedIn = viewModel.signedIn,
+                onSignInSuccessful = { finish() }
             )
         }
     }

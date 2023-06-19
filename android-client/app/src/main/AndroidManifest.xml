@@ -32,6 +32,8 @@
         <activity android:name=".movies.movieDetails.MovieDetailsActivity"/>
         <activity android:name=".series.seriesDetails.SeriesDetailsActivity"/>
         <activity android:name=".series.series.SeriesActivity"/>
+        <activity android:name=".profile.ProfileActivity"/>
+        <activity android:name=".account.signIn.SignInActivity"/>
     </application>
 
 </manifest>
