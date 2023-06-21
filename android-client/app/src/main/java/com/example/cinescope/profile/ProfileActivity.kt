@@ -23,7 +23,11 @@ class ProfileActivity: ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val loggedIn = dependencies.tokenRepo.user != null
+        val user = dependencies.tokenRepo.user
+        if(user != null){
+            viewModel.getUserInfo(user.token.value) //TODO this method needs to change on API
+        }
+        val loggedIn = user != null
 
         setContent {
             Toast.makeText(this, "LoggedIn: $loggedIn", Toast.LENGTH_SHORT).show() //TODO remove this Toast
@@ -37,7 +41,8 @@ class ProfileActivity: ComponentActivity() {
                     dependencies.tokenRepo.user = null
                     startActivity(intent)
                 },
-                onSignUpRequest = { SignUpActivity.navigate(this) }
+                onSignUpRequest = { SignUpActivity.navigate(this) },
+                userInfo = viewModel.userInfo
             )
         }
     }
