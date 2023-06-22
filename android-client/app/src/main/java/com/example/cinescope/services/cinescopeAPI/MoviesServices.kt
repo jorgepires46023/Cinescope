@@ -4,8 +4,8 @@ import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.MovieData
 import com.example.cinescope.domain.content.UserDataContent
-import com.example.cinescope.domain.output.ListNameOutput
-import com.example.cinescope.domain.output.StateOutput
+import com.example.cinescope.services.cinescopeAPI.outputs.ListNameOutput
+import com.example.cinescope.services.cinescopeAPI.outputs.StateOutput
 import com.example.cinescope.services.MethodHTTP
 import com.example.cinescope.services.dtosMapping.ListMovieData
 import com.example.cinescope.services.dtosMapping.ListOfContentList
