@@ -2,6 +2,8 @@ package com.example.cinescope.profile
 
 
 
+import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +11,7 @@ import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
 import com.example.cinescope.account.signIn.SignInActivity
 import com.example.cinescope.account.signUp.SignUpActivity
+import com.example.cinescope.trending.TrendingActivity
 import com.example.cinescope.utils.viewModelInit
 
 class ProfileActivity: ComponentActivity() {
@@ -17,6 +20,14 @@ class ProfileActivity: ComponentActivity() {
     private val viewModel: ProfileScreenViewModel by viewModels {
         viewModelInit {
             ProfileScreenViewModel(dependencies.userServices)
+        }
+    }
+    companion object{
+        fun navigate(origin: Context){
+            with(origin){
+                val intent = Intent(this, ProfileActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 

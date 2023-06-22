@@ -9,6 +9,7 @@ import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.services.cinescopeAPI.MoviesServices
 import com.example.cinescope.services.cinescopeAPI.SeriesServices
 import kotlinx.coroutines.launch
+import okhttp3.Cookie
 
 class ListsViewModel(
     private val moviesServices: MoviesServices,
@@ -24,11 +25,11 @@ class ListsViewModel(
 
     var error by mutableStateOf<String?>(null)
 
-    fun getMoviesLists(token: String){
+    fun getMoviesLists(cookie: Cookie){
         viewModelScope.launch {
             try {
                 loading = true
-                moviesLists = moviesServices.getAllMoviesLists(token)
+                moviesLists = moviesServices.getAllMoviesLists(cookie)
             } catch(e: Exception){
                 error = e.message
             } finally {
@@ -50,11 +51,11 @@ class ListsViewModel(
         }
     }
 
-    fun createMovieList(name: String, token: String){
+    fun createMovieList(name: String, cookie: Cookie){
         viewModelScope.launch {
             try {
                 loading = true
-                moviesServices.createMoviesList(name, token)
+                moviesServices.createMoviesList(name, cookie)
             } catch(e: Exception){
                 error = e.message
             } finally {
