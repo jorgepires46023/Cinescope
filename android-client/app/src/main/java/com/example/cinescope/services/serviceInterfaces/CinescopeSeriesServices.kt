@@ -5,33 +5,34 @@ import com.example.cinescope.domain.content.EpisodeData
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.domain.content.UserDataContent
+import okhttp3.Cookie
 
 interface CinescopeSeriesServices {
 
-    suspend fun addSeriesToList(seriesId: Int, listId: Int, token: String)
+    suspend fun addSeriesToList(seriesId: Int, listId: Int, cookie: Cookie)
 
-    suspend fun changeSeriesState(seriesId: Int, state: String, token: String)
+    suspend fun changeSeriesState(seriesId: Int, state: String, cookie: Cookie)
 
-    suspend fun deleteStateFromSeries(seriesId: Int, token: String)
+    suspend fun deleteStateFromSeries(seriesId: Int, cookie: Cookie)
 
-    suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, token: String)
+    suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, cookie: Cookie)
 
-    suspend fun addWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String)
+    suspend fun addWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, cookie: Cookie)
 
-    suspend fun deleteSeriesList(listId: Int, token: String)
+    suspend fun deleteSeriesList(listId: Int, cookie: Cookie)
 
-    suspend fun deleteWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, token: String)
+    suspend fun deleteWatchedEpisode(seriesId: Int, seasonNr: Int, epNumber: Int, cookie: Cookie)
 
-    suspend fun getAllSeriesByState(state: String, token: String): List<SeriesData>
+    suspend fun getAllSeriesByState(state: String, cookie: Cookie): List<SeriesData>
 
-    suspend fun getAllSeriesLists(token: String): List<ContentList>
+    suspend fun getAllSeriesLists(cookie: Cookie): List<ContentList>
 
-    suspend fun getSeriesList(listId: Int, token: String): List<SeriesData>
+    suspend fun getSeriesList(listId: Int, cookie: Cookie): List<SeriesData>
 
-    suspend fun createSeriesList(name: String, token: String): ListId
+    suspend fun createSeriesList(name: String, cookie: Cookie): ListId
 
-    suspend fun getSeriesUserData(seriesId: Int, token: String): List<UserDataContent>
+    suspend fun getSeriesUserData(seriesId: Int, cookie: Cookie): List<UserDataContent>
 
-    suspend fun getAllWatchedEpFromSeries(seriesId: Int, token: String): List<EpisodeData>
+    suspend fun getAllWatchedEpFromSeries(seriesId: Int, cookie: Cookie): List<EpisodeData>
 
 }

@@ -6,6 +6,7 @@ import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.services.MethodHTTP
+import com.example.cinescope.services.cinescopeAPI.outputs.ListNameOutput
 import com.example.cinescope.services.dtosMapping.ListEpisodeData
 import com.example.cinescope.services.dtosMapping.ListOfContentList
 import com.example.cinescope.services.dtosMapping.ListOfUserDataContent
@@ -15,6 +16,7 @@ import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.joinPathWithVariables
 import com.example.cinescope.utils.send
 import com.google.gson.Gson
+import okhttp3.Cookie
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import java.net.URL
@@ -24,14 +26,14 @@ class SeriesServices(
     gson: Gson,
     httpClient: OkHttpClient
 ) : CinescopeSeriesServices, CinescopeServices(gson, httpClient) {
-    override suspend fun addSeriesToList(seriesId: Int, listId: Int, token: String) {
+    override suspend fun addSeriesToList(seriesId: Int, listId: Int, cookie: Cookie) {
         val body = FormBody.Builder().build()
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.ADD_SERIE, listOf(seriesId.toString(),listId.toString())),
             method = MethodHTTP.POST,
             body = body,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         httpClient.send(request){ response ->
@@ -39,7 +41,7 @@ class SeriesServices(
         }
     }
 
-    override suspend fun changeSeriesState(seriesId: Int, state: String, token: String) {
+    override suspend fun changeSeriesState(seriesId: Int, state: String, cookie: Cookie) {
         val body = FormBody.Builder()
             .add("state", state)
             .build()
@@ -48,7 +50,7 @@ class SeriesServices(
                 .joinPathWithVariables(Series.CHANGE_STATE, listOf(seriesId.toString())),
             method = MethodHTTP.POST,
             body= body,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         httpClient.send(request){ response ->
@@ -56,12 +58,12 @@ class SeriesServices(
         }
     }
 
-    override suspend fun deleteStateFromSeries(seriesId: Int, token: String) {
+    override suspend fun deleteStateFromSeries(seriesId: Int, cookie: Cookie) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.REMOVE_SERIE_STATE, listOf(seriesId.toString())),
             method = MethodHTTP.DELETE,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
@@ -69,12 +71,12 @@ class SeriesServices(
         }
     }
 
-    override suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, token: String) {
+    override suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, cookie: Cookie) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.DELETE_SERIE_FROM_LIST, listOf(seriesId.toString(),listId.toString())),
             method = MethodHTTP.DELETE,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
@@ -83,7 +85,7 @@ class SeriesServices(
     }
 
     override suspend fun addWatchedEpisode(
-        seriesId: Int, seasonNr: Int, epNumber: Int, token: String) {
+        seriesId: Int, seasonNr: Int, epNumber: Int, cookie: Cookie) {
         val body = FormBody.Builder()
             .add("season_number", seasonNr.toString())
             .add("episode_number", epNumber.toString())
@@ -93,7 +95,7 @@ class SeriesServices(
                 .joinPathWithVariables(Series.ADD_WATCHED_EP, listOf(seriesId.toString())),
             method = MethodHTTP.POST,
             body = body,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         httpClient.send(request){ response ->
@@ -101,12 +103,12 @@ class SeriesServices(
         }
     }
 
-    override suspend fun deleteSeriesList(listId: Int, token: String) {
+    override suspend fun deleteSeriesList(listId: Int, cookie: Cookie) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.DELETE_LIST, listOf(listId.toString())),
             method = MethodHTTP.DELETE,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
@@ -115,13 +117,13 @@ class SeriesServices(
     }
 
     override suspend fun deleteWatchedEpisode(
-        seriesId: Int, seasonNr: Int, epNumber: Int, token: String) {
+        seriesId: Int, seasonNr: Int, epNumber: Int, cookie: Cookie) {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.REMOVE_WATCHED_EP,
                     listOf(seriesId.toString(), seasonNr.toString(), epNumber.toString())),
             method = MethodHTTP.DELETE,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
@@ -129,12 +131,12 @@ class SeriesServices(
         }
     }
 
-    override suspend fun getAllSeriesByState(state: String, token: String): List<SeriesData> {
+    override suspend fun getAllSeriesByState(state: String, cookie: Cookie): List<SeriesData> {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.GET_SERIES_BY_STATE, listOf(state)),
             method = MethodHTTP.GET,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         val listSeriesDataObj = httpClient.send(request){ response ->
@@ -143,11 +145,11 @@ class SeriesServices(
         return listSeriesDataObj.results
     }
 
-    override suspend fun getAllSeriesLists(token: String): List<ContentList> {
+    override suspend fun getAllSeriesLists(cookie: Cookie): List<ContentList> {
         val request = buildRequest(
             url = cinescopeURL.joinPath(Series.GET_SERIES_LISTS),
             method = MethodHTTP.GET,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         val listContentListObj = httpClient.send(request){ response ->
@@ -156,12 +158,12 @@ class SeriesServices(
         return listContentListObj.results
     }
 
-    override suspend fun getSeriesList(listId: Int, token: String): List<SeriesData> {
+    override suspend fun getSeriesList(listId: Int, cookie: Cookie): List<SeriesData> {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.GET_LIST, listOf(listId.toString())),
             method = MethodHTTP.GET,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         val listSeriesDataObj = httpClient.send(request){ response ->
@@ -170,15 +172,13 @@ class SeriesServices(
         return listSeriesDataObj.results
     }
 
-    override suspend fun createSeriesList(name: String, token: String): ListId {
-        val body = FormBody.Builder()
-            .add("name", name)
-            .build()
+    override suspend fun createSeriesList(name: String, cookie: Cookie): ListId {
+        val nameObj = ListNameOutput(name)
         val request = buildRequest(
             url = cinescopeURL.joinPath(Series.CREATE_LIST),
             method = MethodHTTP.POST,
-            body = body,
-            token = token
+            body = nameObj.toJsonBody(),
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
@@ -186,12 +186,12 @@ class SeriesServices(
         }
     }
 
-    override suspend fun getSeriesUserData(seriesId: Int, token: String): List<UserDataContent> {
+    override suspend fun getSeriesUserData(seriesId: Int, cookie: Cookie): List<UserDataContent> {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.SERIE_USER_DATA, listOf(seriesId.toString())),
             method = MethodHTTP.GET,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         val listOfUserDataContentObj = httpClient.send(request){ response ->
@@ -200,12 +200,12 @@ class SeriesServices(
         return listOfUserDataContentObj.results
     }
 
-    override suspend fun getAllWatchedEpFromSeries(seriesId: Int, token: String): List<EpisodeData> {
+    override suspend fun getAllWatchedEpFromSeries(seriesId: Int, cookie: Cookie): List<EpisodeData> {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.GET_WATCHED_EP_LIST, listOf(seriesId.toString())),
             method = MethodHTTP.GET,
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         val listEpisodeDataObj = httpClient.send(request){ response ->

@@ -38,11 +38,11 @@ class ListsViewModel(
         }
     }
 
-    fun getSeriesLists(token: String){
+    fun getSeriesLists(cookie: Cookie){
         viewModelScope.launch {
             try {
                 loading = true
-                seriesLists = seriesServices.getAllSeriesLists(token)
+                seriesLists = seriesServices.getAllSeriesLists(cookie)
             } catch(e: Exception){
                 error = e.message
             } finally {
@@ -64,11 +64,11 @@ class ListsViewModel(
         }
     }
 
-    fun createSeriesList(name: String, token: String){
+    fun createSeriesList(name: String, cookie: Cookie){
         viewModelScope.launch {
             try {
                 loading = true
-                seriesServices.createSeriesList(name, token)
+                seriesServices.createSeriesList(name, cookie)
             } catch(e: Exception){
                 error = e.message
             } finally {

@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.user.UserInput
+import com.example.cinescope.lists.ui.ListsTabs
 import com.example.cinescope.ui.ContentListItem
 import com.example.cinescope.ui.CreateListDialog
 import com.example.cinescope.ui.CreateListItem
@@ -37,11 +38,13 @@ import com.example.cinescope.ui.theme.CinescopeTheme
 @Composable
 fun ListsScreen(
     navController: NavController,
-    onCreateList: (String) -> Unit,
+    onCreateMovieList: (String) -> Unit,
     moviesLists: List<ContentList>?,
-    onUpdateMoviesLists: () -> Unit
+    onUpdateMoviesLists: () -> Unit,
+    onCreateSeriesList: (String) -> Unit,
+    seriesLists: List<ContentList>?,
+    onUpdateSeriesLists: () -> Unit
 ) {
-    var dialog by rememberSaveable{ mutableStateOf(false) }
     CinescopeTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -64,24 +67,14 @@ fun ListsScreen(
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    if(!moviesLists.isNullOrEmpty()){
-                        for(list in moviesLists){
-                            ContentListItem(listName = list.name)
-                        }
-                    }
-                    CreateListItem(
-                        onOpenDialog = { dialog = true }
+                    ListsTabs(
+                        onCreateMovieList = onCreateMovieList,
+                        moviesLists = moviesLists,
+                        onUpdateMoviesLists = onUpdateMoviesLists,
+                        onCreateSeriesList = onCreateSeriesList,
+                        seriesLists = seriesLists,
+                        onUpdateSeriesLists = onUpdateSeriesLists
                     )
-                    if(dialog){
-                        CreateListDialog(
-                            onCreateList = { name ->
-                                dialog = false
-                                onCreateList(name)
-                                onUpdateMoviesLists()
-                            },
-                            dismiss = { dialog = false }
-                        )
-                    }
                 }
             }
         }

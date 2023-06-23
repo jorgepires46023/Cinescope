@@ -9,6 +9,7 @@ import com.example.cinescope.domain.SeriesState
 import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.services.cinescopeAPI.SeriesServices
 import kotlinx.coroutines.launch
+import okhttp3.Cookie
 import java.lang.Exception
 
 class SeriesViewModel(private val seriesServices: SeriesServices) : ViewModel(){
@@ -27,11 +28,11 @@ class SeriesViewModel(private val seriesServices: SeriesServices) : ViewModel(){
     var error by mutableStateOf<String?>(null)
 
     //TODO change this getState functions by on that is requested when we choose the specific tab
-    fun getPTWSeries(token: String){
+    fun getPTWSeries(cookie: Cookie){
         viewModelScope.launch {
             try {
                 loading = true
-                ptwList = seriesServices.getAllSeriesByState(SeriesState.PTW.toString(), token)
+                ptwList = seriesServices.getAllSeriesByState(SeriesState.PTW.toString(), cookie)
             }catch (e: Exception){
                 error = e.message
             }finally {
@@ -40,12 +41,12 @@ class SeriesViewModel(private val seriesServices: SeriesServices) : ViewModel(){
         }
     }
 
-    fun getWatchingSeries(token: String){
+    fun getWatchingSeries(cookie: Cookie){
         viewModelScope.launch {
             try {
                 loading = true
                 watchingList =
-                    seriesServices.getAllSeriesByState(SeriesState.WATCHING.toString(), token)
+                    seriesServices.getAllSeriesByState(SeriesState.WATCHING.toString(), cookie)
             } catch (e: Exception) {
                 error = e.message
             } finally {
@@ -54,12 +55,12 @@ class SeriesViewModel(private val seriesServices: SeriesServices) : ViewModel(){
         }
     }
 
-    fun getWatchedSeries(token: String){
+    fun getWatchedSeries(cookie: Cookie){
         viewModelScope.launch {
             try {
                 loading = true
                 watchedList =
-                    seriesServices.getAllSeriesByState(SeriesState.WATCHED.toString(), token)
+                    seriesServices.getAllSeriesByState(SeriesState.WATCHED.toString(), cookie)
             } catch (e: Exception) {
                 error = e.message
             } finally {

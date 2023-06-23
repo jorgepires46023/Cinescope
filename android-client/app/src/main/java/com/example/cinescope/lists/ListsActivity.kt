@@ -42,11 +42,14 @@ class ListsActivity: ComponentActivity() {
             if(user != null){
                 ListsScreen(
                     navController = dependencies.navController,
-                    onCreateList = { name ->
+                    onCreateMovieList = { name ->
                         viewModel.createMovieList(name, user.token)
                     },
                     moviesLists = viewModel.moviesLists,
-                    onUpdateMoviesLists = { viewModel.getMoviesLists(user.token) }
+                    onUpdateMoviesLists = { viewModel.getMoviesLists(user.token) },
+                    onCreateSeriesList = { name -> viewModel.createSeriesList(name, user.token) },
+                    seriesLists = viewModel.seriesLists,
+                    onUpdateSeriesLists = { viewModel.getSeriesLists(user.token) }
                 )
             }else {
                 NotLoggedInScreen(
