@@ -1,4 +1,4 @@
-package com.example.cinescope.ui
+package com.example.cinescope.ui.inputs
 
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text

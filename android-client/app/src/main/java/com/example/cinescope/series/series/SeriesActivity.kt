@@ -6,6 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
+import com.example.cinescope.domain.SeriesState
+import com.example.cinescope.series.seriesDetails.SeriesDetailsActivity
+import com.example.cinescope.ui.NotLoggedInScreen
 import com.example.cinescope.utils.viewModelInit
 
 class SeriesActivity: ComponentActivity() {
@@ -28,24 +31,33 @@ class SeriesActivity: ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val fakeToken = "someToken"//TODO Add user info to get credentials to make this request
+        val user = dependencies.tokenRepo.user
+        if(user != null){
+            viewModel.getSeriesByState(SeriesState.PTW.state, user.token) //Default
+        }
 
-        //viewModel.getPTWSeries(fakeToken)
-        //viewModel.getWatchingSeries(fakeToken)
-        //viewModel.getWatchedSeries(fakeToken)
+
 
         setContent{
-            SeriesScreen(
-                state = SeriesScreenState(
-                    ptwSeries = viewModel.ptwList,
-                    watchingSeries = viewModel.watchingList,
-                    watchedSeries = viewModel.watchedList,
-                    error = viewModel.error,
-                    loading = viewModel.loading
-                ),
-                navController = dependencies.navController,
-                onError = { viewModel.clearError() }
-            )
+            if(user != null){
+                SeriesScreen(
+                    state = SeriesScreenState(
+                        ptwSeries = viewModel.ptwList,
+                        watchingSeries = viewModel.watchingList,
+                        watchedSeries = viewModel.watchedList,
+                        error = viewModel.error,
+                        loading = viewModel.loading
+                    ),
+                    navController = dependencies.navController,
+                    onError = { viewModel.clearError() },
+                    onTabChanged = {state -> viewModel.getSeriesByState(state, user.token) },
+                    onGetDetails = { seriesId ->
+                        SeriesDetailsActivity.navigate(this, seriesId)
+                    }
+                )
+            }else{
+                NotLoggedInScreen(navController = dependencies.navController)
+            }
         }
     }
 

@@ -20,7 +20,8 @@ fun ListsTabs(
     onUpdateMoviesLists: () -> Unit,
     onCreateSeriesList: (String) -> Unit,
     seriesLists: List<ContentList>?,
-    onUpdateSeriesLists: () -> Unit
+    onUpdateSeriesLists: () -> Unit,
+    onChangeScreen: (Int, Int) -> Unit
 ) {
     var tabIdx by remember { mutableIntStateOf(0) }
     val tabs = listOf("Movies", "Series") //TODO insert this strings in xml for translations
@@ -38,12 +39,14 @@ fun ListsTabs(
         0 -> { MoviesListsTab(
             onCreateList = onCreateMovieList,
             moviesLists = moviesLists,
-            onUpdateMoviesLists = onUpdateMoviesLists
+            onUpdateMoviesLists = onUpdateMoviesLists,
+            onGetListDetails = { listId -> onChangeScreen(ListsState.MovieListDetails, listId) }
         ) }
         1 -> { SeriesListsTab(
             onCreateList = onCreateSeriesList,
             seriesLists = seriesLists,
-            onUpdateSeriesLists = onUpdateSeriesLists
+            onUpdateSeriesLists = onUpdateSeriesLists,
+            onGetListDetails = { listId -> onChangeScreen(ListsState.SeriesListDetails, listId) }
         ) }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.cinescope.ui
+package com.example.cinescope.ui.errors
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button

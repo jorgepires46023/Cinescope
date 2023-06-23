@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.searches.MovieInfo
 import com.example.cinescope.ui.bottombar.BottomBar
-import com.example.cinescope.ui.ContentPoster
-import com.example.cinescope.ui.DescriptionCard
+import com.example.cinescope.ui.images.ContentPoster
+import com.example.cinescope.ui.cards.DescriptionCard
 import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.TopBar
-import com.example.cinescope.ui.WatchProviders
+import com.example.cinescope.ui.providers.WatchProviders
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
 

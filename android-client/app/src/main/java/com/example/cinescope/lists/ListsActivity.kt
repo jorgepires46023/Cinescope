@@ -2,18 +2,30 @@ package com.example.cinescope.lists
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.example.cinescope.DependenciesContainer
 import com.example.cinescope.account.signUp.SignUpActivity
 import com.example.cinescope.account.signUp.SignUpScreen
 import com.example.cinescope.account.signUp.SignUpScreenViewModel
+import com.example.cinescope.lists.ui.ListsState
+import com.example.cinescope.movies.movieDetails.MovieDetailsActivity
 import com.example.cinescope.profile.ProfileActivity
+import com.example.cinescope.series.seriesDetails.SeriesDetailsActivity
 import com.example.cinescope.ui.NotLoggedInScreen
 import com.example.cinescope.utils.viewModelInit
 
 class ListsActivity: ComponentActivity() {
+
+    //private var state by mutableIntStateOf(ListsState.Lists)
+
     private val dependencies by lazy { application as DependenciesContainer }
 
     private val viewModel: ListsViewModel by viewModels {
@@ -36,21 +48,56 @@ class ListsActivity: ComponentActivity() {
         val user = dependencies.tokenRepo.user
         if(user != null){
             viewModel.getMoviesLists(user.token)
+            viewModel.getSeriesLists(user.token)
         }
 
         setContent{
+            var state by remember{ mutableIntStateOf(ListsState.Lists) }
             if(user != null){
-                ListsScreen(
-                    navController = dependencies.navController,
-                    onCreateMovieList = { name ->
-                        viewModel.createMovieList(name, user.token)
-                    },
-                    moviesLists = viewModel.moviesLists,
-                    onUpdateMoviesLists = { viewModel.getMoviesLists(user.token) },
-                    onCreateSeriesList = { name -> viewModel.createSeriesList(name, user.token) },
-                    seriesLists = viewModel.seriesLists,
-                    onUpdateSeriesLists = { viewModel.getSeriesLists(user.token) }
-                )
+                when(state){
+                    0 -> ListsScreen(
+                            navController = dependencies.navController,
+                            onCreateMovieList = { name ->
+                                viewModel.createMovieList(name, user.token)
+                            },
+                            moviesLists = viewModel.moviesLists,
+                            onUpdateMoviesLists = { viewModel.getMoviesLists(user.token) },
+                            onCreateSeriesList = { name -> viewModel.createSeriesList(name, user.token) },
+                            seriesLists = viewModel.seriesLists,
+                            onUpdateSeriesLists = { viewModel.getSeriesLists(user.token) },
+                            onChangeScreen = { newState, listId ->
+                                state = newState
+                                when(newState){
+                                    ListsState.MovieListDetails -> viewModel.getMoviesList(listId, user.token)
+                                    ListsState.SeriesListDetails -> viewModel.getSeriesList(listId, user.token)
+                                }
+                            }
+                        )
+                    1 -> MoviesListScreen(
+                        navController = dependencies.navController,
+                        moviesList = viewModel.currentMovieList,
+                        onGetMovieDetails = { movieId ->
+                            MovieDetailsActivity.navigate(this, movieId)
+                        },
+                        onBackRequest = {
+                            viewModel.clearCurrentMovieList()
+                            state = ListsState.Lists
+                        }
+                    )
+                    2 -> SeriesListScreen(
+                        navController = dependencies.navController,
+                        seriesList = viewModel.currentSeriesList,
+                        onGetSeriesDetails = { seriesId ->
+                            SeriesDetailsActivity.navigate(this, seriesId)
+                        },
+                        onBackRequest = {
+                            viewModel.clearCurrentSeriesList()
+                            state = ListsState.Lists
+                        }
+                    )
+                    else -> Toast.makeText(this, "Error displaying content", Toast.LENGTH_SHORT).show()
+                }
+
             }else {
                 NotLoggedInScreen(
                     navController = dependencies.navController

@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.trending.TrendingScreenState
-import com.example.cinescope.ui.AlertError
-import com.example.cinescope.ui.GridRow
+import com.example.cinescope.ui.errors.AlertError
+import com.example.cinescope.ui.grid.MediaContentGrid
 
 @Composable
 fun MoviesTab(state: TrendingScreenState, onError: () -> Unit, onGetMovieDetails: (id: Int) -> Unit) {
@@ -26,12 +26,7 @@ fun MoviesTab(state: TrendingScreenState, onError: () -> Unit, onGetMovieDetails
     ) {
         if(!state.loading){
             if(!state.popMovies.isNullOrEmpty()){
-                for(i in 0 until state.popMovies.size step 3){
-                    val movie1 = state.popMovies[i]
-                    val movie2 = if ((i + 1) < state.popMovies.size) state.popMovies[i+1] else null
-                    val movie3 = if ((i + 2) < state.popMovies.size) state.popMovies[i+2] else null
-                    GridRow(content1 = movie1, content2 = movie2, content3 = movie3, onGetMovieDetails)
-                }
+                MediaContentGrid(list = state.popMovies, onGetDetails = onGetMovieDetails)
             }else{
                 Text(text = "Cannot Render Movies")
             }

@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.user.UserInput
 import com.example.cinescope.domain.user.validateUserOrNull
-import com.example.cinescope.ui.AlertError
-import com.example.cinescope.ui.InputPasswordText
-import com.example.cinescope.ui.InputText
+import com.example.cinescope.ui.errors.AlertError
+import com.example.cinescope.ui.inputs.InputPasswordText
+import com.example.cinescope.ui.inputs.InputText
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController

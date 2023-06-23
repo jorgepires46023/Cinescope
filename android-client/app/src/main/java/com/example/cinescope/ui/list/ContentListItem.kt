@@ -1,4 +1,4 @@
-package com.example.cinescope.ui
+package com.example.cinescope.ui.list
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -11,14 +11,14 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun ContentListItem(
-    onClick: () -> Unit = {}, //TODO remove this default function
+    onClick: () -> Unit,
     listName: String
 ) {
     ListItem(
         headlineContent = { Text(text = listName) },
         trailingContent = {
             IconButton(
-                onClick = { onClick }
+                onClick = { onClick() }
             ){
                 Icon(
                     imageVector = Icons.Default.ArrowForward,

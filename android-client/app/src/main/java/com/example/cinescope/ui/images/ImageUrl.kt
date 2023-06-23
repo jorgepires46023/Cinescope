@@ -1,4 +1,4 @@
-package com.example.cinescope.ui
+package com.example.cinescope.ui.images
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable

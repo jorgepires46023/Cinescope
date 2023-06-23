@@ -11,12 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.series.series.SeriesScreenState
-import com.example.cinescope.ui.AlertError
-import com.example.cinescope.ui.GridRow
+import com.example.cinescope.ui.errors.AlertError
+import com.example.cinescope.ui.grid.SeriesDataGrid
 
 @Composable
-fun PTWTab(state: SeriesScreenState, onError: () -> Unit) {
-//TODO check if we should pass state or only the lists
+fun PTWTab(
+    state: SeriesScreenState,
+    onError: () -> Unit,
+    onGetDetails: (Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .padding(all = 16.dp)
@@ -26,9 +29,9 @@ fun PTWTab(state: SeriesScreenState, onError: () -> Unit) {
     ) {
         if(!state.loading){
             if(!state.ptwSeries.isNullOrEmpty()){
-                Text(text = "PTW TAB")
+                SeriesDataGrid(list = state.ptwSeries, onGetDetails = onGetDetails)
             }else{
-                Text(text = "Cannot Render Movies")
+                Text(text = "You don't have Plan To Watch Series")
             }
         } else {
             Text(text = "Loading...")

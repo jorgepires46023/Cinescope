@@ -1,4 +1,4 @@
-package com.example.cinescope.ui
+package com.example.cinescope.ui.list
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
@@ -26,7 +27,11 @@ fun CreateListItem(
     onOpenDialog: () -> Unit
 ) {
     ListItem(
-        headlineContent = {  },
+        headlineContent = {
+            Text(
+                text = "Add List", //TODO Add translation
+                fontWeight = FontWeight.Bold
+            ) },
         trailingContent = {
             IconButton(
                 onClick = { onOpenDialog() }

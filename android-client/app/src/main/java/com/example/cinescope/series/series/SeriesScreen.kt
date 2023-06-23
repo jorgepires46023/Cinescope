@@ -28,11 +28,10 @@ data class SeriesScreenState(
 fun SeriesScreen(
     state: SeriesScreenState,
     navController: NavController,
-    onSearchRequested: () -> Unit = {},
-    onSeriesPTW: () -> Unit = {},
-    onSeriesWatching: () -> Unit = {},
-    onSeriesWatched: () -> Unit = {},
-    onError: () -> Unit = {}
+    onSearchRequested: () -> Unit = {},//TODO remove this default function
+    onError: () -> Unit = {},
+    onTabChanged: (String) -> Unit,
+    onGetDetails: (Int) -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
@@ -54,7 +53,7 @@ fun SeriesScreen(
                     .fillMaxSize()
             ) {
                 Column {
-                    SeriesTabs(state = state, onError)
+                    SeriesTabs(state = state, onError, onGetDetails, onTabChanged)
                 }
             }
         }

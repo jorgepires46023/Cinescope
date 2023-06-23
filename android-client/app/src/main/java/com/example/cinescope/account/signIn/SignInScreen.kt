@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,11 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.user.UserCredentials
-import com.example.cinescope.domain.user.UserInfo
 import com.example.cinescope.domain.user.validateCredentialsOrNull
-import com.example.cinescope.ui.AlertError
-import com.example.cinescope.ui.InputPasswordText
-import com.example.cinescope.ui.InputText
+import com.example.cinescope.ui.errors.AlertError
+import com.example.cinescope.ui.inputs.InputPasswordText
+import com.example.cinescope.ui.inputs.InputText
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController

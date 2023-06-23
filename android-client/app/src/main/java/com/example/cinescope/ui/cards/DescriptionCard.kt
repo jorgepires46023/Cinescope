@@ -1,4 +1,4 @@
-package com.example.cinescope.ui
+package com.example.cinescope.ui.cards
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding

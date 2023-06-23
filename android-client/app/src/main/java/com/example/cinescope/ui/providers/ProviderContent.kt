@@ -1,4 +1,4 @@
-package com.example.cinescope.ui
+package com.example.cinescope.ui.providers
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.searches.ProviderInfo
+import com.example.cinescope.ui.images.ImageUrl
 
 @Composable
 fun ProviderContent(providers: List<ProviderInfo>) {
