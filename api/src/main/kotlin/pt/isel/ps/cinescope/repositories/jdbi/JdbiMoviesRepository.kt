@@ -28,6 +28,14 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
             .list()
     }
 
+    override fun getMovieListInfo(id: Int?, userId: Int?): ListInfo {
+        return handle.createQuery("select mlid as id, name from cinescope.movieslists where mlid = :id and userid = :userId")
+            .bind("id", id)
+            .bind("userId", userId)
+            .mapTo(ListInfo::class.java)
+            .first()
+    }
+
     override fun addMovieToList(listId: Int?, movie: Movie) {
         handle.createUpdate("insert into cinescope.movielist(mtmdbid, mlid) values(:mtmdbid, :mlid)")
             .bind("mtmdbid", movie.tmdbId)
@@ -91,10 +99,10 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
             .execute()
     }
 
-    override fun getLists(userId: Int?): List<ListDetails> {
+    override fun getLists(userId: Int?): List<ListInfo> {
         return handle.createQuery("select mlid as id, name from cinescope.moviesLists where userid = :userId")
             .bind("userId",userId)
-            .mapTo(ListDetails::class.java)
+            .mapTo(ListInfo::class.java)
             .list()
     }
 

@@ -201,7 +201,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListOutputMovies'
+                $ref: '#/components/schemas/ListDetailsMovies'
         400:
           description: Invalid parameters
         401:
@@ -606,7 +606,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListOutputSeries'
+                $ref: '#/components/schemas/ListDetailsSeries'
         400:
           description: Invalid parameters
         401:
@@ -1294,6 +1294,31 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Episode'
+    ListInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    ListDetailsMovies:
+      type: object
+      properties:
+        info:
+          $ref: '#/components/schemas/ListInfo'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Movie'
+    ListDetailsSeries:
+      type: object
+      properties:
+        info:
+          $ref: '#/components/schemas/ListInfo'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Serie'
 
 
   securitySchemes:

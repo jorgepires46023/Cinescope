@@ -52,7 +52,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
         return ResponseEntity
             .status(200)
-            .body(ListOutput(list))
+            .body(list)
     }
 
     @PostMapping(Movies.CREATE_LIST)

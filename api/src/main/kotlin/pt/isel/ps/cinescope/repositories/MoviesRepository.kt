@@ -1,6 +1,6 @@
 package pt.isel.ps.cinescope.repositories
 
-import pt.isel.ps.cinescope.domain.ListDetails
+import pt.isel.ps.cinescope.domain.ListInfo
 import pt.isel.ps.cinescope.domain.Movie
 import pt.isel.ps.cinescope.domain.MovieOnLists
 import pt.isel.ps.cinescope.domain.MovieState
@@ -10,6 +10,8 @@ interface MoviesRepository {
     fun createList(userId: Int?, name: String): Int?
 
     fun getMoviesListById(id: Int?, userId: Int?): List<Movie>
+
+    fun getMovieListInfo(id: Int?, userId: Int?): ListInfo
 
     fun addMovieToList(listId: Int?, movie: Movie)
 
@@ -27,7 +29,7 @@ interface MoviesRepository {
 
     fun deleteMovieFromList(listId: Int?, movieId: Int?, userId: Int?)
 
-    fun getLists(userId: Int?) :List<ListDetails>
+    fun getLists(userId: Int?) :List<ListInfo>
 
     fun getMoviesFromUserByState(userId: Int?, state: MovieState?): List<Movie>
 

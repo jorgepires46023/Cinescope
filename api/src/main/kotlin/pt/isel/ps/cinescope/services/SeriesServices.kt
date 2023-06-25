@@ -127,7 +127,7 @@ class SeriesServices(
         }
     }
 
-    fun getLists(bearer: String?): List<ListDetails> {
+    fun getLists(bearer: String?): List<ListInfo> {
 
         if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
@@ -136,14 +136,18 @@ class SeriesServices(
         return transactionManager.run { it.seriesRepository.getLists(user.id) }
     }
 
-    fun getList(listId: Int?, bearer: String?): List<Series> {
+    fun getList(listId: Int?, bearer: String?): ListDetails {
         if(isNull(listId)) throw BadRequestException("Missing information to get this list")
 
         if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
-        return transactionManager.run { it.seriesRepository.getSeriesList(listId, user.id) }
+        return transactionManager.run {
+            val list = it.seriesRepository.getSeriesList(listId, user.id)
+            val info = it.seriesRepository.getSeriesListInfo(listId, user.id)
+            return@run ListDetails(info, list)
+        }
     }
 
     fun createList(bearer: String?, name: String?): Int? {
@@ -211,8 +215,8 @@ class SeriesServices(
         val listsWhereSerie = transactionManager.run {
             return@run it.seriesRepository.getListsSerieIsPresent(user.id, serieId)
         }
-        val lists = mutableListOf<ListDetails>()
-        if (!listsWhereSerie.isEmpty()) listsWhereSerie.forEach { lists.add(ListDetails(it.slid, it.name)) }
+        val lists = mutableListOf<ListInfo>()
+        if (!listsWhereSerie.isEmpty()) listsWhereSerie.forEach { lists.add(ListInfo(it.slid, it.name)) }
         return SerieUserData(serieId, state, lists)
     }
 }

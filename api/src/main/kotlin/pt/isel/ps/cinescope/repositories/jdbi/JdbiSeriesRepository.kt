@@ -28,6 +28,14 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .list()
     }
 
+    override fun getSeriesListInfo(listId: Int?, userId: Int?): ListInfo {
+        return handle.createQuery("select slid as id, name from cinescope.serieslists where slid = :id and userid = :userId")
+            .bind("id", listId)
+            .bind("userId", userId)
+            .mapTo(ListInfo::class.java)
+            .first()
+    }
+
     override fun deleteSeriesList(listId: Int?, userId: Int?) {
         handle.createUpdate("delete from cinescope.serieslists sls where sls.slid = :listId and sls.userId = :userId")
             .bind("listId", listId)
@@ -141,10 +149,10 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .list()
     }
 
-    override fun getLists(userId: Int?): List<ListDetails> {
+    override fun getLists(userId: Int?): List<ListInfo> {
         return handle.createQuery("select slid as id, name from cinescope.seriesLists where userid = :userId")
             .bind("userId",userId)
-            .mapTo(ListDetails::class.java)
+            .mapTo(ListInfo::class.java)
             .list()
     }
 

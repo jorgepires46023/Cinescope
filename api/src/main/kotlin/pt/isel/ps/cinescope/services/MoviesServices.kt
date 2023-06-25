@@ -2,7 +2,6 @@ package pt.isel.ps.cinescope.services
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.cinescope.controllers.TokenProcessor
-import pt.isel.ps.cinescope.controllers.models.MoviesModel
 import pt.isel.ps.cinescope.domain.*
 import pt.isel.ps.cinescope.repositories.TransactionManager
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
@@ -27,12 +26,16 @@ class MoviesServices(
         }
     }
 
-    fun getList(listId:Int?, bearer: String?): List<Movie> {
+    fun getList(listId:Int?, bearer: String?): ListDetails {
         if(isNull(listId)) throw BadRequestException("Missing information to get the list")
         if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
-        return transactionManager.run { it.moviesRepository.getMoviesListById(listId, user.id) }
+        return transactionManager.run {
+            val list = it.moviesRepository.getMoviesListById(listId, user.id)
+            val info = it.moviesRepository.getMovieListInfo(listId, user.id)
+            return@run ListDetails(info, list)
+        }
     }
 
     fun addMovieToList(tmdbMovieId: Int?, listId:Int?, bearer: String?){
@@ -94,7 +97,7 @@ class MoviesServices(
         }
     }
 
-    fun getLists(bearer: String?): List<ListDetails>{
+    fun getLists(bearer: String?): List<ListInfo>{
         if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
 
@@ -129,8 +132,8 @@ class MoviesServices(
         val res = transactionManager.run {
             return@run it.moviesRepository.getMovieUserData(user.id, movieId)
         }
-        val lists = mutableListOf<ListDetails>()
-        if (!res.isEmpty()) res.forEach { lists.add(ListDetails(it.mlid, it.name)) }
+        val lists = mutableListOf<ListInfo>()
+        if (!res.isEmpty()) res.forEach { lists.add(ListInfo(it.mlid, it.name)) }
         return MovieUserData(movieId, state, lists)
     }
 }

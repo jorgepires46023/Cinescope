@@ -79,7 +79,7 @@ class SeriesController(val seriesServices: SeriesServices) {
 
         return ResponseEntity
             .status(200)
-            .body(ListOutput(list))
+            .body(list)
     }
 
     @PostMapping(Series.CREATE_LIST)

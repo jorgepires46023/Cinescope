@@ -8,6 +8,8 @@ interface SeriesRepository {
 
     fun getSeriesList(listId: Int?, userId: Int?): List<Series>
 
+    fun getSeriesListInfo(listId: Int?, userId: Int?): ListInfo
+
     fun deleteSeriesList(listId: Int?, userId: Int?)
 
     fun addSeriesToList(listId: Int?, userId: Int?, seriesId: Int)
@@ -34,7 +36,7 @@ interface SeriesRepository {
 
     fun getWatchedEpList(epLId: Int): List<Episode>
 
-    fun getLists(userId: Int?): List<ListDetails>
+    fun getLists(userId: Int?): List<ListInfo>
 
     fun getSeriesFromUserByState(userId: Int?, state: SeriesState?): List<Series>
 
