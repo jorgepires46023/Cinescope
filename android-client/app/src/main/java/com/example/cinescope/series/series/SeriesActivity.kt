@@ -31,9 +31,9 @@ class SeriesActivity: ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val user = dependencies.tokenRepo.user
+        val user = dependencies.userRepo.user
         if(user != null){
-            viewModel.getSeriesByState(SeriesState.PTW.state, user.token) //Default
+            viewModel.getSeriesByState(SeriesState.PTW.state, user.cookie) //Default
         }
 
 
@@ -50,7 +50,7 @@ class SeriesActivity: ComponentActivity() {
                     ),
                     navController = dependencies.navController,
                     onError = { viewModel.clearError() },
-                    onTabChanged = {state -> viewModel.getSeriesByState(state, user.token) },
+                    onTabChanged = {state -> viewModel.getSeriesByState(state, user.cookie) },
                     onGetDetails = { seriesId ->
                         SeriesDetailsActivity.navigate(this, seriesId)
                     }

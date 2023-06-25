@@ -1,5 +1,5 @@
 package com.example.cinescope.domain.user
 
-interface TokenRepository {
+interface UserInfoRepository {
     var user: User?
 }

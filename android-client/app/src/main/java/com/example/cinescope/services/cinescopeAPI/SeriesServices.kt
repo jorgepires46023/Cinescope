@@ -6,7 +6,9 @@ import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.services.MethodHTTP
-import com.example.cinescope.services.cinescopeAPI.outputs.ListNameOutput
+import com.example.cinescope.services.cinescopeAPI.outputs.CreateListOutput
+import com.example.cinescope.services.cinescopeAPI.outputs.StateOutput
+import com.example.cinescope.services.cinescopeAPI.outputs.WatchedEpOutput
 import com.example.cinescope.services.dtosMapping.ListEpisodeData
 import com.example.cinescope.services.dtosMapping.ListOfContentList
 import com.example.cinescope.services.dtosMapping.ListOfUserDataContent
@@ -17,8 +19,8 @@ import com.example.cinescope.utils.joinPathWithVariables
 import com.example.cinescope.utils.send
 import com.google.gson.Gson
 import okhttp3.Cookie
-import okhttp3.FormBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import java.net.URL
 
 class SeriesServices(
@@ -27,12 +29,12 @@ class SeriesServices(
     httpClient: OkHttpClient
 ) : CinescopeSeriesServices, CinescopeServices(gson, httpClient) {
     override suspend fun addSeriesToList(seriesId: Int, listId: Int, cookie: Cookie) {
-        val body = FormBody.Builder().build()
+        val emptyBody = RequestBody.toJsonBody()
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.ADD_SERIE, listOf(seriesId.toString(),listId.toString())),
             method = MethodHTTP.POST,
-            body = body,
+            body = emptyBody,
             cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
@@ -42,14 +44,12 @@ class SeriesServices(
     }
 
     override suspend fun changeSeriesState(seriesId: Int, state: String, cookie: Cookie) {
-        val body = FormBody.Builder()
-            .add("state", state)
-            .build()
+        val stateObj = StateOutput(state)
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.CHANGE_STATE, listOf(seriesId.toString())),
             method = MethodHTTP.POST,
-            body= body,
+            body= stateObj.toJsonBody(),
             cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
@@ -86,15 +86,12 @@ class SeriesServices(
 
     override suspend fun addWatchedEpisode(
         seriesId: Int, seasonNr: Int, epNumber: Int, cookie: Cookie) {
-        val body = FormBody.Builder()
-            .add("season_number", seasonNr.toString())
-            .add("episode_number", epNumber.toString())
-            .build()
+        val watchedEpObj = WatchedEpOutput(seasonNr, epNumber)
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.ADD_WATCHED_EP, listOf(seriesId.toString())),
             method = MethodHTTP.POST,
-            body = body,
+            body = watchedEpObj.toJsonBody(),
             cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
@@ -173,7 +170,7 @@ class SeriesServices(
     }
 
     override suspend fun createSeriesList(name: String, cookie: Cookie): ListId {
-        val nameObj = ListNameOutput(name)
+        val nameObj = CreateListOutput(name)
         val request = buildRequest(
             url = cinescopeURL.joinPath(Series.CREATE_LIST),
             method = MethodHTTP.POST,

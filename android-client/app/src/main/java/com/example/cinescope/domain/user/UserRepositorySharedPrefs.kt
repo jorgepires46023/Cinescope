@@ -7,7 +7,7 @@ import okhttp3.Cookie
 class UserRepositorySharedPrefs(
     private val context: Context,
     private val gson: Gson
-    ): TokenRepository {
+    ): UserInfoRepository {
     private val userTokenKey = "token"
     private val userNameKey = "name"
     private val userEmailKey = "email"
@@ -35,7 +35,7 @@ class UserRepositorySharedPrefs(
                     .apply()
             else
                 prefs.edit()
-                    .putString(userTokenKey, gson.toJson(value.token))
+                    .putString(userTokenKey, gson.toJson(value.cookie))
                     .putString(userNameKey, value.name)
                     .putString(userEmailKey, value.email)
                     .apply()

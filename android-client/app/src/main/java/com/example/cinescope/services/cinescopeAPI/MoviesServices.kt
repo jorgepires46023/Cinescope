@@ -4,7 +4,7 @@ import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.MovieData
 import com.example.cinescope.domain.content.UserDataContent
-import com.example.cinescope.services.cinescopeAPI.outputs.ListNameOutput
+import com.example.cinescope.services.cinescopeAPI.outputs.CreateListOutput
 import com.example.cinescope.services.cinescopeAPI.outputs.StateOutput
 import com.example.cinescope.services.MethodHTTP
 import com.example.cinescope.services.dtosMapping.ListMovieData
@@ -18,6 +18,7 @@ import com.google.gson.Gson
 import okhttp3.Cookie
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import java.net.URL
 
 class MoviesServices(
@@ -26,7 +27,7 @@ class MoviesServices(
     httpClient: OkHttpClient
 ) : CinescopeMoviesServices, CinescopeServices(gson, httpClient) {
     override suspend fun addMovieToList(movieId: Int, listId: Int, cookie: Cookie) {
-        val body = FormBody.Builder().build()
+        val body = RequestBody.toJsonBody()
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Movies.ADD_MOVIE, listOf(movieId.toString(),listId.toString())),
@@ -137,7 +138,7 @@ class MoviesServices(
     }
 
     override suspend fun createMoviesList(name: String, cookie: Cookie): ListId {
-        val nameObj = ListNameOutput(name)
+        val nameObj = CreateListOutput(name)
         val request = buildRequest(
             url = cinescopeURL.joinPath(Movies.CREATE_LIST),
             method = MethodHTTP.POST,

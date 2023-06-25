@@ -13,7 +13,7 @@ class SignInActivity: ComponentActivity() {
 
     private val viewModel: SignInScreenViewModel by viewModels {
         viewModelInit{
-            SignInScreenViewModel(dependencies.tokenRepo, dependencies.userServices)
+            SignInScreenViewModel(dependencies.userRepo, dependencies.userServices)
         }
     }
     companion object {

@@ -13,7 +13,7 @@ class SignUpActivity: ComponentActivity() {
 
     private val viewModel: SignUpScreenViewModel by viewModels {
         viewModelInit{
-            SignUpScreenViewModel(dependencies.tokenRepo, dependencies.userServices)
+            SignUpScreenViewModel(dependencies.userRepo, dependencies.userServices)
         }
     }
     companion object {

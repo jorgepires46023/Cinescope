@@ -1,7 +1,7 @@
 package com.example.cinescope
 
 import android.app.Application
-import com.example.cinescope.domain.user.TokenRepository
+import com.example.cinescope.domain.user.UserInfoRepository
 import com.example.cinescope.domain.user.UserRepositorySharedPrefs
 import com.example.cinescope.services.cinescopeAPI.MoviesServices
 import com.example.cinescope.services.cinescopeAPI.SearchServices
@@ -14,14 +14,14 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import java.net.URL
 
-private const val CINESCOPE_DOMAIN = "https://1e59-2001-818-e880-a700-bc43-95a6-274-69a0.ngrok-free.app"
+private const val CINESCOPE_DOMAIN = "https://8472-2001-818-e880-a700-65c1-4a4c-1f20-7d40.ngrok-free.app"
 
 /**
  * The contract for the object that holds all the globally relevant dependencies.
  */
 interface DependenciesContainer {
     val navController: NavController
-    val tokenRepo: TokenRepository
+    val userRepo: UserInfoRepository
     //Cinescope Services
     val searchServices: SearchServices
     val userServices: UserServices
@@ -48,7 +48,7 @@ class CinescopeApplication : DependenciesContainer, Application() {
     private val gson: Gson by lazy {
         GsonBuilder().create()
     }
-    override val tokenRepo: TokenRepository
+    override val userRepo: UserInfoRepository
         get() = UserRepositorySharedPrefs(this, gson)
 
     override val searchServices: SearchServices by lazy {

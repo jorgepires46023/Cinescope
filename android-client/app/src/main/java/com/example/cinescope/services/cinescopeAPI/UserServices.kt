@@ -48,9 +48,6 @@ class UserServices(
             val userInfo = handleResponse<UserInfo>(response, UserInfo::class.java)
             User(cookie, userInfo.email, userInfo.name )
         }
-        /*return httpClient.send(request){ response ->
-            handleResponse(response, Token::class.java)
-        }*/
     }
 
     override suspend fun getUserInfo(token: String): UserInfo {

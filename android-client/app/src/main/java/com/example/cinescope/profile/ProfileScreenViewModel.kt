@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cinescope.domain.user.TokenRepository
 import com.example.cinescope.domain.user.UserInfo
 import com.example.cinescope.services.cinescopeAPI.UserServices
 import kotlinx.coroutines.launch

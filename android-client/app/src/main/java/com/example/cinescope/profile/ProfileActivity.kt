@@ -11,7 +11,6 @@ import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
 import com.example.cinescope.account.signIn.SignInActivity
 import com.example.cinescope.account.signUp.SignUpActivity
-import com.example.cinescope.trending.TrendingActivity
 import com.example.cinescope.utils.viewModelInit
 
 class ProfileActivity: ComponentActivity() {
@@ -34,9 +33,9 @@ class ProfileActivity: ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val user = dependencies.tokenRepo.user
+        val user = dependencies.userRepo.user
         if(user != null){
-            viewModel.getUserInfo(user.token.value) //TODO this method needs to change on API
+            viewModel.getUserInfo(user.cookie.value) //TODO this method needs to change on API
         }
         val loggedIn = user != null
 
@@ -49,7 +48,7 @@ class ProfileActivity: ComponentActivity() {
                 navController = dependencies.navController,
                 onLoginRequest = { SignInActivity.navigate(this) },
                 onLogoutRequest = {
-                    dependencies.tokenRepo.user = null
+                    dependencies.userRepo.user = null
                     startActivity(intent)
                 },
                 onSignUpRequest = { SignUpActivity.navigate(this) },

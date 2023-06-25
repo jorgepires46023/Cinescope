@@ -1,3 +1,3 @@
 package com.example.cinescope.services.cinescopeAPI.outputs
 
-data class ListNameOutput(val name: String)
+data class CreateListOutput(val name: String)

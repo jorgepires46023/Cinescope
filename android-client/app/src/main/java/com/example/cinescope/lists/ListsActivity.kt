@@ -8,16 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.cinescope.DependenciesContainer
-import com.example.cinescope.account.signUp.SignUpActivity
-import com.example.cinescope.account.signUp.SignUpScreen
-import com.example.cinescope.account.signUp.SignUpScreenViewModel
 import com.example.cinescope.lists.ui.ListsState
 import com.example.cinescope.movies.movieDetails.MovieDetailsActivity
-import com.example.cinescope.profile.ProfileActivity
 import com.example.cinescope.series.seriesDetails.SeriesDetailsActivity
 import com.example.cinescope.ui.NotLoggedInScreen
 import com.example.cinescope.utils.viewModelInit
@@ -45,10 +40,10 @@ class ListsActivity: ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val user = dependencies.tokenRepo.user
+        val user = dependencies.userRepo.user
         if(user != null){
-            viewModel.getMoviesLists(user.token)
-            viewModel.getSeriesLists(user.token)
+            viewModel.getMoviesLists(user.cookie)
+            viewModel.getSeriesLists(user.cookie)
         }
 
         setContent{
@@ -58,18 +53,18 @@ class ListsActivity: ComponentActivity() {
                     0 -> ListsScreen(
                             navController = dependencies.navController,
                             onCreateMovieList = { name ->
-                                viewModel.createMovieList(name, user.token)
+                                viewModel.createMovieList(name, user.cookie)
                             },
                             moviesLists = viewModel.moviesLists,
-                            onUpdateMoviesLists = { viewModel.getMoviesLists(user.token) },
-                            onCreateSeriesList = { name -> viewModel.createSeriesList(name, user.token) },
+                            onUpdateMoviesLists = { viewModel.getMoviesLists(user.cookie) },
+                            onCreateSeriesList = { name -> viewModel.createSeriesList(name, user.cookie) },
                             seriesLists = viewModel.seriesLists,
-                            onUpdateSeriesLists = { viewModel.getSeriesLists(user.token) },
+                            onUpdateSeriesLists = { viewModel.getSeriesLists(user.cookie) },
                             onChangeScreen = { newState, listId ->
                                 state = newState
                                 when(newState){
-                                    ListsState.MovieListDetails -> viewModel.getMoviesList(listId, user.token)
-                                    ListsState.SeriesListDetails -> viewModel.getSeriesList(listId, user.token)
+                                    ListsState.MovieListDetails -> viewModel.getMoviesList(listId, user.cookie)
+                                    ListsState.SeriesListDetails -> viewModel.getSeriesList(listId, user.cookie)
                                 }
                             }
                         )

@@ -5,13 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cinescope.domain.user.TokenRepository
+import com.example.cinescope.domain.user.UserInfoRepository
 import com.example.cinescope.services.cinescopeAPI.UserServices
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class SignUpScreenViewModel(
-    private val tokenRepository: TokenRepository,
+    private val userInfoRepository: UserInfoRepository,
     private val userServices: UserServices
 ): ViewModel() {
     var loading by mutableStateOf(false)
@@ -26,7 +26,7 @@ class SignUpScreenViewModel(
         viewModelScope.launch {
             try {
                 loading = true
-                tokenRepository.user = userServices.createUser(name, email, pwd)
+                userInfoRepository.user = userServices.createUser(name, email, pwd)
                 signedIn = true
             } catch(e: Exception){
                 error = e.message
