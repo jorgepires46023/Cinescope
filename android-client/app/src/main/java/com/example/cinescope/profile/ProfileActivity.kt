@@ -52,7 +52,7 @@ class ProfileActivity: ComponentActivity() {
                     startActivity(intent)
                 },
                 onSignUpRequest = { SignUpActivity.navigate(this) },
-                userInfo = viewModel.userInfo
+                user = user//TODO Just to display something on profile, this should depend on viewModel
             )
         }
     }

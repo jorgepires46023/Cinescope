@@ -1,6 +1,5 @@
 package com.example.cinescope.profile
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.cinescope.domain.user.UserInfo
+import com.example.cinescope.domain.user.User
 import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
@@ -32,7 +31,7 @@ fun ProfileScreen(
     onLoginRequest: () -> Unit = {},
     onSignUpRequest: () -> Unit = {},
     onLogoutRequest: () -> Unit = {},
-    userInfo: UserInfo?,
+    user: User?,
     navController: NavController
 ) {
     CinescopeTheme {
@@ -75,8 +74,10 @@ fun ProfileScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth()
                     ){
-                        if(userInfo != null){
-                            Title(title = userInfo.name)
+                        if(user != null){
+                            Row {
+                                Title(title = user.name)
+                            }
                         }
                         Button(
                             onClick = {
