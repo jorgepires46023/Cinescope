@@ -3,6 +3,7 @@ package com.example.cinescope.services.serviceInterfaces
 import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.MovieData
+import com.example.cinescope.domain.content.MovieListDetails
 import com.example.cinescope.domain.content.UserDataContent
 import okhttp3.Cookie
 
@@ -21,7 +22,7 @@ interface CinescopeMoviesServices {
 
     suspend fun getAllMoviesLists(cookie: Cookie): List<ContentList>
 
-    suspend fun getMoviesList(listId: Int, cookie: Cookie): List<MovieData>
+    suspend fun getMoviesList(listId: Int, cookie: Cookie): MovieListDetails
 
     suspend fun createMoviesList(name: String, cookie: Cookie): ListId
 

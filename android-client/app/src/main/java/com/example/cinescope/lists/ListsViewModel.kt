@@ -6,8 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cinescope.domain.content.ContentList
+import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.MovieData
+import com.example.cinescope.domain.content.MovieListDetails
 import com.example.cinescope.domain.content.SeriesData
+import com.example.cinescope.domain.content.SeriesListDetails
 import com.example.cinescope.services.cinescopeAPI.MoviesServices
 import com.example.cinescope.services.cinescopeAPI.SeriesServices
 import kotlinx.coroutines.launch
@@ -25,10 +28,10 @@ class ListsViewModel(
     var seriesLists by mutableStateOf<List<ContentList>?>(null)
         private set
 
-    var currentMovieList by mutableStateOf<List<MovieData>?>(null)
+    var currentMovieList by mutableStateOf<MovieListDetails?>(null)
         private set
 
-    var currentSeriesList by mutableStateOf<List<SeriesData>?>(null)
+    var currentSeriesList by mutableStateOf<SeriesListDetails?>(null)
         private set
 
     var error by mutableStateOf<String?>(null)
@@ -107,6 +110,46 @@ class ListsViewModel(
                 error = e.message
             } finally {
                 loading = false
+            }
+        }
+    }
+
+    fun deleteMovieList(listId: Int, cookie: Cookie){
+        viewModelScope.launch {
+            try {
+                moviesServices.deleteMoviesList(listId, cookie)
+            } catch(e: Exception){
+                error = e.message
+            }
+        }
+    }
+
+    fun deleteSeriesList(listId: Int, cookie: Cookie){
+        viewModelScope.launch {
+            try {
+                seriesServices.deleteSeriesList(listId, cookie)
+            } catch(e: Exception){
+                error = e.message
+            }
+        }
+    }
+
+    fun deleteMovieFromList(movieId: Int, listId: Int, cookie: Cookie){
+        viewModelScope.launch{
+            try {
+                moviesServices.deleteMovieFromList(movieId, listId, cookie)
+            } catch (e: Exception){
+                error = e.message
+            }
+        }
+    }
+
+    fun deleteSeriesFromList(seriesId: Int, listId: Int, cookie: Cookie){
+        viewModelScope.launch{
+            try {
+                seriesServices.deleteSeriesFromList(seriesId, listId, cookie)
+            } catch (e: Exception){
+                error = e.message
             }
         }
     }

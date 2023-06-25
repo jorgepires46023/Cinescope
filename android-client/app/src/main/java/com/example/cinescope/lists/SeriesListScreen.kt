@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.content.SeriesData
+import com.example.cinescope.domain.content.SeriesListDetails
 import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
@@ -28,9 +29,10 @@ import com.example.cinescope.ui.theme.CinescopeTheme
 @Composable
 fun SeriesListScreen(
     navController: NavController,
-    seriesList: List<SeriesData>?,
+    seriesList: SeriesListDetails?,
     onGetSeriesDetails: (Int) -> Unit,
-    onBackRequest: () -> Unit
+    onBackRequest: () -> Unit,
+    onDeleteFromList: (Int) -> Unit //= { }
 ) {
     CinescopeTheme {
         Scaffold(
@@ -56,24 +58,32 @@ fun SeriesListScreen(
                             Text(text = "Back")
                         }
                     }
-                    if(!seriesList.isNullOrEmpty()){
-                        Title(title = "Series List:")//
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SeriesDataGrid(list = seriesList, onGetDetails = onGetSeriesDetails)
-                    } else {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            Text(
-                                text = "Empty List",
-                                textAlign = TextAlign.Center
+                    if(seriesList != null){
+                        if(seriesList.results.isNotEmpty()){
+                            Title(title = seriesList.info.name)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            SeriesDataGrid(
+                                list = seriesList.results,
+                                onGetDetails = onGetSeriesDetails,
+                                onListsScope = true,
+                                onDeleteFromList = onDeleteFromList
                             )
+                        } else {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    text = "Empty List",
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                     }
                 }
             }
+
         }
     }
 }

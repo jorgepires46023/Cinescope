@@ -19,12 +19,8 @@ import com.example.cinescope.ui.theme.CinescopeTheme
 @Composable
 fun ListsScreen(
     navController: NavController,
-    onCreateMovieList: (String) -> Unit,
-    moviesLists: List<ContentList>?,
-    onUpdateMoviesLists: () -> Unit,
-    onCreateSeriesList: (String) -> Unit,
-    seriesLists: List<ContentList>?,
-    onUpdateSeriesLists: () -> Unit,
+    movieActions: MovieActions,
+    seriesActions: SeriesActions,
     onChangeScreen: (Int, Int) -> Unit
 ) {
     CinescopeTheme {
@@ -50,12 +46,8 @@ fun ListsScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     ListsTabs(
-                        onCreateMovieList = onCreateMovieList,
-                        moviesLists = moviesLists,
-                        onUpdateMoviesLists = onUpdateMoviesLists,
-                        onCreateSeriesList = onCreateSeriesList,
-                        seriesLists = seriesLists,
-                        onUpdateSeriesLists = onUpdateSeriesLists,
+                        movieActions = movieActions,
+                        seriesActions = seriesActions,
                         onChangeScreen = onChangeScreen
                     )
                 }

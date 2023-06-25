@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.content.MovieData
+import com.example.cinescope.domain.content.MovieListDetails
 import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
@@ -28,9 +29,10 @@ import com.example.cinescope.ui.theme.CinescopeTheme
 @Composable
 fun MoviesListScreen(
     navController: NavController,
-    moviesList: List<MovieData>?,
+    moviesList: MovieListDetails?,
     onGetMovieDetails: (Int) -> Unit,
-    onBackRequest: () -> Unit
+    onBackRequest: () -> Unit,
+    onDeleteMovieFromList: (Int) -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
@@ -56,22 +58,32 @@ fun MoviesListScreen(
                             Text(text = "Back")
                         }
                     }
-                    if(!moviesList.isNullOrEmpty()){
-                        Title(title = "Movies List:")//
-                        Spacer(modifier = Modifier.height(8.dp))
-                        MovieDataGrid(list = moviesList, onGetDetails = onGetMovieDetails)
-                    } else {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            Text(
-                                text = "Empty List",
-                                textAlign = TextAlign.Center
+                    if(moviesList != null){
+                        if(moviesList.results.isNotEmpty()){
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Title(title = moviesList.info.name)
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            MovieDataGrid(
+                                list = moviesList.results,
+                                onGetDetails = onGetMovieDetails,
+                                onListsScope = true,
+                                onDeleteFromList = onDeleteMovieFromList
                             )
+                        } else {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    text = "Empty List",
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                     }
+
                 }
             }
         }

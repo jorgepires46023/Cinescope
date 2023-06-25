@@ -3,6 +3,7 @@ package com.example.cinescope.services.cinescopeAPI
 import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.MovieData
+import com.example.cinescope.domain.content.MovieListDetails
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.services.cinescopeAPI.outputs.CreateListOutput
 import com.example.cinescope.services.cinescopeAPI.outputs.StateOutput
@@ -122,7 +123,7 @@ class MoviesServices(
         return listOfContentListObj.results
     }
 
-    override suspend fun getMoviesList(listId: Int, cookie: Cookie): List<MovieData> {
+    override suspend fun getMoviesList(listId: Int, cookie: Cookie): MovieListDetails {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Movies.GET_LIST, listOf(listId.toString())),
@@ -130,11 +131,10 @@ class MoviesServices(
             cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
-        val listMovieDataObj = httpClient.send(request){ response ->
-            handleResponse<ListMovieData>(response, ListMovieData::class.java)
+        val movieListDetails = httpClient.send(request){ response ->
+            handleResponse<MovieListDetails>(response, MovieListDetails::class.java)
         }
-
-        return listMovieDataObj.results
+        return movieListDetails
     }
 
     override suspend fun createMoviesList(name: String, cookie: Cookie): ListId {

@@ -4,6 +4,7 @@ import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.EpisodeData
 import com.example.cinescope.domain.content.ListId
 import com.example.cinescope.domain.content.SeriesData
+import com.example.cinescope.domain.content.SeriesListDetails
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.services.MethodHTTP
 import com.example.cinescope.services.cinescopeAPI.outputs.CreateListOutput
@@ -74,7 +75,7 @@ class SeriesServices(
     override suspend fun deleteSeriesFromList(seriesId: Int, listId: Int, cookie: Cookie) {
         val request = buildRequest(
             url = cinescopeURL
-                .joinPathWithVariables(Series.DELETE_SERIE_FROM_LIST, listOf(seriesId.toString(),listId.toString())),
+                .joinPathWithVariables(Series.DELETE_SERIE_FROM_LIST, listOf(listId.toString(), seriesId.toString())),
             method = MethodHTTP.DELETE,
             cookie = cookie
         )
@@ -155,7 +156,7 @@ class SeriesServices(
         return listContentListObj.results
     }
 
-    override suspend fun getSeriesList(listId: Int, cookie: Cookie): List<SeriesData> {
+    override suspend fun getSeriesList(listId: Int, cookie: Cookie): SeriesListDetails {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.GET_LIST, listOf(listId.toString())),
@@ -163,10 +164,10 @@ class SeriesServices(
             cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
-        val listSeriesDataObj = httpClient.send(request){ response ->
-            handleResponse<ListSeriesData>(response, ListSeriesData::class.java)
+        val seriesListDetails = httpClient.send(request){ response ->
+            handleResponse<SeriesListDetails>(response, SeriesListDetails::class.java)
         }
-        return listSeriesDataObj.results
+        return seriesListDetails
     }
 
     override suspend fun createSeriesList(name: String, cookie: Cookie): ListId {
