@@ -1,6 +1,6 @@
-const DOMAIN_URL = "http://localhost:8080/api"
+import { DOMAIN_URL } from "../utils/Tools"
 
-export async function addMovieToList(movieId: number, listId: number, token: string) {
+export async function addMovieToList(movieId: number, listId: number) {
     return await fetch(`${DOMAIN_URL}/movies/${movieId}/list/${listId}`, {
         method: "POST",
         credentials: 'include',
@@ -11,7 +11,7 @@ export async function addMovieToList(movieId: number, listId: number, token: str
         .then(res => res.json())
 }
 
-export async function changeMovieState(movieId: number, state: string, token: string) {
+export async function changeMovieState(movieId: number, state: string) {
     return await fetch(`${DOMAIN_URL}/movies/${movieId}/state`, {
         method: "POST",
         credentials: 'include',
@@ -26,7 +26,7 @@ export async function changeMovieState(movieId: number, state: string, token: st
         .then(res => res.json())
 }
 
-export async function getMoviesListByState( state: string, token: string) {
+export async function getMoviesListByState(state: string) {
     return await fetch(`${DOMAIN_URL}/movies/state/${state}`, {
         method: "GET",
         credentials: 'include',
@@ -38,7 +38,7 @@ export async function getMoviesListByState( state: string, token: string) {
         .then(res => res.json())
 }
 
-export async function deleteStateFormMovie(movieId: number, token: string) {
+export async function deleteStateFormMovie(movieId: number) {
     return await fetch(`${DOMAIN_URL}/movies/${movieId}/state`, {
         method: "DELETE",
         credentials: 'include',
@@ -49,7 +49,7 @@ export async function deleteStateFormMovie(movieId: number, token: string) {
         .then(res => res.json())
 }
 
-export async function getMoviesLists(token: string) {
+export async function getMoviesLists() {
     return await fetch(`${DOMAIN_URL}/movies/lists`, {
         method: "GET",
         credentials: 'include',
@@ -60,7 +60,7 @@ export async function getMoviesLists(token: string) {
         .then(res => res.json())
 }
 
-export async function getMoviesList(listId: number, token: string) {
+export async function getMoviesList(listId: number) {
     return await fetch(`${DOMAIN_URL}/movies/list/${listId}`, {
         method: "GET",
         credentials: 'include',
@@ -71,7 +71,7 @@ export async function getMoviesList(listId: number, token: string) {
         .then(res => res.json())
 }
 
-export async function createMoviesList(name: string, token: string) {
+export async function createMoviesList(name: string) {
     return await fetch(`${DOMAIN_URL}/movies/list`, {
         method: "POST",
         credentials: 'include',
@@ -92,7 +92,7 @@ export async function createMoviesList(name: string, token: string) {
 
 }
 
-export async function deleteMoviesList(listId: number, token: string) {
+export async function deleteMoviesList(listId: number) {
     return await fetch(`${DOMAIN_URL}/movies/list/${listId}`, {
         method: "DELETE",
         credentials: 'include',
@@ -103,7 +103,7 @@ export async function deleteMoviesList(listId: number, token: string) {
         .then(res => res.json())
 }
 
-export async function deleteMovieFromList(listId: number, movieId: number, token: string) {
+export async function deleteMovieFromList(listId: number, movieId: number) {
     return await fetch(`${DOMAIN_URL}list/${listId}/movie/${movieId}`, {
         method: "DELETE",
         credentials: 'include',
@@ -114,7 +114,7 @@ export async function deleteMovieFromList(listId: number, movieId: number, token
         .then(res => res.json())
 }
 
-export async function getMoviesUserData(movieId: number, token: string) {
+export async function getMoviesUserData(movieId: number) {
     return await fetch(`${DOMAIN_URL}/movies/${movieId}`, {
         method: "GET",
         credentials: 'include',

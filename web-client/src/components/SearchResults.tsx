@@ -6,6 +6,7 @@ import { EMPTY_SEARCH_RESULTS, SearchResults } from "../utils/Types";
 import { IMAGE_DOMAIN, handleError } from "../utils/Tools";
 
 export function SearchResults() {
+    
     const { query } = useParams()
 
     const navigate = useNavigate()

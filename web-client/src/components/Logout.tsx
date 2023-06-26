@@ -1,7 +1,6 @@
 import * as React from "react";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./UserProvider";
 import { removeCookie } from "../utils/Tools";
 
 export function Logout() {

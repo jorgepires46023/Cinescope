@@ -1,14 +1,11 @@
 import * as React from "react"
 import { useNavigate } from 'react-router-dom'
-import { useState, useEffect, useContext } from 'react'
+import { useState } from 'react'
 import { createMoviesList } from "../RequestsHelpers/MoviesRequestsHelper"
-import { UserContext } from "./UserProvider"
 import { NewListInfo, EMPTY_NEW_LIST_INFO } from "../utils/Types"
 import { createSeriesList } from "../RequestsHelpers/SeriesRequestsHelper"
 
 export function CreateList() {
-
-    const userInfo = useContext(UserContext)
 
     const [newList, setNewList] = useState<NewListInfo>(EMPTY_NEW_LIST_INFO)
 
@@ -16,15 +13,12 @@ export function CreateList() {
 
     const navigate = useNavigate()
 
-
-    //useEffect(() => { }, [errMsg])
-
     async function handleCreateList(ev: React.FormEvent<HTMLFormElement>) {
         ev.preventDefault()
         
         if (newList.type == "Movies") {
             try {
-                await createMoviesList(newList.name, userInfo.token)
+                await createMoviesList(newList.name)
             } catch (error) {
                 setErrMsg(true)
                 return
@@ -33,7 +27,7 @@ export function CreateList() {
 
         if (newList.type == "Series") {
             try {
-                await createSeriesList(newList.name, userInfo.token)
+                await createSeriesList(newList.name)
             } catch (error) {
                 setErrMsg(true)
                 return

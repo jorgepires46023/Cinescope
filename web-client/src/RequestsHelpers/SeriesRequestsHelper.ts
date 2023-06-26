@@ -1,6 +1,6 @@
-const DOMAIN_URL = "http://localhost:8080/api"
+import { DOMAIN_URL } from "../utils/Tools"
 
-export async function addSerieToList(serieId: number, listId: number, token: string) {
+export async function addSerieToList(serieId: number, listId: number) {
     return await fetch(`${DOMAIN_URL}/series/${serieId}/list/${listId}`, {
         method: "POST",
         credentials: 'include',
@@ -11,7 +11,7 @@ export async function addSerieToList(serieId: number, listId: number, token: str
         .then(res => res.json())
 }
 
-export async function changeSerieState(serieId: number, state: string, token: string) {
+export async function changeSerieState(serieId: number, state: string) {
     return await fetch(`${DOMAIN_URL}/series/${serieId}/state`, {
         method: "POST",
         credentials: 'include',
@@ -25,7 +25,7 @@ export async function changeSerieState(serieId: number, state: string, token: st
         .then(res => res.json())
 }
 
-export async function removeSerieState(serieId: number, token: string) {
+export async function removeSerieState(serieId: number) {
     return await fetch(`${DOMAIN_URL}/series/${serieId}/state`, {
         method: "DELETE",
         credentials: 'include',
@@ -36,7 +36,7 @@ export async function removeSerieState(serieId: number, token: string) {
         .then(res => res.json())
 }
 
-export async function getSeriesByState(state: string, token: string) {
+export async function getSeriesByState(state: string) {
     return await fetch(`${DOMAIN_URL}/series/state/${state}`, {
         method: "GET",
         credentials: 'include',
@@ -47,7 +47,7 @@ export async function getSeriesByState(state: string, token: string) {
         .then(res => res.json())
 }
 
-export async function addWatchedEpisode(serieId: number, epNum: number, seasonNum: number, token: string) {
+export async function addWatchedEpisode(serieId: number, epNum: number, seasonNum: number) {
     return await fetch(`${DOMAIN_URL}/series/${serieId}/ep`, {
         method: "POST",
         headers: {
@@ -62,7 +62,7 @@ export async function addWatchedEpisode(serieId: number, epNum: number, seasonNu
         .then(res => res.json())
 }
 
-export async function removeWatchedEpisode(serieId: number, epNum: number, seasonNum: number, token: string) {
+export async function removeWatchedEpisode(serieId: number, epNum: number, seasonNum: number) {
     return await fetch(`${DOMAIN_URL}series/${serieId}/season/${seasonNum}/ep/${epNum}`, {
         method: "DELETE",
         headers: {
@@ -77,7 +77,7 @@ export async function removeWatchedEpisode(serieId: number, epNum: number, seaso
         .then(res => res.json())
 }
 
-export async function getWatchedEpisodesList(serieId: number, token: string) {
+export async function getWatchedEpisodesList(serieId: number) {
     return await fetch(`${DOMAIN_URL}/series/${serieId}/watchedep`, {
         method: "GET",
         credentials: 'include',
@@ -97,7 +97,7 @@ export async function getWatchedEpisodesList(serieId: number, token: string) {
         .catch(() => {return { results: null }})
 }
 
-export async function getSeriesLists(token: string) {
+export async function getSeriesLists() {
     return await fetch(`${DOMAIN_URL}/series/lists`, {
         method: "GET",
         credentials: 'include',
@@ -108,7 +108,7 @@ export async function getSeriesLists(token: string) {
         .then(res => res.json())
 }
 
-export async function getSeriesList(listId: number, token: string) {
+export async function getSeriesList(listId: number) {
     return await fetch(`${DOMAIN_URL}/series/list/${listId}`, {
         method: "GET",
         credentials: 'include',
@@ -119,7 +119,7 @@ export async function getSeriesList(listId: number, token: string) {
         .then(res => res.json())
 }
 
-export async function createSeriesList(name: string, token: string) {
+export async function createSeriesList(name: string) {
     return await fetch(`${DOMAIN_URL}/series/list`, {
         method: "POST",
         credentials: 'include',
@@ -139,7 +139,7 @@ export async function createSeriesList(name: string, token: string) {
         })
 }
 
-export async function deleteSeriesList(listId: number, token: string) {
+export async function deleteSeriesList(listId: number) {
     return await fetch(`${DOMAIN_URL}/series/list/${listId}`, {
         method: "DELETE",
         credentials: 'include',
@@ -150,7 +150,7 @@ export async function deleteSeriesList(listId: number, token: string) {
         .then(res => res.json())
 }
 
-export async function deleteSerieFromList(listId: number, serieId: number, token: string) {
+export async function deleteSerieFromList(listId: number, serieId: number) {
     return await fetch(`${DOMAIN_URL}/series/list/${listId}/serie/${serieId}`, {
         method: "DELETE",
         credentials: 'include',
@@ -161,7 +161,7 @@ export async function deleteSerieFromList(listId: number, serieId: number, token
         .then(res => res.json())
 }
 
-export async function getSeriesUserData(serieId: number, token: string) {
+export async function getSeriesUserData(serieId: number) {
     return await fetch(`${DOMAIN_URL}/series/${serieId}`, {
         method: "GET",
         credentials: 'include',

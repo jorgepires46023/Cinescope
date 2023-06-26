@@ -1,15 +1,12 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./UserProvider";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Content, ContentIndexs, EMPTY_CONTENT, EMPTY_LIST_RESULTS, INIT_INDEXS, ListResults } from "../utils/Types";
 import { IMAGE_DOMAIN, getCookie, getSerie, getShowArray, next, previous } from "../utils/Tools";
 import { getSeriesByState } from "../RequestsHelpers/SeriesRequestsHelper";
 
 
 export function Series() {
-
-    const userInfo = useContext(UserContext)
 
     const navigate = useNavigate()
 
@@ -35,15 +32,15 @@ export function Series() {
 
     async function getSeriesByStateInfo() {
 
-        const ptwSeriesInfo = await getSeriesByState("PTW", userInfo.token)
+        const ptwSeriesInfo = await getSeriesByState("PTW")
         setPTWSeries(ptwSeriesInfo)
         setShowPTWSeries(getShowArray(ptwSeriesInfo.results, contentIndexsPTW.init, contentIndexsPTW.end))
 
-        const watchedSeriesInfo = await getSeriesByState("Watched", userInfo.token)
+        const watchedSeriesInfo = await getSeriesByState("Watched")
         setWatchedSeries(watchedSeriesInfo)
         setShowWatchedSeries(getShowArray(watchedSeriesInfo.results, contentIndexsWatched.init, contentIndexsWatched.end))
 
-        const watchingSeriesInfo = await getSeriesByState("Watching", userInfo.token)
+        const watchingSeriesInfo = await getSeriesByState("Watching")
         setWatchingSeries(watchingSeriesInfo)
         setShowWatchingSeries(getShowArray(watchingSeriesInfo.results, contentIndexsWatching.init, contentIndexsWatching.end))
     }

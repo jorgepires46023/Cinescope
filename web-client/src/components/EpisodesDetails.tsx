@@ -1,16 +1,14 @@
 import * as React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getEpisodeDetails } from "../RequestsHelpers/SearchRequestsHelper";
 import { useParams } from "react-router-dom";
 import { EpisodeDetailsResults, EMPTY_EPISODE_DETAILS_RESULT, EMPTY_WATCHED_EPISODE, WatchedEpisode, ListResults, EMPTY_LIST_RESULTS_WATCHED_EPISODES } from "../utils/Types";
-import { BACKDROP_IMAGE_DOMAIN, handleError } from "../utils/Tools";
-import { UserContext } from "./UserProvider";
+import { BACKDROP_IMAGE_DOMAIN, getCookie, handleError } from "../utils/Tools";
 import { addWatchedEpisode, getWatchedEpisodesList, removeWatchedEpisode } from "../RequestsHelpers/SeriesRequestsHelper";
 
 
 
-export function EpisodesDetails() {
-    const userInfo = useContext(UserContext)
+export function EpisodesDetails() {  //TODO links sociais
 
     const { serieId, season, episodeNum } = useParams()
 
@@ -18,12 +16,14 @@ export function EpisodesDetails() {
 
     const [watchedList, setWatchedList] = useState<ListResults<WatchedEpisode>>(EMPTY_LIST_RESULTS_WATCHED_EPISODES)
 
+    const userToken = getCookie('userToken')
+
     async function getEpisodeInfo() {
         const episode = await getEpisodeDetails(+serieId, +season, +episodeNum)
         setEpidodeInfo(episode)
 
-        if (userInfo.token) {
-            const watchedList = await getWatchedEpisodesList(+serieId, userInfo.token)
+        if (userToken) {
+            const watchedList = await getWatchedEpisodesList(+serieId)
             setWatchedList(watchedList)
         }
     }
@@ -36,10 +36,10 @@ export function EpisodesDetails() {
         const checked = ev.currentTarget.checked
         const checkbox = document.getElementById(`${episodeId}`) as HTMLInputElement;
         if (checked) {
-            await addWatchedEpisode(+serieId, episodeNum, episodeSeason, userInfo.token)
+            await addWatchedEpisode(+serieId, episodeNum, episodeSeason)
             checkbox.checked = true
         } else {
-            await removeWatchedEpisode(+serieId, episodeNum, episodeSeason, userInfo.token)
+            await removeWatchedEpisode(+serieId, episodeNum, episodeSeason)
             checkbox.checked = false
         }
     }
@@ -64,7 +64,7 @@ export function EpisodesDetails() {
                     <div className="imageDiv">
                         <img src={`${BACKDROP_IMAGE_DOMAIN}/${episodeInfo.episodeDetails.still_path}`} alt={episodeInfo.episodeDetails.name} onError={handleError} className="episodeImg" />
                     </div>
-                    { userInfo.token && <div className="watchedDiv">
+                    { userToken && <div className="watchedDiv">
                         <label htmlFor={episodeInfo.episodeDetails.name}>Watched: </label>
                         <input id={`${episodeInfo.episodeDetails.id}`} name={episodeInfo.episodeDetails.name} type="checkbox" checked={showCheckedEpisode(+episodeNum, +season)} onClick={(event) => addToWatchedList(event, episodeInfo.episodeDetails.id, +episodeNum, +season)} className="checkmarkEpisode" />
                     </div>}
@@ -75,7 +75,7 @@ export function EpisodesDetails() {
                         <p>{episodeInfo.episodeDetails.overview}</p>
                     </div>
                     <div className="contentStats">
-                        <p> Air Date: {episodeInfo.episodeDetails.air_date}</p>
+                        <p> Air Date: {episodeInfo.episodeDetails.date}</p>
                     </div>
                 </div>
                 <div className="apiDiv">

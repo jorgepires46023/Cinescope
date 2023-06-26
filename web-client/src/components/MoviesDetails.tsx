@@ -1,14 +1,13 @@
 import * as React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getMoviesDetails } from "../RequestsHelpers/SearchRequestsHelper";
-import { EMPTY_LIST_RESULTS_USER_LISTS, EMPTY_MOVIE_DETAILS_RESULTS, EMPTY_CONTENT_USER_DATA, EMPTY_PROVIDERS_INFO, EMPTY_USER_LISTS_ELEMS, ListResults, /* EMPTY_USER_LISTS, */ MovieDetailsResults, ContentUserData, ProviderInfo, /* UserLists, */ UserListsElems } from "../utils/Types";
+import { EMPTY_LIST_RESULTS_USER_LISTS, EMPTY_MOVIE_DETAILS_RESULTS, EMPTY_CONTENT_USER_DATA, EMPTY_PROVIDERS_INFO, 
+    ListResults, MovieDetailsResults, ContentUserData, ProviderInfo, UserListsElems } from "../utils/Types";
 import { BACKDROP_IMAGE_DOMAIN, IMAGE_DOMAIN, getCookie, handleError } from "../utils/Tools";
-import { UserContext } from "./UserProvider";
-import { addMovieToList, changeMovieState, deleteMovieFromList, deleteStateFormMovie, getMoviesListByState, getMoviesLists, getMoviesUserData } from "../RequestsHelpers/MoviesRequestsHelper";
+import { addMovieToList, changeMovieState, deleteMovieFromList, deleteStateFormMovie, getMoviesLists, getMoviesUserData } from "../RequestsHelpers/MoviesRequestsHelper";
 
 export function MoviesDetails() {
-    const userInfo = useContext(UserContext)
 
     const [movie, setMovie] = useState<MovieDetailsResults>(EMPTY_MOVIE_DETAILS_RESULTS)
 
@@ -36,7 +35,7 @@ export function MoviesDetails() {
         if (userToken) {
             const select: HTMLSelectElement = document.querySelector('#showState')
             try {
-                const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
+                const movieStateInfo = await getMoviesUserData(+movieId)
 
                 if (movieStateInfo) {
                     setMovieStateInfo(movieStateInfo)
@@ -73,9 +72,9 @@ export function MoviesDetails() {
 
     async function showUserLists(ev) {
 
-        const lists = await getMoviesLists(userInfo.token)
+        const lists = await getMoviesLists()
         try {
-            const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
+            const movieStateInfo = await getMoviesUserData(+movieId)
             setMovieStateInfo(movieStateInfo)
         } catch (error) {
         
@@ -86,19 +85,18 @@ export function MoviesDetails() {
     }
 
     async function addState(ev) {
-        console.log(ev.currentTarget)
         const state = ev.currentTarget.value
 
         if (state == "PTW") {
-            await changeMovieState(+movieId, "PTW", userInfo.token)
+            await changeMovieState(+movieId, "PTW")
         }
         if (state == "Watched") {
-            await changeMovieState(+movieId, "Watched", userInfo.token)
+            await changeMovieState(+movieId, "Watched")
         }
 
         if (state == "Add State") {
-            await deleteStateFormMovie(+movieId, userInfo.token)
-            const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
+            await deleteStateFormMovie(+movieId)
+            const movieStateInfo = await getMoviesUserData(+movieId)
             setMovieStateInfo(movieStateInfo)
             showLists.results.map(list =>
                 showChecked(list.id)
@@ -110,17 +108,17 @@ export function MoviesDetails() {
         const checked = ev.currentTarget.checked
         const checkbox = document.getElementById(`${listId}`) as HTMLInputElement;
         if (checked) {
-            await addMovieToList(+movieId, listId, userInfo.token)
+            await addMovieToList(+movieId, listId)
 
             try {
-                const movieStateInfo = await getMoviesUserData(+movieId, userInfo.token)
+                const movieStateInfo = await getMoviesUserData(+movieId)
                 const select: HTMLSelectElement = document.querySelector('#showState')
                 select.options.namedItem(movieStateInfo.state).selected = true
             } catch (error) {}
 
             checkbox.checked = true
         } else {
-            await deleteMovieFromList(listId, +movieId, userInfo.token)
+            await deleteMovieFromList(listId, +movieId)
             checkbox.checked = false
         }
     }
@@ -182,7 +180,7 @@ export function MoviesDetails() {
                         <p>{movie.movieDetails.overview}</p>
                     </div>
                     <div className="contentStats">
-                        <p>Release Date: {movie.movieDetails.release_date}</p>
+                        <p>Release Date: {movie.movieDetails.date}</p>
                         <p> Run Time: {movie.movieDetails.runtime} min</p>
                     </div>
                 </div>

@@ -1,5 +1,4 @@
-
-const DOMAIN_URL = "http://localhost:8080/api"
+import { DOMAIN_URL } from "../utils/Tools"
 
 export async function createUser(name: string, email: string, password: string) {
     return await fetch(`${DOMAIN_URL}/users`, {
@@ -16,7 +15,7 @@ export async function createUser(name: string, email: string, password: string) 
         .then(res => res.json())
 }
 
-export async function getUserById(userId: number, token: string) {
+export async function getUserById(userId: number) {
     return await fetch(`${DOMAIN_URL}/users/${userId}`, {
         method: "GET",
         credentials: 'include',
@@ -28,7 +27,7 @@ export async function getUserById(userId: number, token: string) {
         .then(res => res.json())
 }
 
-export async function editUser(userId: number, name: string, email: string, password: string, token: string) {
+export async function editUser(userId: number, name: string, email: string, password: string) {
     return await fetch(`${DOMAIN_URL}/users/${userId}/edit`, {
         method: "POST",
         headers: {
@@ -44,7 +43,7 @@ export async function editUser(userId: number, name: string, email: string, pass
         .then(res => res.json())
 }
 
-export async function removeUser(userId: number, token: string) {
+export async function removeUser(userId: number) {
     return await fetch(`${DOMAIN_URL}/users/${userId}/edit`, {
         method: "PUT",
         credentials: 'include',

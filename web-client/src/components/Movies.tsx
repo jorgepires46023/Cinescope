@@ -1,14 +1,12 @@
 import * as React from "react";
-import { useContext, useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { UserContext } from "./UserProvider";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getMoviesListByState } from "../RequestsHelpers/MoviesRequestsHelper";
 import { ContentIndexs, EMPTY_CONTENT, INIT_INDEXS, Content, ListResults, EMPTY_LIST_RESULTS } from "../utils/Types";
 import { IMAGE_DOMAIN, getCookie, getMovie, getShowArray, next, previous } from "../utils/Tools";
 
 
 export function Movies() {
-    const userInfo = useContext(UserContext)
 
     const navigate = useNavigate()
 
@@ -28,13 +26,13 @@ export function Movies() {
 
     async function getMoviesByState() {
 
-        const ptwMoviesInfo = await getMoviesListByState("PTW", userInfo.token)
+        const ptwMoviesInfo = await getMoviesListByState("PTW")
 
         setPTWMovies(ptwMoviesInfo)
 
         setShowPTWMovies(getShowArray(ptwMoviesInfo.results, contentIndexsPTW.init, contentIndexsPTW.end))
 
-        const watchedMovies = await getMoviesListByState("Watched", userInfo.token)
+        const watchedMovies = await getMoviesListByState("Watched")
         setWatchedMovies(watchedMovies)
 
         setShowWatchedMovies(getShowArray(watchedMovies.results, contentIndexsWatched.init, contentIndexsWatched.end))

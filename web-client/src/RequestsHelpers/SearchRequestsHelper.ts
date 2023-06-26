@@ -1,4 +1,4 @@
-const DOMAIN_URL = "http://localhost:8080/api"
+import { DOMAIN_URL } from "../utils/Tools"
 
 export async function getMoviesDetails(movieId: number) {
     return await fetch(`${DOMAIN_URL}/api_movies/${movieId}`, {

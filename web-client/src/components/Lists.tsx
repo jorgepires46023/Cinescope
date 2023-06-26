@@ -1,6 +1,5 @@
 import * as React from "react";
-import { UserContext } from "./UserProvider";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getMoviesLists } from "../RequestsHelpers/MoviesRequestsHelper";
 import { EMPTY_LIST_RESULTS_USER_LISTS, ListResults, UserListsElems } from "../utils/Types";
 import { getSeriesLists } from "../RequestsHelpers/SeriesRequestsHelper";
@@ -8,8 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export function Lists() {
-    const userInfo = useContext(UserContext)
-
+    
     const navigate = useNavigate()
 
     const [moviesLists, setMoviesLists] = useState<ListResults<UserListsElems>>(EMPTY_LIST_RESULTS_USER_LISTS)
@@ -18,10 +16,10 @@ export function Lists() {
 
     async function getUserLists() {
 
-        const moviesListsInfo = await getMoviesLists(userInfo.token)
+        const moviesListsInfo = await getMoviesLists()
         setMoviesLists(moviesListsInfo)
 
-        const seriesListsInfo = await getSeriesLists(userInfo.token)
+        const seriesListsInfo = await getSeriesLists()
         setSeriesLists(seriesListsInfo)
     }
 

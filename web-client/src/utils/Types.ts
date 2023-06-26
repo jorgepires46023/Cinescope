@@ -7,6 +7,7 @@ export type MovieDetails = {
     overview: string,
     poster_path: string,
     release_date: string,
+    date: string,
     runtime: number,
     status: string,
     title: string,
@@ -162,6 +163,7 @@ export type WatchedEpisode = {
 
 export type EpisodeDetails = {
     air_date: string,
+    date: string,
     episode_number: number,
     id: number,
     name: string,
@@ -192,7 +194,13 @@ export type NewListInfo = {
     name: string
 }
 
+export type ListInfo = {
+    id: number,
+    name: string
+}
+
 export type ListResults<T> = {
+    info: ListInfo,
     results: [T]
 }
 
@@ -238,6 +246,7 @@ export const EMPTY_MOVIE_DETAILS: MovieDetails = {
     overview: "",
     poster_path: "",
     release_date: "",
+    date: "",
     runtime: 0,
     status: "",
     title: "",
@@ -368,6 +377,7 @@ export const EMPTY_WATCHED_EPISODE: WatchedEpisode = {
 
 export const EMPTY_EPISODE_DETAILS: EpisodeDetails = {
     air_date: "",
+    date: "",
     episode_number: 0,
     id: 0,
     name: "",
@@ -392,15 +402,22 @@ export const EMPTY_NEW_LIST_INFO: NewListInfo = {
     type: "Movies",
     name: ""
 }
+export const EMPTY_LIST_INFO: ListInfo = {
+    id: 0,
+    name: ""
+}
 
 export const EMPTY_LIST_RESULTS_USER_LISTS: ListResults<UserListsElems> = {
+    info: EMPTY_LIST_INFO,
     results: [EMPTY_USER_LISTS_ELEMS]
 }
 
 export const EMPTY_LIST_RESULTS: ListResults<Content> = {
+    info: EMPTY_LIST_INFO,
     results: [EMPTY_CONTENT]
 }
 
 export const EMPTY_LIST_RESULTS_WATCHED_EPISODES: ListResults<WatchedEpisode> = {
+    info: EMPTY_LIST_INFO,
     results: [EMPTY_WATCHED_EPISODE]
 }

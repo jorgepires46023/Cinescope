@@ -1,15 +1,19 @@
 import * as React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BACKDROP_IMAGE_DOMAIN, IMAGE_DOMAIN, getCookie, handleError } from "../utils/Tools";
-import { EMPTY_LIST_RESULTS_USER_LISTS, EMPTY_LIST_RESULTS_WATCHED_EPISODES, EMPTY_CONTENT_USER_DATA, EMPTY_PROVIDERS_INFO, EMPTY_SEASON_DETAILS_RESULTS, EMPTY_SERIE_DETAILS_RESULTS, ListResults, ContentUserData, ProviderInfo, SeasonDetailsResults, SerieDetailsResults, UserListsElems, WatchedEpisode } from "../utils/Types";
+import {
+    EMPTY_LIST_RESULTS_USER_LISTS, EMPTY_CONTENT_USER_DATA, EMPTY_PROVIDERS_INFO, EMPTY_SEASON_DETAILS_RESULTS,
+    EMPTY_SERIE_DETAILS_RESULTS, ListResults, ContentUserData, ProviderInfo, SeasonDetailsResults, SerieDetailsResults,
+    UserListsElems, WatchedEpisode
+} from "../utils/Types";
 import { getSeasonDetails, getSeriesDetails } from "../RequestsHelpers/SearchRequestsHelper";
-import { addSerieToList, addWatchedEpisode, changeSerieState, deleteSerieFromList, getSeriesLists, getSeriesUserData, getWatchedEpisodesList, removeSerieState, removeWatchedEpisode } from "../RequestsHelpers/SeriesRequestsHelper";
-import { UserContext } from "./UserProvider";
+import {
+    addSerieToList, addWatchedEpisode, changeSerieState, deleteSerieFromList, getSeriesLists, getSeriesUserData,
+    getWatchedEpisodesList, removeSerieState, removeWatchedEpisode
+} from "../RequestsHelpers/SeriesRequestsHelper";
 
 export function SeriesDetails() {
-
-    const userInfo = useContext(UserContext)
 
     const navigate = useNavigate()
 
@@ -25,7 +29,10 @@ export function SeriesDetails() {
 
     const [seriesStateInfo, setSeriesStateInfo] = useState<ContentUserData>(EMPTY_CONTENT_USER_DATA)
 
-    const [watchedList, setWatchedList] = useState<ListResults<WatchedEpisode>>({results: null})
+    const [watchedList, setWatchedList] = useState<ListResults<WatchedEpisode>>({
+        info: null,
+        results: null
+    })
 
     const { serieId } = useParams()
 
@@ -38,7 +45,7 @@ export function SeriesDetails() {
 
         const season = await getSeasonDetails(+serieId, 1)
         setShowInfoSeason(season)
-        
+
         if (season) {
             const select: HTMLSelectElement = document.querySelector('#season')
             select.options.namedItem("1").selected = true
@@ -51,7 +58,7 @@ export function SeriesDetails() {
         if (userToken) {
             const select: HTMLSelectElement = document.querySelector('#showState')
             try {
-                const movieStateInfo = await getSeriesUserData(+serieId, userInfo.token)
+                const movieStateInfo = await getSeriesUserData(+serieId)
 
                 if (movieStateInfo) {
                     setSeriesStateInfo(movieStateInfo)
@@ -63,7 +70,7 @@ export function SeriesDetails() {
                 }
             }
 
-            const watchedListInfo = await getWatchedEpisodesList(+serieId, userInfo.token)
+            const watchedListInfo = await getWatchedEpisodesList(+serieId)
             setWatchedList(watchedListInfo)
         }
     }
@@ -78,7 +85,7 @@ export function SeriesDetails() {
 
         const season = await getSeasonDetails(+serieId, seasonNum)
 
-        const watchedListInfo = await getWatchedEpisodesList(+serieId, userInfo.token)
+        const watchedListInfo = await getWatchedEpisodesList(+serieId)
         setWatchedList(watchedListInfo)
 
         setShowInfoSeason(season)
@@ -86,9 +93,9 @@ export function SeriesDetails() {
 
     async function showUserLists(ev) {
 
-        const lists = await getSeriesLists(userInfo.token)
+        const lists = await getSeriesLists()
         try {
-            const movieStateInfo = await getSeriesUserData(+serieId, userInfo.token)
+            const movieStateInfo = await getSeriesUserData(+serieId)
             setSeriesStateInfo(movieStateInfo)
         } catch (error) {
 
@@ -102,17 +109,17 @@ export function SeriesDetails() {
         const checked = ev.currentTarget.checked
         const checkbox = document.getElementById(`${listId}`) as HTMLInputElement;
         if (checked) {
-            await addSerieToList(+serieId, listId, userInfo.token)
+            await addSerieToList(+serieId, listId)
 
             try {
-                const movieStateInfo = await getSeriesUserData(+serieId, userInfo.token)
+                const movieStateInfo = await getSeriesUserData(+serieId)
                 const select: HTMLSelectElement = document.querySelector('#showState')
                 select.options.namedItem(movieStateInfo.state).selected = true
             } catch (error) { }
 
             checkbox.checked = true
         } else {
-            await deleteSerieFromList(listId, +serieId, userInfo.token)
+            await deleteSerieFromList(listId, +serieId)
             checkbox.checked = false
         }
     }
@@ -132,42 +139,43 @@ export function SeriesDetails() {
         const state = ev.currentTarget.value
 
         if (state == "PTW") {
-            await changeSerieState(+serieId, "PTW", userInfo.token)
+            await changeSerieState(+serieId, "PTW")
         }
         if (state == "Watched") {
-            await changeSerieState(+serieId, "Watched", userInfo.token)
+            await changeSerieState(+serieId, "Watched")
         }
         if (state == "Watching") {
-            await changeSerieState(+serieId, "Watching", userInfo.token)
+            await changeSerieState(+serieId, "Watching")
         }
 
         if (state == "Add State") {
-            await removeSerieState(+serieId, userInfo.token)
-            const movieStateInfo = await getSeriesUserData(+serieId, userInfo.token)
+            await removeSerieState(+serieId)
+            const movieStateInfo = await getSeriesUserData(+serieId)
             setSeriesStateInfo(movieStateInfo)
             showLists.results.map(list =>
                 showChecked(list.id)
             )
 
-            const watchedListInfo = await getWatchedEpisodesList(+serieId, userInfo.token)
+            const watchedListInfo = await getWatchedEpisodesList(+serieId)
             setWatchedList(watchedListInfo)
         }
     }
 
     async function addToWatchedList(ev, episodeId: number, episodeNum: number, episodeSeason: number) {
+        ev.stopPropagation()
         const checked = ev.currentTarget.checked
         const checkbox = document.getElementById(`${episodeSeason}${episodeId}`) as HTMLInputElement;
         if (checked) {
-            await addWatchedEpisode(+serieId, episodeNum, episodeSeason, userInfo.token)
+            await addWatchedEpisode(+serieId, episodeNum, episodeSeason)
             checkbox.checked = true
             try {
-                const movieStateInfo = await getSeriesUserData(+serieId, userInfo.token)
-                
+                const movieStateInfo = await getSeriesUserData(+serieId)
+
                 const select: HTMLSelectElement = document.querySelector('#showState')
                 select.options.namedItem(movieStateInfo.state).selected = true
             } catch (error) { }
         } else {
-            await removeWatchedEpisode(+serieId, episodeNum, episodeSeason, userInfo.token)
+            await removeWatchedEpisode(+serieId, episodeNum, episodeSeason)
             checkbox.checked = false
         }
     }
@@ -295,12 +303,12 @@ export function SeriesDetails() {
                                 <div className="seasonEpisodes">
                                     {
                                         showInfoSeason.seasonDetails.episodes.map(episode =>
-                                            <div className="episodeInfo">
+                                            <div className="episodeInfo" onClick={() => navigate(`/series/${serieId}/season/${showInfoSeason.seasonDetails.season_number}/episode/${episode.episode_number}`)}>
                                                 <p>{`${episode.episode_number}: `}{episode.name}</p>
-                                                <div className="episodeButtons">
-                                                    <button className="episodeInfoButton" onClick={() => navigate(`/series/${serieId}/season/${showInfoSeason.seasonDetails.season_number}/episode/${episode.episode_number}`)}>Episode Info</button>
+                                                <div className="episodeButtons" >
+                                                    {/* <button className="episodeInfoButton" onClick={() => navigate(`/series/${serieId}/season/${showInfoSeason.seasonDetails.season_number}/episode/${episode.episode_number}`)}>Episode Info</button> */}
                                                     {userToken && <div className="addEpisode">
-                                                        <label htmlFor={episode.name}> Add: </label>
+                                                        <label htmlFor={episode.name}> Viewed: </label>
                                                         <input id={`${showInfoSeason.seasonDetails.season_number}${episode.id}`} name={episode.name} type="checkbox" checked={showCheckedEpisode(episode.episode_number, showInfoSeason.seasonDetails.season_number)} onClick={(event) => addToWatchedList(event, episode.id, episode.episode_number, showInfoSeason.seasonDetails.season_number)} className="checkmarkEpisodes" />
                                                     </div>}
                                                 </div>

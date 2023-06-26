@@ -7,15 +7,12 @@ import { EMPTY_LOGIN_INFO, LoginInfo } from "../utils/Types"
 
 
 export function Login() {
-    const userInfo = useContext(UserContext)
 
     const [User, setUser] = useState<LoginInfo>(EMPTY_LOGIN_INFO)
 
     const [errMsg, setErrMsg] = useState(false);
 
     const navigate = useNavigate()
-
-    //useEffect(() => { }, [errMsg])  //If failed login we show message error
 
     async function handleLogin(ev: React.FormEvent<HTMLFormElement>) {
         ev.preventDefault()
