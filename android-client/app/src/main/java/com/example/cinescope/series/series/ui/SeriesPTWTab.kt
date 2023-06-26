@@ -15,7 +15,7 @@ import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.grid.SeriesDataGrid
 
 @Composable
-fun PTWTab(
+fun SeriesPTWTab(
     state: SeriesScreenState,
     onError: () -> Unit,
     onGetDetails: (Int) -> Unit

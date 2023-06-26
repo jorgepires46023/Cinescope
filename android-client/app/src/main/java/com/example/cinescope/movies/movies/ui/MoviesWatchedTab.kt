@@ -1,4 +1,4 @@
-package com.example.cinescope.series.series.ui
+package com.example.cinescope.movies.movies.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,13 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.cinescope.series.series.SeriesScreenState
+import com.example.cinescope.movies.movies.MoviesScreenState
 import com.example.cinescope.ui.errors.AlertError
-import com.example.cinescope.ui.grid.SeriesDataGrid
+import com.example.cinescope.ui.grid.MovieDataGrid
 
 @Composable
-fun WatchedTab(
-    state: SeriesScreenState,
+fun MoviesWatchedTab(
+    state: MoviesScreenState,
     onError: () -> Unit,
     onGetDetails: (Int) -> Unit
 ) {
@@ -28,10 +28,10 @@ fun WatchedTab(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if(!state.loading){
-            if(!state.watchedSeries.isNullOrEmpty()){
-                SeriesDataGrid(list = state.watchedSeries, onGetDetails = onGetDetails)
+            if(!state.watchedMovies.isNullOrEmpty()){
+                MovieDataGrid(list = state.watchedMovies, onGetDetails = onGetDetails)
             }else{
-                Text(text = "You don't have Watched Series")
+                Text(text = "You don't have Watched Movies")
             }
         } else {
             Text(text = "Loading...")

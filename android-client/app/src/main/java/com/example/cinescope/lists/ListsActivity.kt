@@ -71,6 +71,7 @@ class ListsActivity: ComponentActivity() {
                     onUpdateMoviesLists = { viewModel.getMoviesLists(user.cookie) },
                     deleteMovieList = { listId ->
                         viewModel.deleteMovieList(listId, user.cookie)
+                        viewModel.getMoviesList(listId, user.cookie)
                     }
                 ),
                 seriesActions = SeriesActions(

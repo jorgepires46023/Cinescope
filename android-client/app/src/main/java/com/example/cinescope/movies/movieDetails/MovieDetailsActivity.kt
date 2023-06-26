@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
-import com.example.cinescope.trending.TrendingScreenViewModel
 import com.example.cinescope.utils.viewModelInit
 
 class MovieDetailsActivity: ComponentActivity() {
@@ -21,9 +20,9 @@ class MovieDetailsActivity: ComponentActivity() {
             }
         }
     }
-    private val viewModel: MovieDetailsScreenViewModel by viewModels {
+    private val viewModel: MovieDetailsViewModel by viewModels {
         viewModelInit{
-            MovieDetailsScreenViewModel(dependencies.searchServices)
+            MovieDetailsViewModel(dependencies.searchServices)
         }
     }
 

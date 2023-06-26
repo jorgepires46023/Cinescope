@@ -30,7 +30,7 @@ fun TrendingTabs(
         }
     }
     when(tabIdx){
-        0 -> MoviesTab(state = state, onError, onGetMovieDetails)
+        0 -> TrendingMoviesTab(state = state, onError, onGetMovieDetails)
         1 -> SeriesTab(state = state, onError, onGetSeriesDetails)
     }
 }

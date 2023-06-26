@@ -9,7 +9,7 @@ import com.example.cinescope.domain.searches.MovieInfo
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import kotlinx.coroutines.launch
 
-class MovieDetailsScreenViewModel(private val searchServices: SearchServices): ViewModel() {
+class MovieDetailsViewModel(private val searchServices: SearchServices): ViewModel() {
     var loading by mutableStateOf(false)
         private set
 

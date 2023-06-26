@@ -1,4 +1,4 @@
-package com.example.cinescope.series.series.ui
+package com.example.cinescope.movies.movies.ui
 
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -8,23 +8,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.cinescope.domain.SeriesState
-import com.example.cinescope.series.series.SeriesScreenState
+import com.example.cinescope.domain.MovieState
+import com.example.cinescope.movies.movies.MoviesScreenState
 
-data class SeriesTabsInfo(val title: String, val state: String)
+data class MoviesTabsInfo(val title: String, val state: String)
+
 @Composable
-fun SeriesTabs(
-    state: SeriesScreenState,
+fun MoviesTabs(
+    state: MoviesScreenState,
     onError: () -> Unit,
     onGetDetails: (Int) -> Unit,
     onTabChanged: (String) -> Unit
 ) {
     var tabIdx by remember { mutableIntStateOf(0) }
     val tabs = listOf(
-        SeriesTabsInfo("PTW", SeriesState.PTW.state),
-        SeriesTabsInfo("Watching", SeriesState.WATCHING.state),
-        SeriesTabsInfo("Watched", SeriesState.WATCHED.state)
-    ) //TODO insert this strings in xml for translations
+        MoviesTabsInfo(MovieState.PTW.name, MovieState.PTW.state),
+        MoviesTabsInfo(MovieState.WATCHED.name, MovieState.WATCHED.state)
+    )
 
     TabRow(selectedTabIndex = tabIdx) {
         tabs.forEachIndexed { index, tab ->
@@ -39,8 +39,7 @@ fun SeriesTabs(
         }
     }
     when(tabIdx){
-        0 -> SeriesPTWTab(state, onError, onGetDetails)
-        1 -> SeriesWatchingTab(state, onError, onGetDetails)
-        2 -> SeriesWatchedTab(state, onError, onGetDetails)
+        0 -> MoviesPTWTab(state, onError, onGetDetails)
+        1 -> MoviesWatchedTab(state, onError, onGetDetails)
     }
 }
