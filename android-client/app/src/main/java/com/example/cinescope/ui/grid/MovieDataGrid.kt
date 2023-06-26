@@ -8,7 +8,7 @@ fun MovieDataGrid(
     list: List<MovieData>,
     onGetDetails: (Int) -> Unit,
     onListsScope: Boolean = false,
-    onDeleteFromList: (Int) -> Unit
+    onDeleteFromList: (Int) -> Unit = {}
 ) {
     for(i in list.indices step 3){
         val content1 = list[i]

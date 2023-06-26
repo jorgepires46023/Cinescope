@@ -16,13 +16,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.core.content.ContextCompat.getDrawable
 import com.example.cinescope.R
 import com.example.cinescope.lists.ListsActivity
+import com.example.cinescope.movies.movies.MoviesActivity
 import com.example.cinescope.profile.ProfileActivity
 import com.example.cinescope.series.series.SeriesActivity
 import com.example.cinescope.trending.TrendingActivity
 data class NavigationItem(val icon: ImageVector, val label: String, val clazz: Class<*>?)// TODO make clazz non-nullable
 
 //TODO: change Icons and labels to strings to be translated
-private val moviesItem = NavigationItem(Icons.Default.Movie, "Movies", null)
+private val moviesItem = NavigationItem(Icons.Default.Movie, "Movies", MoviesActivity::class.java)
 private val seriesItem = NavigationItem(Icons.Default.Tv, "Series", SeriesActivity::class.java)
 private val trendingItem = NavigationItem(Icons.Default.Whatshot, "Trending", TrendingActivity::class.java)
 private val listsItem = NavigationItem(Icons.Default.List, "Lists", ListsActivity::class.java)

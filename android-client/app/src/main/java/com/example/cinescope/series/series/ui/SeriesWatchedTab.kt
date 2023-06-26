@@ -1,4 +1,4 @@
-package com.example.cinescope.trending.ui
+package com.example.cinescope.series.series.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,13 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.cinescope.trending.TrendingScreenState
+import com.example.cinescope.series.series.SeriesScreenState
 import com.example.cinescope.ui.errors.AlertError
-import com.example.cinescope.ui.grid.MediaContentGrid
+import com.example.cinescope.ui.grid.SeriesDataGrid
 
 @Composable
-fun MoviesTab(state: TrendingScreenState, onError: () -> Unit, onGetMovieDetails: (id: Int) -> Unit) {
-    //TODO check if we should pass state or only the lists
+fun SeriesWatchedTab(
+    state: SeriesScreenState,
+    onError: () -> Unit,
+    onGetDetails: (Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .padding(all = 16.dp)
@@ -25,10 +28,10 @@ fun MoviesTab(state: TrendingScreenState, onError: () -> Unit, onGetMovieDetails
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if(!state.loading){
-            if(!state.popMovies.isNullOrEmpty()){
-                MediaContentGrid(list = state.popMovies, onGetDetails = onGetMovieDetails)
+            if(!state.watchedSeries.isNullOrEmpty()){
+                SeriesDataGrid(list = state.watchedSeries, onGetDetails = onGetDetails)
             }else{
-                Text(text = "Cannot Render Movies")
+                Text(text = "You don't have Watched Series")
             }
         } else {
             Text(text = "Loading...")
