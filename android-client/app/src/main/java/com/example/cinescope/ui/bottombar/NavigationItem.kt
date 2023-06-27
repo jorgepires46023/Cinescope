@@ -20,7 +20,7 @@ import com.example.cinescope.movies.movies.MoviesActivity
 import com.example.cinescope.profile.ProfileActivity
 import com.example.cinescope.series.series.SeriesActivity
 import com.example.cinescope.trending.TrendingActivity
-data class NavigationItem(val icon: ImageVector, val label: String, val clazz: Class<*>?)// TODO make clazz non-nullable
+data class NavigationItem(val icon: ImageVector, val label: String, val clazz: Class<*>)// TODO make clazz non-nullable
 
 //TODO: change Icons and labels to strings to be translated
 private val moviesItem = NavigationItem(Icons.Default.Movie, "Movies", MoviesActivity::class.java)
@@ -32,6 +32,6 @@ private val profileItem = NavigationItem(Icons.Default.Person, "Profile", Profil
 private val navItems = listOf(moviesItem, seriesItem, trendingItem, listsItem, profileItem)
 
 const val TRENDING_IDX = 2
-val selectedItem = mutableStateOf(navItems[TRENDING_IDX])
+val selectedItem = mutableStateOf(navItems[TRENDING_IDX].clazz)
 
 fun getNavItems(): List<NavigationItem> = navItems
