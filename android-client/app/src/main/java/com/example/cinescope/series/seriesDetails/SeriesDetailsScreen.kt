@@ -7,13 +7,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.cinescope.domain.MovieState
+import com.example.cinescope.domain.SeriesState
+import com.example.cinescope.domain.content.ContentList
+import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.domain.searches.SeriesInfo
+import com.example.cinescope.movies.movieDetails.MovieUserData
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.images.ContentPoster
 import com.example.cinescope.ui.cards.DescriptionCard
@@ -21,19 +27,33 @@ import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.TopBar
 import com.example.cinescope.ui.providers.WatchProviders
 import com.example.cinescope.ui.bottombar.NavController
+import com.example.cinescope.ui.dropdown.Dropdown
+import com.example.cinescope.ui.floatingbutton.FloatingButton
 import com.example.cinescope.ui.theme.CinescopeTheme
 
 data class SeriesDetailsState(
     val series: SeriesInfo?,
     val loading: Boolean,
-    val error: String?
+    val error: String?,
+    val seriesData: UserDataContent?
+)
+data class SeriesUserData(
+    val seriesData : UserDataContent?,
+    val lists: List<ContentList>?,
+    val onAddToList: (Int) -> Unit,
+    val onDeleteFromList: (Int) -> Unit,
+    val onGetLists:  () -> Unit
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeriesDetailsScreen(
     state: SeriesDetailsState,
+    userData: SeriesUserData,
     navController: NavController,
-    onSearchRequested: () -> Unit = { }
+    onSearchRequested: () -> Unit = { },
+    loggedIn: Boolean,
+    onChangeState: (String) -> Unit
+
 ) {
     CinescopeTheme {
         Scaffold(
@@ -43,6 +63,17 @@ fun SeriesDetailsScreen(
                     onSearchRequested = onSearchRequested
                 )
             },
+            floatingActionButton = {
+                FloatingButton(
+                    lists = userData.lists,
+                    onGetLists =  userData.onGetLists,
+                    onAddToList = userData.onAddToList,
+                    onDeleteFromList = userData.onDeleteFromList,
+                    userData = userData.seriesData
+
+                )
+            },
+            floatingActionButtonPosition = FabPosition.End,
             bottomBar = {
                 BottomBar(
                     navController = navController
@@ -64,6 +95,13 @@ fun SeriesDetailsScreen(
                                 height = 448.dp
                             )
                             DescriptionCard(desc = state.series.seriesDetails.description)
+                            if(loggedIn){
+                                val currentState = if (state.seriesData != null)
+                                    state.seriesData.state ?:  SeriesState.NO_STATE.state
+                                else
+                                    SeriesState.NO_STATE.state
+                                Dropdown(context = "Series State", currentState, SeriesState.getStates(), onChangeState)
+                            }
                             if (state.series.watchProviders.results.PT != null) { //TODO check if we should do something if there isn't any provider info
                                 WatchProviders(providers = state.series.watchProviders.results.PT)
                             }

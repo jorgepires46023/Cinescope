@@ -184,7 +184,7 @@ class SeriesServices(
         }
     }
 
-    override suspend fun getSeriesUserData(seriesId: Int, cookie: Cookie): List<UserDataContent> {
+    override suspend fun getSeriesUserData(seriesId: Int, cookie: Cookie): UserDataContent {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Series.SERIE_USER_DATA, listOf(seriesId.toString())),
@@ -192,10 +192,10 @@ class SeriesServices(
             cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
-        val listOfUserDataContentObj = httpClient.send(request){ response ->
-            handleResponse<ListOfUserDataContent>(response, ListOfUserDataContent::class.java)
+        return httpClient.send(request){ response ->
+            handleResponse(response, UserDataContent::class.java)
         }
-        return listOfUserDataContentObj.results
+
     }
 
     override suspend fun getAllWatchedEpFromSeries(seriesId: Int, cookie: Cookie): List<EpisodeData> {

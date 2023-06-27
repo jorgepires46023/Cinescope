@@ -26,6 +26,6 @@ interface CinescopeMoviesServices {
 
     suspend fun createMoviesList(name: String, cookie: Cookie): ListId
 
-    suspend fun getMovieUserData(movieId: Int, cookie: Cookie): List<UserDataContent>
+    suspend fun getMovieUserData(movieId: Int, cookie: Cookie): UserDataContent
 
 }

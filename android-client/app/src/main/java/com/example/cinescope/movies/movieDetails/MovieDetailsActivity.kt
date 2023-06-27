@@ -22,7 +22,7 @@ class MovieDetailsActivity: ComponentActivity() {
     }
     private val viewModel: MovieDetailsViewModel by viewModels {
         viewModelInit{
-            MovieDetailsViewModel(dependencies.searchServices)
+            MovieDetailsViewModel(dependencies.searchServices, dependencies.moviesServices)
         }
     }
 
@@ -33,7 +33,9 @@ class MovieDetailsActivity: ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        val user = dependencies.userRepo.user
+        if(user != null)
+            viewModel.getMovieUserData(movieId, user.cookie)
         viewModel.getMovieDetails(movieId)
 
         setContent{
@@ -41,9 +43,27 @@ class MovieDetailsActivity: ComponentActivity() {
                 state = MovieDetailsState(
                     movie = viewModel.movie,
                     loading = viewModel.loading,
-                    error = viewModel.error
+                    error = viewModel.error,
+
                 ),
-                navController = dependencies.navController
+                userData = MovieUserData(
+                    movieData = viewModel.userData,
+                    lists = viewModel.lists,
+                    onAddToList = { listId ->
+                        if(user != null) viewModel.addMovieToList(listId, movieId, user.cookie)
+                    },
+                    onDeleteFromList = { listId ->
+                        if(user != null) viewModel.deleteMovieFromList(listId, movieId, user.cookie)
+                    },
+                    onGetLists = {
+                        if(user != null) viewModel.getLists(user.cookie)
+                    }
+                ),
+                navController = dependencies.navController,
+                loggedIn = user != null,
+                onChangeState = {state ->
+                    if(user != null) viewModel.changeState(state, movieId, user.cookie)
+                }
             )
         }
     }

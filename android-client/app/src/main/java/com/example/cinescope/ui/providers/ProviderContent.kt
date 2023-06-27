@@ -27,7 +27,9 @@ fun ProviderContent(providers: List<ProviderInfo>) {
                     .padding(smallPadding)
                     .fillMaxWidth()
             ) {
-                Card(modifier = Modifier.height(logoSize).width(logoSize)) {
+                Card(modifier = Modifier
+                    .height(logoSize)
+                    .width(logoSize)) {
                     ImageUrl(path = provider.logoPath)
                 }
                 Text(

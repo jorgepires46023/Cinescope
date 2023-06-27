@@ -18,7 +18,7 @@ object Movies{
     const val CREATE_LIST = "/movies/list"                                      // Creates new movie list
     const val DELETE_LIST = "/movies/list/{id}"                                 // Deletes list
     const val DELETE_MOVIE_FROM_LIST = "/list/{id}/movie/{mid}"                  // Deletes movie from specific Movie List
-    const val MOVIE_USER_DATA = "movies/{id}"                                   // Gets movie info based on user
+    const val MOVIE_USER_DATA = "/movies/{id}"                                   // Gets movie info based on user
 }
 
 object Series{

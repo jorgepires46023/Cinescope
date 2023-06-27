@@ -32,7 +32,7 @@ interface CinescopeSeriesServices {
 
     suspend fun createSeriesList(name: String, cookie: Cookie): ListId
 
-    suspend fun getSeriesUserData(seriesId: Int, cookie: Cookie): List<UserDataContent>
+    suspend fun getSeriesUserData(seriesId: Int, cookie: Cookie): UserDataContent
 
     suspend fun getAllWatchedEpFromSeries(seriesId: Int, cookie: Cookie): List<EpisodeData>
 

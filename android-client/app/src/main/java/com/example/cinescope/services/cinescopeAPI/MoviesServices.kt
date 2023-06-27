@@ -10,14 +10,12 @@ import com.example.cinescope.services.cinescopeAPI.outputs.StateOutput
 import com.example.cinescope.services.MethodHTTP
 import com.example.cinescope.services.dtosMapping.ListMovieData
 import com.example.cinescope.services.dtosMapping.ListOfContentList
-import com.example.cinescope.services.dtosMapping.ListOfUserDataContent
 import com.example.cinescope.services.serviceInterfaces.CinescopeMoviesServices
 import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.joinPathWithVariables
 import com.example.cinescope.utils.send
 import com.google.gson.Gson
 import okhttp3.Cookie
-import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import java.net.URL
@@ -151,7 +149,7 @@ class MoviesServices(
         }
     }
 
-    override suspend fun getMovieUserData(movieId: Int, cookie: Cookie): List<UserDataContent> {
+    override suspend fun getMovieUserData(movieId: Int, cookie: Cookie): UserDataContent {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Movies.MOVIE_USER_DATA, listOf(movieId.toString())),
@@ -159,10 +157,9 @@ class MoviesServices(
             cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
-        val listOfUserDataContent = httpClient.send(request){ response ->
-            handleResponse<ListOfUserDataContent>(response, ListOfUserDataContent::class.java)
+        return httpClient.send(request){ response ->
+            handleResponse(response, UserDataContent::class.java)
         }
-        return listOfUserDataContent.results
     }
 
 }

@@ -22,7 +22,7 @@ class SeriesDetailsActivity: ComponentActivity() {
     }
     private val viewModel: SeriesDetailsScreenViewModel by viewModels {
         viewModelInit{
-            SeriesDetailsScreenViewModel(dependencies.searchServices)
+            SeriesDetailsScreenViewModel(dependencies.searchServices, dependencies.seriesServices)
         }
     }
 
@@ -33,7 +33,9 @@ class SeriesDetailsActivity: ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        val user = dependencies.userRepo.user
+        if(user != null)
+            viewModel.getSeriesUserData(seriesId, user.cookie)
         viewModel.getSeriesDetails(seriesId)
 
         setContent{
@@ -41,9 +43,27 @@ class SeriesDetailsActivity: ComponentActivity() {
                 state = SeriesDetailsState(
                     series = viewModel.series,
                     loading = viewModel.loading,
-                    error = viewModel.error
+                    error = viewModel.error,
+                    seriesData = viewModel.userData
                 ),
-                navController = dependencies.navController
+                userData = SeriesUserData(
+                    seriesData = viewModel.userData,
+                    lists = viewModel.lists,
+                    onAddToList = { listId ->
+                        if(user != null) viewModel.addSeriesToList(listId, seriesId, user.cookie)
+                    },
+                    onDeleteFromList = { listId ->
+                        if(user != null) viewModel.deleteSeriesFromList(listId, seriesId, user.cookie)
+                    },
+                    onGetLists = {
+                        if(user != null) viewModel.getLists(user.cookie)
+                    }
+                ),
+                navController = dependencies.navController,
+                loggedIn = user != null,
+                onChangeState = {state ->
+                    if(user != null) viewModel.changeState(state, seriesId, user.cookie)
+                }
             )
         }
     }
