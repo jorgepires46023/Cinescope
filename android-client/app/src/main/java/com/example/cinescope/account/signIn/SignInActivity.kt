@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
+import com.example.cinescope.search.SearchActivity
 import com.example.cinescope.utils.viewModelInit
 
 class SignInActivity: ComponentActivity() {
@@ -38,7 +39,8 @@ class SignInActivity: ComponentActivity() {
                     viewModel.signIn(credentials.email, credentials.password)
                 },
                 signedIn = viewModel.signedIn,
-                onSignInSuccessful = { finish() }
+                onSignInSuccessful = { finish() },
+                onSearchRequest = {SearchActivity.navigate(this)}
             )
         }
     }

@@ -2,8 +2,6 @@ package com.example.cinescope.services.mockdata
 
 import com.example.cinescope.domain.searches.SearchContent
 import com.example.cinescope.domain.MediaType
-import com.example.cinescope.domain.searches.Movie
-import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.dtosMapping.ContentAPIDto
 import com.example.cinescope.services.dtosMapping.Results
 

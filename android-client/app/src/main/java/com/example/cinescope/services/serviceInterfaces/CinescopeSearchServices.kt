@@ -1,24 +1,23 @@
 package com.example.cinescope.services.serviceInterfaces
 
 import com.example.cinescope.domain.searches.EpisodeInfo
+import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.domain.searches.SearchContent
-import com.example.cinescope.domain.searches.Movie
 import com.example.cinescope.domain.searches.MovieInfo
-import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.SeriesInfo
 
 interface CinescopeSearchServices {
-    suspend fun searchByQuery(searchQuery:String): SearchContent
+    suspend fun searchByQuery(searchQuery:String): List<MediaContent>
 
-    suspend fun getPopularMovies(): List<Movie>
+    suspend fun getPopularMovies(): List<MediaContent>
 
-    suspend fun getPopularSeries(): List<Series>
+    suspend fun getPopularSeries(): List<MediaContent>
 
-    suspend fun getSeriesRecommendations(id:Int): List<Series>
+    suspend fun getSeriesRecommendations(id:Int): List<MediaContent>
 
     //TODO check if we will implement this functionalities
-    suspend fun getMovieRecommendations(id:Int): List<Movie>
+    suspend fun getMovieRecommendations(id:Int): List<MediaContent>
 
     suspend fun getMovieDetails(movieId: Int): MovieInfo
 

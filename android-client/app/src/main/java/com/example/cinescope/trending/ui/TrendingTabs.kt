@@ -8,14 +8,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.cinescope.domain.MediaType
 import com.example.cinescope.trending.TrendingScreenState
 
 @Composable
 fun TrendingTabs(
     state: TrendingScreenState,
     onError: () -> Unit,
-    onGetMovieDetails: (id: Int) -> Unit,
-    onGetSeriesDetails: (id: Int) -> Unit
+    onGetDetails: (Int, MediaType) -> Unit,
 ) {
     var tabIdx by remember { mutableStateOf(0) }
     val tabs = listOf("Movies", "Series") //TODO insert this strings in xml for translations
@@ -30,7 +30,7 @@ fun TrendingTabs(
         }
     }
     when(tabIdx){
-        0 -> TrendingMoviesTab(state = state, onError, onGetMovieDetails)
-        1 -> SeriesTab(state = state, onError, onGetSeriesDetails)
+        0 -> TrendingMoviesTab(state = state, onError, onGetDetails)
+        1 -> SeriesTab(state = state, onError, onGetDetails)
     }
 }

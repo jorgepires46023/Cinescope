@@ -23,7 +23,7 @@ import com.example.cinescope.domain.user.validateCredentialsOrNull
 import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.inputs.InputPasswordText
 import com.example.cinescope.ui.inputs.InputText
-import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
@@ -35,7 +35,8 @@ fun SignInScreen(
     loading: Boolean,
     error: String?,
     signedIn: Boolean,
-    onSignInSuccessful: () -> Unit = {}
+    onSignInSuccessful: () -> Unit = {},
+    onSearchRequest: () -> Unit
 ) {
     val spacerHeight = 16.dp
     CinescopeTheme {
@@ -43,7 +44,7 @@ fun SignInScreen(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopBar(
-                    onSearchRequested = null
+                    onSearchRequested = onSearchRequest
                 )
             },
             bottomBar = {

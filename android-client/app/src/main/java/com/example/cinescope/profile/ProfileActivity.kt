@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
 import com.example.cinescope.account.signIn.SignInActivity
 import com.example.cinescope.account.signUp.SignUpActivity
+import com.example.cinescope.search.SearchActivity
 import com.example.cinescope.utils.viewModelInit
 
 class ProfileActivity: ComponentActivity() {
@@ -52,7 +53,8 @@ class ProfileActivity: ComponentActivity() {
                     startActivity(intent)
                 },
                 onSignUpRequest = { SignUpActivity.navigate(this) },
-                user = user//TODO Just to display something on profile, this should depend on viewModel
+                user = user,//TODO Just to display something on profile, this should depend on viewModel
+                onSearchRequested = { SearchActivity.navigate(this)}
             )
         }
     }

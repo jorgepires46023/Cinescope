@@ -10,8 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.series.series.ui.SeriesTabs
-import com.example.cinescope.trending.ui.TrendingTabs
-import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
@@ -28,7 +27,7 @@ data class SeriesScreenState(
 fun SeriesScreen(
     state: SeriesScreenState,
     navController: NavController,
-    onSearchRequested: () -> Unit = {},//TODO remove this default function
+    onSearchRequested: () -> Unit,
     onError: () -> Unit = {},
     onTabChanged: (String) -> Unit,
     onGetDetails: (Int) -> Unit

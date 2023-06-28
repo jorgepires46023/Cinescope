@@ -8,18 +8,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.cinescope.domain.searches.Movie
-import com.example.cinescope.domain.searches.Series
+import com.example.cinescope.domain.MediaType
+import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.trending.ui.TrendingTabs
 import com.example.cinescope.ui.bottombar.BottomBar
-import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
 
 data class TrendingScreenState(
-    val popMovies: List<Movie>?,
-    val popSeries: List<Series>?,
+    val popMovies: List<MediaContent>?,
+    val popSeries: List<MediaContent>?,
     val loading: Boolean,
     val error: String?
 )
@@ -29,10 +28,9 @@ data class TrendingScreenState(
 fun TrendingScreen(
     state: TrendingScreenState,
     navController: NavController,
-    onSearchRequested: () -> Unit = { },
-    onGetMovieDetails: (id: Int) -> Unit = {},
-    onGetSeriesDetails: (id: Int) -> Unit = {},
-    onError: () -> Unit = { }
+    onSearchRequested: () -> Unit,
+    onGetDetails: (Int, MediaType) -> Unit,
+    onError: () -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
@@ -54,7 +52,7 @@ fun TrendingScreen(
                 .fillMaxSize()
             ){
                 Column {
-                    TrendingTabs(state = state, onError, onGetMovieDetails, onGetSeriesDetails)
+                    TrendingTabs(state = state, onError, onGetDetails)
                 }
             }
         }

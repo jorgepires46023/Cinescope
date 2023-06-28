@@ -9,8 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.cinescope.domain.content.MovieData
 import com.example.cinescope.movies.movies.ui.MoviesTabs
-import com.example.cinescope.trending.ui.TrendingMoviesTab
-import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
@@ -27,7 +26,7 @@ data class MoviesScreenState(
 fun MoviesScreen(
     state: MoviesScreenState,
     navController: NavController,
-    onSearchRequested: () -> Unit = {},//TODO remove this default function
+    onSearchRequested: () -> Unit,
     onError: () -> Unit = {},
     onTabChanged: (String) -> Unit,
     onGetDetails: (Int) -> Unit

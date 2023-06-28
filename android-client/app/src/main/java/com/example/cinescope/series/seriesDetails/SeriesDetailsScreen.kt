@@ -14,17 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.cinescope.domain.MovieState
 import com.example.cinescope.domain.SeriesState
 import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.domain.searches.SeriesInfo
-import com.example.cinescope.movies.movieDetails.MovieUserData
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.images.ContentPoster
 import com.example.cinescope.ui.cards.DescriptionCard
 import com.example.cinescope.ui.Title
-import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.providers.WatchProviders
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.dropdown.Dropdown
@@ -50,7 +48,7 @@ fun SeriesDetailsScreen(
     state: SeriesDetailsState,
     userData: SeriesUserData,
     navController: NavController,
-    onSearchRequested: () -> Unit = { },
+    onSearchRequested: () -> Unit,
     loggedIn: Boolean,
     onChangeState: (String) -> Unit
 

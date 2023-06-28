@@ -1,17 +1,12 @@
 package com.example.cinescope.services.cinescopeAPI
 
-import android.util.Log
 import com.example.cinescope.domain.searches.EpisodeInfo
-import com.example.cinescope.domain.searches.SearchContent
-import com.example.cinescope.domain.searches.Movie
+import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.domain.searches.MovieInfo
 import com.example.cinescope.domain.searches.SeasonInfo
-import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.domain.searches.SeriesInfo
 import com.example.cinescope.services.dtosMapping.ContentAPIDto
 import com.example.cinescope.services.dtosMapping.toContent
-import com.example.cinescope.services.dtosMapping.toMovies
-import com.example.cinescope.services.dtosMapping.toSeries
 import com.example.cinescope.services.serviceInterfaces.CinescopeSearchServices
 import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.joinPathWithVariables
@@ -25,7 +20,7 @@ class SearchServices(
     gson: Gson,
     httpClient: OkHttpClient
 ) : CinescopeSearchServices, CinescopeServices(gson, httpClient) {
-    override suspend fun searchByQuery(searchQuery: String): SearchContent {
+    override suspend fun searchByQuery(searchQuery: String): List<MediaContent> {
             val request = buildRequest(
                 url = cinescopeURL
                     .joinPathWithVariables(Searches.SEARCH_QUERY, listOf(searchQuery))
@@ -34,10 +29,11 @@ class SearchServices(
             val contentAPIDto = httpClient.send(request){ response ->
                 handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
             }
-            return contentAPIDto.toContent()
+            val res = contentAPIDto.toContent()
+            return res
     }
 
-    override suspend fun getPopularMovies(): List<Movie> {
+    override suspend fun getPopularMovies(): List<MediaContent> {
         val request = buildRequest(
             url = cinescopeURL.joinPath(Searches.GET_POPULAR_MOVIES)
         )
@@ -45,10 +41,10 @@ class SearchServices(
         val contentAPIDto = httpClient.send(request){ response ->
             handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
         }
-        return contentAPIDto.toMovies()
+        return contentAPIDto.toContent()
     }
 
-    override suspend fun getPopularSeries(): List<Series> {
+    override suspend fun getPopularSeries(): List<MediaContent> {
         val request = buildRequest(
             url = cinescopeURL.joinPath(Searches.GET_POPULAR_SERIES)
         )
@@ -56,10 +52,10 @@ class SearchServices(
         val contentAPIDto = httpClient.send(request){ response ->
             handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
         }
-        return contentAPIDto.toSeries()
+        return contentAPIDto.toContent()
     }
 
-    override suspend fun getSeriesRecommendations(id: Int): List<Series> {
+    override suspend fun getSeriesRecommendations(id: Int): List<MediaContent> {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Searches.SERIE_RECOMMENDATIONS, listOf(id.toString()))
@@ -68,10 +64,10 @@ class SearchServices(
         val contentAPIDto = httpClient.send(request){ response ->
             handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
         }
-        return contentAPIDto.toSeries()
+        return contentAPIDto.toContent()
     }
 
-    override suspend fun getMovieRecommendations(id: Int): List<Movie> {
+    override suspend fun getMovieRecommendations(id: Int): List<MediaContent> {
         val request = buildRequest(
             url = cinescopeURL
                 .joinPathWithVariables(Searches.MOVIE_RECOMMENDATIONS, listOf(id.toString()))
@@ -80,7 +76,7 @@ class SearchServices(
         val contentAPIDto = httpClient.send(request){ response ->
             handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
         }
-        return contentAPIDto.toMovies()
+        return contentAPIDto.toContent()
     }
 
     override suspend fun getMovieDetails(movieId: Int): MovieInfo {

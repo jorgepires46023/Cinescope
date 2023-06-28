@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
+import com.example.cinescope.search.SearchActivity
 import com.example.cinescope.utils.viewModelInit
 
 class SeriesDetailsActivity: ComponentActivity() {
@@ -63,7 +64,8 @@ class SeriesDetailsActivity: ComponentActivity() {
                 loggedIn = user != null,
                 onChangeState = {state ->
                     if(user != null) viewModel.changeState(state, seriesId, user.cookie)
-                }
+                },
+                onSearchRequested = { SearchActivity.navigate(this)}
             )
         }
     }

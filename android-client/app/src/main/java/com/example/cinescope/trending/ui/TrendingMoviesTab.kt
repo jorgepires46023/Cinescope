@@ -10,12 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.cinescope.domain.MediaType
 import com.example.cinescope.trending.TrendingScreenState
 import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.grid.MediaContentGrid
 
 @Composable
-fun TrendingMoviesTab(state: TrendingScreenState, onError: () -> Unit, onGetMovieDetails: (id: Int) -> Unit) {
+fun TrendingMoviesTab(state: TrendingScreenState, onError: () -> Unit, onGetMovieDetails: (Int, MediaType) -> Unit) {
     //TODO check if we should pass state or only the lists
     Column(
         modifier = Modifier

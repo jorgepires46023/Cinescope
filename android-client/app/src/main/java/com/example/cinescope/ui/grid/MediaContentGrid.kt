@@ -1,12 +1,13 @@
 package com.example.cinescope.ui.grid
 
 import androidx.compose.runtime.Composable
+import com.example.cinescope.domain.MediaType
 import com.example.cinescope.domain.searches.MediaContent
 
 @Composable
 fun MediaContentGrid(
     list: List<MediaContent>,
-    onGetDetails: (Int) -> Unit
+    onGetDetails: (Int, MediaType) -> Unit
 ) {
     for(i in list.indices step 3){
         val content1 = list[i]

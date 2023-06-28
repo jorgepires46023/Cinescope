@@ -7,7 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
+import com.example.cinescope.domain.MediaType
 import com.example.cinescope.movies.movieDetails.MovieDetailsActivity
+import com.example.cinescope.search.SearchActivity
 import com.example.cinescope.series.seriesDetails.SeriesDetailsActivity
 import com.example.cinescope.utils.viewModelInit
 
@@ -45,11 +47,15 @@ class TrendingActivity: ComponentActivity() {
                     loading = false,
                     error = viewModel.error
                 ),
-                onGetMovieDetails = { movieId ->
-                    MovieDetailsActivity.navigate(this, movieId = movieId)
+                onSearchRequested = {
+                    SearchActivity.navigate(this)
                 },
-                onGetSeriesDetails = {seriesId ->
-                    SeriesDetailsActivity.navigate(this, seriesId = seriesId)
+                onGetDetails = { id, type ->
+                    if (type == MediaType.Movie) {
+                        MovieDetailsActivity.navigate(this, movieId = id)
+                    } else {
+                        SeriesDetailsActivity.navigate(this, seriesId = id)
+                    }
                 },
                 onError = { viewModel.clearError() },
                 navController = dependencies.navController

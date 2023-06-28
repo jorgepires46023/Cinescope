@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.cinescope.domain.user.User
 import com.example.cinescope.ui.Title
-import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
@@ -27,7 +27,7 @@ fun ProfileScreen(
     loggedIn: Boolean,
     error: String?,
     onError: () -> Unit,
-    onSearchRequested: () -> Unit = {},
+    onSearchRequested: () -> Unit,
     onLoginRequest: () -> Unit = {},
     onSignUpRequest: () -> Unit = {},
     onLogoutRequest: () -> Unit = {},

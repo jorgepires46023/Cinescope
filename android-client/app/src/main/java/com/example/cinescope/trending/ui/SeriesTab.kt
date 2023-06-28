@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.cinescope.domain.MediaType
 import com.example.cinescope.trending.TrendingScreenState
 import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.grid.MediaContentGrid
@@ -18,7 +19,7 @@ import com.example.cinescope.ui.grid.MediaContentGrid
 fun SeriesTab(
     state: TrendingScreenState,
     onError: () -> Unit,
-    onGetSeriesDetails: (id: Int) -> Unit
+    onGetSeriesDetails: (Int, MediaType) -> Unit
 ) {
     Column(
         modifier = Modifier

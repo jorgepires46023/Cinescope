@@ -9,9 +9,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.lists.ui.ListsTabs
-import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
@@ -21,14 +20,15 @@ fun ListsScreen(
     navController: NavController,
     movieActions: MovieActions,
     seriesActions: SeriesActions,
-    onChangeScreen: (Int, Int) -> Unit
+    onChangeScreen: (Int, Int) -> Unit,
+    onSearchRequest: () -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopBar(
-                    onSearchRequested = null
+                    onSearchRequested = onSearchRequest
                 )
             },
             bottomBar = {

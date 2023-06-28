@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.cinescope.ui
+package com.example.cinescope.ui.topbar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +14,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +31,9 @@ fun TopBar(
     onSearchRequested: (()-> Unit)? = null //on Search icon touched will trigger this function
 ){
     TopAppBar(
-        colors = TopAppBarDefaults.smallTopAppBarColors(Color.LightGray),
+        colors = topAppBarColors(
+        Color.LightGray
+        ),
         modifier = Modifier.fillMaxWidth(),
         title = { Text(
             text = title,

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
 import com.example.cinescope.domain.SeriesState
+import com.example.cinescope.search.SearchActivity
 import com.example.cinescope.series.seriesDetails.SeriesDetailsActivity
 import com.example.cinescope.ui.NotLoggedInScreen
 import com.example.cinescope.utils.viewModelInit
@@ -53,7 +54,8 @@ class SeriesActivity: ComponentActivity() {
                     onTabChanged = {state -> viewModel.getSeriesByState(state, user.cookie) },
                     onGetDetails = { seriesId ->
                         SeriesDetailsActivity.navigate(this, seriesId)
-                    }
+                    },
+                    onSearchRequested = { SearchActivity.navigate(this)}
                 )
             }else{
                 NotLoggedInScreen(navController = dependencies.navController)

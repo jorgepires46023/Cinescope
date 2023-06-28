@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.theme.CinescopeTheme
+import com.example.cinescope.ui.topbar.TopBar
 
 @Composable
 fun NotLoggedInScreen(

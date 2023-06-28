@@ -17,10 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.domain.content.SeriesListDetails
 import com.example.cinescope.ui.Title
-import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.grid.SeriesDataGrid
@@ -32,14 +31,15 @@ fun SeriesListScreen(
     seriesList: SeriesListDetails?,
     onGetSeriesDetails: (Int) -> Unit,
     onBackRequest: () -> Unit,
-    onDeleteFromList: (Int) -> Unit //= { }
+    onDeleteFromList: (Int) -> Unit,
+    onSearchRequest: () -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopBar(
-                    onSearchRequested = null
+                    onSearchRequested = onSearchRequest
                 )
             },
             bottomBar = {

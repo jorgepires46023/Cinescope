@@ -15,6 +15,7 @@ import com.example.cinescope.DependenciesContainer
 import com.example.cinescope.domain.user.User
 import com.example.cinescope.lists.ui.ListsState
 import com.example.cinescope.movies.movieDetails.MovieDetailsActivity
+import com.example.cinescope.search.SearchActivity
 import com.example.cinescope.series.seriesDetails.SeriesDetailsActivity
 import com.example.cinescope.ui.NotLoggedInScreen
 import com.example.cinescope.utils.viewModelInit
@@ -88,7 +89,8 @@ class ListsActivity: ComponentActivity() {
                         ListsState.MovieListDetails -> viewModel.getMoviesList(listId, user.cookie)
                         ListsState.SeriesListDetails -> viewModel.getSeriesList(listId, user.cookie)
                     }
-                }
+                },
+                onSearchRequest = { SearchActivity.navigate(this)}
             )
             1 -> MoviesListScreen(
                 navController = dependencies.navController,
@@ -105,7 +107,8 @@ class ListsActivity: ComponentActivity() {
                         viewModel.deleteMovieFromList(movieId, it.info.id, user.cookie)
                         viewModel.getMoviesList(it.info.id, user.cookie)
                     }
-                }
+                },
+                onSearchRequest = {SearchActivity.navigate(this)}
             )
             2 -> SeriesListScreen(
                 navController = dependencies.navController,
@@ -122,7 +125,8 @@ class ListsActivity: ComponentActivity() {
                         viewModel.deleteSeriesFromList(seriesId, it.info.id, user.cookie)
                         viewModel.getSeriesList(it.info.id, user.cookie)
                     }
-                }
+                },
+                onSearchRequest = {SearchActivity.navigate(this)}
             )
             else -> Toast.makeText(this, "Error displaying content", Toast.LENGTH_SHORT).show()
         }

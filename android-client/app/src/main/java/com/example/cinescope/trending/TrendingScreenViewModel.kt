@@ -5,8 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cinescope.domain.searches.Movie
-import com.example.cinescope.domain.searches.Series
+import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import kotlinx.coroutines.launch
 
@@ -14,10 +13,10 @@ class TrendingScreenViewModel(private val searchServices: SearchServices): ViewM
     var loading by mutableStateOf(false)
         private set
 
-    var popularMovies by mutableStateOf<List<Movie>?>(null)
+    var popularMovies by mutableStateOf<List<MediaContent>?>(null)
         private set
 
-    var popularSeries by mutableStateOf<List<Series>?>(null)
+    var popularSeries by mutableStateOf<List<MediaContent>?>(null)
         private set
 
     var error by mutableStateOf<String?>(null)

@@ -22,7 +22,7 @@ import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.images.ContentPoster
 import com.example.cinescope.ui.cards.DescriptionCard
 import com.example.cinescope.ui.Title
-import com.example.cinescope.ui.TopBar
+import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.providers.WatchProviders
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.dropdown.Dropdown
@@ -47,7 +47,7 @@ fun MovieDetailsScreen(
     state: MovieDetailsState,
     userData: MovieUserData,
     navController: NavController,
-    onSearchRequested: () -> Unit = { },
+    onSearchRequested: () -> Unit,
     loggedIn: Boolean,
     onChangeState: (String) -> Unit
 ) {

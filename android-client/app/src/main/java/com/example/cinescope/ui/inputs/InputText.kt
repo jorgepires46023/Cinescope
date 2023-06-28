@@ -6,11 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 
 @Composable
-fun InputText(input: String, label: String, placeholder: String, updateInput:(String) -> Unit) {
+fun InputText(input: String, label: String?, placeholder: String, updateInput:(String) -> Unit) {
     OutlinedTextField(
         value = input,
         onValueChange = { updateInput(it) },
-        label = { Text(text = label) },
+        label = { if(label != null) Text(text = label) },
         singleLine = true,
         placeholder = { Text(text = placeholder) }
     )

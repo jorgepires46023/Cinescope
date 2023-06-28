@@ -16,8 +16,6 @@ import com.example.cinescope.services.mockdata.recommendedSeriesResponse
 import com.example.cinescope.services.mockdata.searchByQueryResponse
 import com.example.cinescope.services.mockdata.series1
 import com.example.cinescope.services.mockdata.wrongObjToMap
-import com.example.cinescope.domain.searches.Movie
-import com.example.cinescope.domain.searches.Series
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import com.example.cinescope.services.exceptions.UnexpectedResponseException
 import com.example.cinescope.services.exceptions.UnsuccessfulResponseException

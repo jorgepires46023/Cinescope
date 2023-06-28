@@ -37,6 +37,7 @@
         <activity android:name=".account.signIn.SignInActivity"/>
         <activity android:name=".account.signUp.SignUpActivity"/>
         <activity android:name=".lists.ListsActivity"/>
+        <activity android:name=".search.SearchActivity"/>
     </application>
 
 </manifest>
