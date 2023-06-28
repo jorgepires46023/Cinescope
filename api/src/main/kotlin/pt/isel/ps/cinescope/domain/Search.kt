@@ -5,11 +5,20 @@ import java.text.SimpleDateFormat
 
 data class SearchDTO(val page: Int?, @JsonProperty("results")val resultDTOS: Array<ResultDTO>?, val total_results: Int?, val total_pages: Int?)
 
+data class Search(val page: Int?, val result: List<Result>?, val total_results: Int?, val total_pages: Int?)
+
 data class ResultDTO(val poster_path: String?, val id: Int?, val title: String?, val name: String?, val media_type: String?, val popularity: Int?)
 
-data class Search(val page: Int?, val result: Array<Result>?, val total_results: Int?, val total_pages: Int?)
-
 data class Result(val poster_path: String?, val id: Int?, val title: String?, val media_type: String?, val popularity: Int?)
+
+fun SearchDTO?.toSearch(): Search?{
+    if(this == null) return null
+    val list = mutableListOf<Result>()
+    this.resultDTOS?.forEach {
+        list.add(Result(it.poster_path, it.id, it.title, it.media_type, it.popularity))
+    }
+    return Search(this.page, list, this.total_results, total_pages)
+}
 
 
 data class MovieDetails(

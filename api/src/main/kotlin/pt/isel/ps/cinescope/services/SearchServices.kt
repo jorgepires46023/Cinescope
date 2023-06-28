@@ -22,7 +22,7 @@ class SearchServices(val tmdbServices: TmdbService) {
         }
         val diff = (res.resultDTOS?.size)?.minus(results.size) ?: 0
         results.sortByDescending {it.popularity}
-        return Search(res.page, results.toTypedArray(), res.total_results?.minus(diff), res.total_pages)
+        return Search(res.page, results, res.total_results?.minus(diff), res.total_pages)
     }
 
     fun movieDetails(id: Int?): MovieDetailsOutput?{
@@ -68,26 +68,38 @@ class SearchServices(val tmdbServices: TmdbService) {
         return EpisodeDetailOutput(episodeDetails, externalIds)
     }
 
-    fun getPopularMovies(page: Int?): SearchDTO? {
+    fun getPopularMovies(page: Int?): Search? {
         val p = page ?: 1
-        return tmdbServices.getPopularMovies(p)
+//        val res = tmdbServices.getPopularMovies(p) ?: return null
+//        val results = mutableListOf<Result>()
+//        res.resultDTOS?.forEach { r ->
+//            if(r.media_type == TVMEDIATYPE) results.add(Result(r.poster_path, r.id, r.name, r.media_type, r.popularity))
+//            else if (r.media_type == MOVIEMEDIATYPE) results.add(Result(r.poster_path, r.id, r.title, r.media_type, r.popularity))
+//        }
+//        return Search(res.page, results, res.total_results, res.total_pages)
+        return tmdbServices.getPopularMovies(p).toSearch()
     }
 
-    fun getPopularSeries(page: Int?): SearchDTO? {
+    fun getPopularSeries(page: Int?): Search? {
         val p = page ?: 1
-        return tmdbServices.getPopularSeries(p)
+        val res = tmdbServices.getPopularSeries(p) ?: return null
+        val results = mutableListOf<Result>()
+        res.resultDTOS?.forEach { r ->
+            results.add(Result(r.poster_path, r.id, r.name, r.media_type, r.popularity))
+        }
+        return Search(res.page, results, res.total_results, res.total_pages)
     }
 
-    fun getMovieRecommendations(id: Int?, page: Int?): SearchDTO? {
+    fun getMovieRecommendations(id: Int?, page: Int?): Search? {
         val p = page ?: 1
         if (id == null) return null
-        return tmdbServices.getMovieRecommendations(id, p)
+        return tmdbServices.getMovieRecommendations(id, p).toSearch()
     }
 
-    fun getSerieRecommendations(id: Int?, page: Int?): SearchDTO? {
+    fun getSerieRecommendations(id: Int?, page: Int?): Search? {
         val p = page ?: 1
         if (id == null) return null
-        return tmdbServices.getSerieRecommendations(id, p)
+        return tmdbServices.getSerieRecommendations(id, p).toSearch()
     }
 
     //TODO change SearchDTO objects
