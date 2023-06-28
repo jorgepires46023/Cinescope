@@ -43,7 +43,7 @@ export function SearchResults() {
                         return <div className="cardContent" onClick={() => getContent(result.media_type, result.id)} key={result.id}>
                             <img src={`${IMAGE_DOMAIN}${result.poster_path}`} alt="Not Found poster.png" onError={handleError} className="imgPopular" />
                             <div className="cardOverlay">
-                                <p>{result.title ? result.title : result.name}</p>
+                                <p>{result.title}</p>
                             </div>
                         </div>
                     }

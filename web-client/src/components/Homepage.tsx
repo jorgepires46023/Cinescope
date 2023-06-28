@@ -54,7 +54,7 @@ export function Homepage() {
                         <div className="cardContent" onClick={() => getSerie(series.id, navigate)} key={series.id}>
                             <img src={`${IMAGE_DOMAIN}${series.poster_path}`} alt={series.title} className="imgPopular" />
                             <div className="cardOverlay">
-                                <p>{series.name}</p>
+                                <p>{series.title}</p>
                              </div>
                         </div>
                     )}

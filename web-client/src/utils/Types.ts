@@ -59,7 +59,6 @@ export type Results = {
     poster_path: string,
     id: number,
     title: string,
-    name: string,
     media_type: string,
     popularity: number
 }
@@ -75,7 +74,6 @@ export type ListElem = {
     poster_path: string,
     id: number,
     title: string,
-    name: string | null,
     media_type: string,
     popularity: number
 }
@@ -300,7 +298,6 @@ export const EMPTY_RESULTS: Results = {
     poster_path: "",
     id: 0,
     title: "",
-    name: "",
     media_type: "",
     popularity: 0
 }
@@ -322,7 +319,6 @@ export const EMPTY_LIST_ELEM: ListElem = {
     poster_path: "",
     id: 0,
     title: "",
-    name: "",
     media_type: "",
     popularity: 0
 }
