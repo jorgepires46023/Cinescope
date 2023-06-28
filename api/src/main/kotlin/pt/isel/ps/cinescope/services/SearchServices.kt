@@ -8,13 +8,21 @@ import pt.isel.ps.cinescope.utils.TmdbService
 @Component
 class SearchServices(val tmdbServices: TmdbService) {
 
+    private final val TVMEDIATYPE = "tv"
+    private final val MOVIEMEDIATYPE = "movie"
+
     fun searchByQuery(input: String?, page: Int?): Search? {
         val p = page ?: 1
         if (input.isNullOrBlank()) return null
         val res = tmdbServices.fetchQuery(input, p) ?: return null
-        val filter = res.results?.filter { r -> r.media_type == "tv" || r.media_type == "movie" }?.toTypedArray() ?: emptyArray()
-        val diff = (res.results?.size)?.minus(filter.size) ?: 0
-        return Search(res.page, filter, res.total_results?.minus(diff), res.total_pages)
+        val results = mutableListOf<Result>()
+        res.resultDTOS?.forEach { r ->
+            if(r.media_type == TVMEDIATYPE) results.add(Result(r.poster_path, r.id, r.name, r.media_type, r.popularity))
+            else if (r.media_type == MOVIEMEDIATYPE) results.add(Result(r.poster_path, r.id, r.title, r.media_type, r.popularity))
+        }
+        val diff = (res.resultDTOS?.size)?.minus(results.size) ?: 0
+        results.sortByDescending {it.popularity}
+        return Search(res.page, results.toTypedArray(), res.total_results?.minus(diff), res.total_pages)
     }
 
     fun movieDetails(id: Int?): MovieDetailsOutput?{
@@ -60,26 +68,27 @@ class SearchServices(val tmdbServices: TmdbService) {
         return EpisodeDetailOutput(episodeDetails, externalIds)
     }
 
-    fun getPopularMovies(page: Int?): Search? {
+    fun getPopularMovies(page: Int?): SearchDTO? {
         val p = page ?: 1
         return tmdbServices.getPopularMovies(p)
     }
 
-    fun getPopularSeries(page: Int?): Search? {
+    fun getPopularSeries(page: Int?): SearchDTO? {
         val p = page ?: 1
         return tmdbServices.getPopularSeries(p)
     }
 
-    fun getMovieRecommendations(id: Int?, page: Int?): Search? {
+    fun getMovieRecommendations(id: Int?, page: Int?): SearchDTO? {
         val p = page ?: 1
         if (id == null) return null
         return tmdbServices.getMovieRecommendations(id, p)
     }
 
-    fun getSerieRecommendations(id: Int?, page: Int?): Search? {
+    fun getSerieRecommendations(id: Int?, page: Int?): SearchDTO? {
         val p = page ?: 1
         if (id == null) return null
         return tmdbServices.getSerieRecommendations(id, p)
     }
 
+    //TODO change SearchDTO objects
 }

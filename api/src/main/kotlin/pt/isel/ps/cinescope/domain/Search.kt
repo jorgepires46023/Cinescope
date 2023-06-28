@@ -3,9 +3,14 @@ package pt.isel.ps.cinescope.domain
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.text.SimpleDateFormat
 
-data class Search(val page: Int?, val results: Array<Result>?, val total_results: Int?, val total_pages: Int?)
+data class SearchDTO(val page: Int?, @JsonProperty("results")val resultDTOS: Array<ResultDTO>?, val total_results: Int?, val total_pages: Int?)
 
-data class Result(val poster_path: String?, val id: Int?, val title: String?, val name: String?, val media_type: String?, val popularity: Int?)
+data class ResultDTO(val poster_path: String?, val id: Int?, val title: String?, val name: String?, val media_type: String?, val popularity: Int?)
+
+data class Search(val page: Int?, val result: Array<Result>?, val total_results: Int?, val total_pages: Int?)
+
+data class Result(val poster_path: String?, val id: Int?, val title: String?, val media_type: String?, val popularity: Int?)
+
 
 data class MovieDetails(
     val id: Int?,
@@ -40,7 +45,7 @@ data class SeriesDetails(
     val overview: String?,
     val id: Int?,
     val name: String?,
-    val seasons: Array<Seasons>?,
+    val seasons: Array<Seasons>?, //TODO alterar o nome do parametro
     val status: String?,
     val poster_path: String?,
     val backdrop_path: String?
@@ -64,7 +69,6 @@ data class EpisodeDetailOutput(
 
 data class ExternalIds(val imdb_id: String?, val facebook_id: String?, val twitter_id: String?)
 
-data class Creator(val name: String?, val profile_path: String?)
 
 data class ImagesResponse(val backdrops: Array<Image>, val id: Int?)
 

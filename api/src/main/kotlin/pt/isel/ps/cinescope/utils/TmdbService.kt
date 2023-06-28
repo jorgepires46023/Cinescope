@@ -29,7 +29,7 @@ class TmdbService {
     }
 
     fun fetchQuery(input: String, page: Int) =
-        fetch("search/multi?$TMDB_API_KEY&page=$page&query=$input").bodyToMono<Search>().block()
+        fetch("search/multi?$TMDB_API_KEY&page=$page&query=$input").bodyToMono<SearchDTO>().block()
 
     fun getMovieDetails(mid: Int) =
         fetch("movie/$mid?$TMDB_API_KEY").bodyToMono<MovieDetails>().block()
@@ -70,14 +70,14 @@ class TmdbService {
         fetch("tv/$sid/season/$season/episode/$epNum/external_ids?$TMDB_API_KEY").bodyToMono<ExternalIds>().block()
 
     fun getPopularMovies(page: Int) =
-        fetch("trending/movie/day?$TMDB_API_KEY&page=$page").bodyToMono<Search>().block()
+        fetch("trending/movie/day?$TMDB_API_KEY&page=$page&include_adult=false").bodyToMono<SearchDTO>().block()
 
     fun getPopularSeries(page: Int) =
-        fetch("trending/tv/day?$TMDB_API_KEY&page=$page").bodyToMono<Search>().block()
+        fetch("trending/tv/day?$TMDB_API_KEY&page=$page&include_adult=false").bodyToMono<SearchDTO>().block()
 
     fun getMovieRecommendations(id: Int, page: Int) =
-        fetch("movie/$id/recommendations?$TMDB_API_KEY&page=$page").bodyToMono<Search>().block()
+        fetch("movie/$id/recommendations?$TMDB_API_KEY&page=$page").bodyToMono<SearchDTO>().block()
 
     fun getSerieRecommendations(id: Int, page: Int) =
-        fetch("tv/$id/recommendations?$TMDB_API_KEY&page=$page").bodyToMono<Search>().block()
+        fetch("tv/$id/recommendations?$TMDB_API_KEY&page=$page").bodyToMono<SearchDTO>().block()
 }
