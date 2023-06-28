@@ -70,24 +70,18 @@ class SearchServices(val tmdbServices: TmdbService) {
 
     fun getPopularMovies(page: Int?): Search? {
         val p = page ?: 1
-//        val res = tmdbServices.getPopularMovies(p) ?: return null
-//        val results = mutableListOf<Result>()
-//        res.resultDTOS?.forEach { r ->
-//            if(r.media_type == TVMEDIATYPE) results.add(Result(r.poster_path, r.id, r.name, r.media_type, r.popularity))
-//            else if (r.media_type == MOVIEMEDIATYPE) results.add(Result(r.poster_path, r.id, r.title, r.media_type, r.popularity))
-//        }
-//        return Search(res.page, results, res.total_results, res.total_pages)
         return tmdbServices.getPopularMovies(p).toSearch()
     }
 
     fun getPopularSeries(page: Int?): Search? {
         val p = page ?: 1
-        val res = tmdbServices.getPopularSeries(p) ?: return null
-        val results = mutableListOf<Result>()
-        res.resultDTOS?.forEach { r ->
-            results.add(Result(r.poster_path, r.id, r.name, r.media_type, r.popularity))
-        }
-        return Search(res.page, results, res.total_results, res.total_pages)
+//        val res = tmdbServices.getPopularSeries(p) ?: return null
+//        val results = mutableListOf<Result>()
+//        res.resultDTOS?.forEach { r ->
+//            results.add(Result(r.poster_path, r.id, r.name, r.media_type, r.popularity))
+//        }
+//        return Search(res.page, results, res.total_results, res.total_pages)
+        return tmdbServices.getPopularSeries(p).toSearch()
     }
 
     fun getMovieRecommendations(id: Int?, page: Int?): Search? {

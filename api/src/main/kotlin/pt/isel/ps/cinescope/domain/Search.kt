@@ -3,9 +3,12 @@ package pt.isel.ps.cinescope.domain
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.text.SimpleDateFormat
 
+private val TVMEDIATYPE = "tv"
+private val MOVIEMEDIATYPE = "movie"
+
 data class SearchDTO(val page: Int?, @JsonProperty("results")val resultDTOS: Array<ResultDTO>?, val total_results: Int?, val total_pages: Int?)
 
-data class Search(val page: Int?, val result: List<Result>?, val total_results: Int?, val total_pages: Int?)
+data class Search(val page: Int?, val results: List<Result>?, val total_results: Int?, val total_pages: Int?)
 
 data class ResultDTO(val poster_path: String?, val id: Int?, val title: String?, val name: String?, val media_type: String?, val popularity: Int?)
 
@@ -14,8 +17,11 @@ data class Result(val poster_path: String?, val id: Int?, val title: String?, va
 fun SearchDTO?.toSearch(): Search?{
     if(this == null) return null
     val list = mutableListOf<Result>()
-    this.resultDTOS?.forEach {
-        list.add(Result(it.poster_path, it.id, it.title, it.media_type, it.popularity))
+    this.resultDTOS?.forEach { result ->
+        if(result.media_type == TVMEDIATYPE)
+            list.add(Result(result.poster_path, result.id, result.name, result.media_type, result.popularity))
+        else if(result.media_type == MOVIEMEDIATYPE)
+            list.add(Result(result.poster_path, result.id, result.title, result.media_type, result.popularity))
     }
     return Search(this.page, list, this.total_results, total_pages)
 }
