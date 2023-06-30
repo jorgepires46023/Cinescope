@@ -49,7 +49,8 @@ fun MovieDetailsScreen(
     navController: NavController,
     onSearchRequested: () -> Unit,
     loggedIn: Boolean,
-    onChangeState: (String) -> Unit
+    onChangeState: (String) -> Unit,
+    onUpdate: () -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
@@ -66,7 +67,8 @@ fun MovieDetailsScreen(
                         onGetLists =  userData.onGetLists,
                         onAddToList = userData.onAddToList,
                         onDeleteFromList = userData.onDeleteFromList,
-                        userData = userData.movieData
+                        userData = userData.movieData,
+                        onUpdate = onUpdate
 
                     )
             },

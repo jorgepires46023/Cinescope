@@ -23,7 +23,8 @@ fun AddToListDialog(
     lists: List<ContentList>?,
     onAddToList: (Int) -> Unit,
     onDeleteFromList: (Int) -> Unit,
-    userData: UserDataContent?
+    userData: UserDataContent?,
+    onUpdate: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
@@ -42,10 +43,11 @@ fun AddToListDialog(
                 if (lists != null) {
                     lists.forEach { list ->
                         ListItemCheckbox(
-                            listName = list.name,
-                            onAddToList = { onAddToList(list.id) },
-                            onDeleteFromList = { onDeleteFromList(list.id) },
-                            checked = userData?.lists != null && userData.lists.contains(list)
+                            name = list.name,
+                            onAdd = { onAddToList(list.id) },
+                            onDelete = { onDeleteFromList(list.id) },
+                            checked = userData?.lists != null && userData.lists.contains(list),
+                            onUpdate = onUpdate
                         )
                     }
                 } else

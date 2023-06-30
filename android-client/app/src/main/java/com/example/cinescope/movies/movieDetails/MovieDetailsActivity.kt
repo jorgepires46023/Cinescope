@@ -65,7 +65,8 @@ class MovieDetailsActivity: ComponentActivity() {
                 onChangeState = {state ->
                     if(user != null) viewModel.changeState(state, movieId, user.cookie)
                 },
-                onSearchRequested = { SearchActivity.navigate(this)}
+                onSearchRequested = { SearchActivity.navigate(this)},
+                onUpdate = { /*if(user != null) viewModel.getMovieUserData(movieId, user.cookie)*/ }
             )
         }
     }

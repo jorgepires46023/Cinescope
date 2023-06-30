@@ -54,7 +54,8 @@ fun SeriesListsTab(
                 seriesActions.deleteSeriesList(listId)
                 seriesActions.onUpdateSeriesLists()
                 deleteListDialog = false
-            }
+            },
+            message = "Do you want to delete ${seriesActions.seriesLists?.find { it.id == listId }?.name} list?"
         )
     }
 }

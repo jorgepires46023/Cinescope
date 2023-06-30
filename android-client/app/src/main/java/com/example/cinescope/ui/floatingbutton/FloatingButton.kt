@@ -21,7 +21,8 @@ fun FloatingButton(
     onGetLists: () -> Unit,
     onAddToList: (Int) -> Unit,
     onDeleteFromList: (Int) -> Unit,
-    userData: UserDataContent?
+    userData: UserDataContent?,
+    onUpdate: () -> Unit
 ) {
     var dialog by rememberSaveable { mutableStateOf(false) }
 
@@ -42,7 +43,8 @@ fun FloatingButton(
             lists = lists,
             onAddToList = onAddToList,
             onDeleteFromList = onDeleteFromList,
-            userData = userData
+            userData = userData,
+            onUpdate = onUpdate
         )
     }
 }

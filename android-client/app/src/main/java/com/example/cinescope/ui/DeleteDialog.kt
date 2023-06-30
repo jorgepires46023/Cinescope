@@ -8,12 +8,12 @@ import androidx.compose.runtime.Composable
 @Composable
 fun DeleteDialog(
     onDismiss: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    message: String
 ) {
-    val deleteMsg = "Do you want to delete this Item?"
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        text = { Text(text = deleteMsg) },
+        text = { Text(text = message) },
         confirmButton = {
             Button(onClick = { onDelete() }) {
                 Text(text = "OK")

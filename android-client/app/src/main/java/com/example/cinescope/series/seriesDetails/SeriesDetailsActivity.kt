@@ -65,7 +65,24 @@ class SeriesDetailsActivity: ComponentActivity() {
                 onChangeState = {state ->
                     if(user != null) viewModel.changeState(state, seriesId, user.cookie)
                 },
-                onSearchRequested = { SearchActivity.navigate(this)}
+                onSearchRequested = { SearchActivity.navigate(this)},
+                onTabChanged = {tab ->
+                    if(tab == "Details"){
+                        viewModel.getSeriesDetails(seriesId = seriesId)
+                    }
+                    else if(tab == "Seasons") {
+                        viewModel.getSeasonDetails(seriesId, 1) //todo nmr magico
+                        if(user != null) viewModel.getWatchedEpisodeList(seriesId, user.cookie)
+                    }
+                },
+                onGetDetails = {},
+                seasonData = SeasonData(
+                    seasonLists = viewModel.series?.seriesDetails?.seasons,
+                    watchedEpisodeList = viewModel.watchedEpisodes,
+                    seasonDetails = viewModel.seasons,
+                    onGetSeasonDetails = { seasonNr -> viewModel.getSeasonDetails(seriesId, seasonNr) }
+                ),
+                onUpdate = { /*if(user != null) viewModel.getSeriesUserData(seriesId, user.cookie)*/ }
             )
         }
     }

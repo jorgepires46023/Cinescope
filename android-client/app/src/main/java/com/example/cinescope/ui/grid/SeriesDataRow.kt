@@ -41,6 +41,7 @@ fun SeriesDataRow(
 ) {
     var dialog by rememberSaveable{ mutableStateOf(false) }
     var seriesId by rememberSaveable{ mutableIntStateOf(-1) }
+    var seriesName by rememberSaveable{ mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     var isLongPressStarted by remember { mutableStateOf(false) }
 
@@ -67,6 +68,7 @@ fun SeriesDataRow(
                                 if (isLongPressStarted && onListsScope) {
                                     dialog = true
                                     seriesId = content1.tmdbId
+                                    seriesName = content1.name
                                 }
                             }
                         },
@@ -101,6 +103,7 @@ fun SeriesDataRow(
                                     if (isLongPressStarted && onListsScope) {
                                         dialog = true
                                         seriesId = content2.tmdbId
+                                        seriesName = content2.name
                                     }
                                 }
                             },
@@ -131,6 +134,7 @@ fun SeriesDataRow(
                                     if (isLongPressStarted && onListsScope) {
                                         dialog = true
                                         seriesId = content3.tmdbId
+                                        seriesName = content3.name
                                     }
                                 }
                             },
@@ -144,14 +148,16 @@ fun SeriesDataRow(
                 ImageUrl(path = content3.imgPath)
             }
         }
-        if(dialog && seriesId != -1){
+        if(dialog && seriesName != null && seriesId != -1){
             DeleteDialog(
                 onDismiss = { dialog = false },
                 onDelete = {
                     onDeleteFromList(seriesId)
                     seriesId = -1
+                    seriesName = null
                     dialog = false
-                }
+                },
+                message = "Do you want to delete $seriesName from list?"
             )
         }
     }

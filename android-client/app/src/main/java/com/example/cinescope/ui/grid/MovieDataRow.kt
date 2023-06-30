@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.content.MovieData
 import com.example.cinescope.ui.DeleteDialog
 import com.example.cinescope.ui.images.ImageUrl
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +38,7 @@ fun MovieDataRow(
     onDeleteFromList: (Int) -> Unit
 ) {
     var dialog by rememberSaveable{ mutableStateOf(false) }
+    var movieName by rememberSaveable{ mutableStateOf<String?>(null) }
     var movieId by rememberSaveable{ mutableIntStateOf(-1) }
     val scope = rememberCoroutineScope()
     var isLongPressStarted by remember { mutableStateOf(false) }
@@ -66,6 +66,7 @@ fun MovieDataRow(
                             scope.launch {
                                 if (isLongPressStarted && onListsScope) {
                                     dialog = true
+                                    movieName = content1.name
                                     movieId = content1.tmdbId
                                 }
                             }
@@ -95,6 +96,7 @@ fun MovieDataRow(
                                 scope.launch {
                                     if (isLongPressStarted && onListsScope) {
                                         dialog = true
+                                        movieName = content2.name
                                         movieId = content2.tmdbId
                                     }
                                 }
@@ -125,6 +127,7 @@ fun MovieDataRow(
                                 scope.launch {
                                     if (isLongPressStarted && onListsScope) {
                                         dialog = true
+                                        movieName = content3.name
                                         movieId = content3.tmdbId
                                     }
                                 }
@@ -139,14 +142,16 @@ fun MovieDataRow(
                 ImageUrl(path = content3.imgPath)
             }
         }
-        if(dialog && movieId != -1){
+        if(dialog && movieName != null && movieId != -1){
             DeleteDialog(
                 onDismiss = { dialog = false },
                 onDelete = {
                     onDeleteFromList(movieId)
+                    movieName = null
                     movieId = -1
                     dialog = false
-                }
+                },
+                message = "Do you want to delete $movieName from list?"
             )
         }
     }

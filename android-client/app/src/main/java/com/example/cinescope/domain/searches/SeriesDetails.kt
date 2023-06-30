@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class SeriesDetails(
     val id: Int,
     val name: String,
-    val seasons: List<SeasonDetails>,
+    val seasons: List<Season>,
     val status: String,
     @SerializedName("poster_path") val imgPath: String,
     @SerializedName("overview") val description: String

@@ -54,7 +54,8 @@ fun MoviesListsTab(
                 movieActions.deleteMovieList(listId)
                 movieActions.onUpdateMoviesLists()
                 deleteListDialog = false
-            }
+            },
+            message = "Do you want to delete ${movieActions.moviesLists?.find { it.id == listId }?.name} list?"
         )
     }
 }

@@ -29,7 +29,7 @@ fun MoviesPTWTab(
     ) {
         if(!state.loading){
             if(!state.ptwMovies.isNullOrEmpty()){
-                MovieDataGrid(list = state.ptwMovies, onGetDetails = onGetDetails)
+                MovieDataGrid(list = state.ptwMovies, onGetDetails = onGetDetails )
             }else{
                 Text(text = "You don't have Plan To Watch Movies")
             }

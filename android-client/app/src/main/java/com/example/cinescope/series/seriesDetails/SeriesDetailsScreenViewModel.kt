@@ -7,7 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cinescope.domain.MovieState
 import com.example.cinescope.domain.content.ContentList
+import com.example.cinescope.domain.content.EpisodeData
 import com.example.cinescope.domain.content.UserDataContent
+import com.example.cinescope.domain.searches.Season
+import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.SeriesInfo
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import com.example.cinescope.services.cinescopeAPI.SeriesServices
@@ -32,6 +35,11 @@ class SeriesDetailsScreenViewModel(
 
     var lists by mutableStateOf<List<ContentList>?>(null)
         private set
+
+    var seasons by mutableStateOf<SeasonInfo?>(null)
+        private set
+
+    var watchedEpisodes by mutableStateOf<List<EpisodeData>?>(null)
 
     fun getSeriesDetails(seriesId: Int){
         viewModelScope.launch {
@@ -82,25 +90,51 @@ class SeriesDetailsScreenViewModel(
         }
     }
 
-    fun addSeriesToList(listId: Int, movieId: Int, cookie: Cookie){
+    fun addSeriesToList(listId: Int, seriesId: Int, cookie: Cookie){
         viewModelScope.launch {
             try {
-                seriesServices.addSeriesToList(movieId, listId, cookie)
+                seriesServices.addSeriesToList(seriesId, listId, cookie)
+                userData = seriesServices.getSeriesUserData(seriesId, cookie)
             }catch (e: Exception) {
                 error = e.message
             }
         }
     }
 
-    fun deleteSeriesFromList(listId: Int, movieId: Int, cookie: Cookie){
+    fun deleteSeriesFromList(listId: Int, seriesId: Int, cookie: Cookie){
         viewModelScope.launch {
             try {
-                seriesServices.deleteSeriesFromList(movieId, listId, cookie)
+                seriesServices.deleteSeriesFromList(seriesId, listId, cookie)
+                userData = seriesServices.getSeriesUserData(seriesId, cookie)
             }catch (e: Exception) {
                 error = e.message
             }
         }
     }
+
+    fun getSeasonDetails(seriesId: Int, seasonNr: Int){
+        viewModelScope.launch {
+            try {
+                seasons = searchServices.getSeasonDetails(seriesId, seasonNr)
+            }catch (e: Exception) {
+                error = e.message
+            }
+        }
+    }
+
+    fun getWatchedEpisodeList(seriesId: Int, cookie: Cookie){
+        viewModelScope.launch {
+            try {
+                watchedEpisodes = seriesServices.getAllWatchedEpFromSeries(seriesId, cookie)
+            }catch (e: Exception) {
+                error = e.message
+            }
+        }
+    }
+
+
+
+
 
 
 }

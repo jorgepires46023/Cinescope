@@ -19,12 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.MovieState
+import com.example.cinescope.domain.SeriesState
+import com.example.cinescope.ui.DeleteDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,8 +37,10 @@ fun Dropdown(
     states: List<String>,
     changeState: (String) -> Unit
 ) {
-    var expandable by remember { mutableStateOf(false) }
+    var dialog by rememberSaveable{ mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(currentState) }
+    var expandable by remember { mutableStateOf(false) }
+    var newState by remember { mutableStateOf(currentState) }
 
     Column(
         modifier = Modifier.padding(16.dp),
@@ -47,7 +52,7 @@ fun Dropdown(
             onClick = { expandable = !expandable },
             shape = RectangleShape
         ) {
-            Text(text = selectedItem)
+            Text(text = newState)
             Spacer(modifier = Modifier.width(8.dp))
             if(!expandable)
                 Icon(imageVector = Icons.Default.ExpandMore, contentDescription = null)
@@ -64,11 +69,33 @@ fun Dropdown(
                     text = { Text(text = state) },
                     onClick = {
                         selectedItem = state
-                        expandable = false
-                        changeState(selectedItem)
+                        if(selectedItem == MovieState.NO_STATE.state || selectedItem == SeriesState.NO_STATE.state){
+                            dialog = true
+                        }
+                        else {
+                            expandable = false
+                            newState = state
+                            changeState(newState)
+                        }
                     }
                 )
             }
+        }
+
+        if(dialog){
+            expandable = false
+            DeleteDialog(
+                onDismiss = { dialog = false },
+                onDelete = {
+                    newState = if(states.contains(SeriesState.WATCHING.state))
+                        SeriesState.NO_STATE.state
+                    else
+                        MovieState.NO_STATE.state
+                    changeState(newState)
+                    dialog = false
+                },
+                message = "If you remove this state, this item will be deleted from all current lists. Are you sure?"
+            )
         }
     }
 }

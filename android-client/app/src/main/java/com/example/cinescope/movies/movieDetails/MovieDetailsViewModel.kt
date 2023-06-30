@@ -86,6 +86,7 @@ class MovieDetailsViewModel(
         viewModelScope.launch {
             try {
                 moviesServices.addMovieToList(movieId, listId, cookie)
+                userData = moviesServices.getMovieUserData(movieId, cookie)
             }catch (e: Exception) {
                 error = e.message
             }
@@ -96,6 +97,7 @@ class MovieDetailsViewModel(
         viewModelScope.launch {
             try {
                 moviesServices.deleteMovieFromList(movieId, listId, cookie)
+                userData = moviesServices.getMovieUserData(movieId, cookie)
             }catch (e: Exception) {
                 error = e.message
             }

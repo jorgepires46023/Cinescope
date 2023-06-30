@@ -9,23 +9,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.cinescope.domain.SeriesState
 import com.example.cinescope.domain.content.ContentList
+import com.example.cinescope.domain.content.EpisodeData
 import com.example.cinescope.domain.content.UserDataContent
+import com.example.cinescope.domain.searches.Season
+import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.SeriesInfo
+import com.example.cinescope.series.seriesDetails.ui.SeriesDetailsTabs
 import com.example.cinescope.ui.bottombar.BottomBar
-import com.example.cinescope.ui.images.ContentPoster
-import com.example.cinescope.ui.cards.DescriptionCard
-import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.topbar.TopBar
-import com.example.cinescope.ui.providers.WatchProviders
 import com.example.cinescope.ui.bottombar.NavController
-import com.example.cinescope.ui.dropdown.Dropdown
 import com.example.cinescope.ui.floatingbutton.FloatingButton
 import com.example.cinescope.ui.theme.CinescopeTheme
 
@@ -42,6 +38,14 @@ data class SeriesUserData(
     val onDeleteFromList: (Int) -> Unit,
     val onGetLists:  () -> Unit
 )
+
+data class SeasonData(
+    val seasonLists: List<Season>?,
+    val watchedEpisodeList: List<EpisodeData>?,
+    val seasonDetails: SeasonInfo?,
+    val onGetSeasonDetails: (Int) -> Unit
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeriesDetailsScreen(
@@ -50,8 +54,12 @@ fun SeriesDetailsScreen(
     navController: NavController,
     onSearchRequested: () -> Unit,
     loggedIn: Boolean,
-    onChangeState: (String) -> Unit
-
+    onChangeState: (String) -> Unit,
+    onError: () -> Unit = {},
+    onTabChanged: (String) -> Unit,
+    onGetDetails: (Int) -> Unit,
+    seasonData: SeasonData,
+    onUpdate: () -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
@@ -67,7 +75,8 @@ fun SeriesDetailsScreen(
                     onGetLists =  userData.onGetLists,
                     onAddToList = userData.onAddToList,
                     onDeleteFromList = userData.onDeleteFromList,
-                    userData = userData.seriesData
+                    userData = userData.seriesData,
+                    onUpdate = onUpdate
 
                 )
             },
@@ -85,30 +94,18 @@ fun SeriesDetailsScreen(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (!state.loading) {
-                        if (state.series != null) {
-                            Title(title = state.series.seriesDetails.name)
-                            ContentPoster(
-                                imgPath = state.series.seriesDetails.imgPath,
-                                height = 448.dp
-                            )
-                            DescriptionCard(desc = state.series.seriesDetails.description)
-                            if(loggedIn){
-                                val currentState = if (state.seriesData != null)
-                                    state.seriesData.state ?:  SeriesState.NO_STATE.state
-                                else
-                                    SeriesState.NO_STATE.state
-                                Dropdown(context = "Series State", currentState, SeriesState.getStates(), onChangeState)
-                            }
-                            if (state.series.watchProviders.results.PT != null) { //TODO check if we should do something if there isn't any provider info
-                                WatchProviders(providers = state.series.watchProviders.results.PT)
-                            }
-                        } else {
-                            Text(text = "Cannot Render Series Details")
-                        }
-                    } else {
-                        Text(text = "Loading...")
-                    }
+                    SeriesDetailsTabs(
+                        onError,
+                        onGetDetails,
+                        onTabChanged,
+                        loggedIn = loggedIn,
+                        onChangeState = onChangeState,
+                        state = state,
+                        seasonList = seasonData.seasonLists,
+                        watchedEpisodeList = seasonData.watchedEpisodeList,
+                        seasonDetails = seasonData.seasonDetails,
+                        onGetSeasonDetails = seasonData.onGetSeasonDetails
+                    )
                 }
             }
         }

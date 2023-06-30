@@ -3,8 +3,7 @@ package com.example.cinescope.domain.searches
 import com.google.gson.annotations.SerializedName
 
 data class SeasonDetails(
-    val id: Int,
-    val name: String,
-    @SerializedName("episodeCount") val totalEpisodes: Int,
-    @SerializedName("season_number") val seasonNumber: Int
+    @SerializedName("air_date")val airDate: String,
+    val episodes: List<EpisodeDetails>,
+    @SerializedName("season_number")val seasonNumber: Int
 )

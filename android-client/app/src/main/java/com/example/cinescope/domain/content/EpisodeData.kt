@@ -3,11 +3,11 @@ package com.example.cinescope.domain.content
 import com.google.gson.annotations.SerializedName
 
 data class EpisodeData(
-    @SerializedName("epID") val epId: Int,
-    @SerializedName("seriesID") val seriesId: Int,
-    @SerializedName("imdbID") val imdbId: String,
+    val epId: Int,
+    val seriesId: Int,
+    @SerializedName("epimdbId") val imdbId: String,
     val name: String,
     @SerializedName("img") val imgPath: String,
-    val seasonNr: Int,
-    val episodeNr: Int
+    val season: Int,
+    val episode: Int
 )
