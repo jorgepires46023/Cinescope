@@ -1,6 +1,5 @@
 package com.example.cinescope.ui.list
 
-import androidx.compose.foundation.clickable
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ListItem
@@ -11,33 +10,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 
 @Composable
 fun ListItemCheckbox(
     name: String,
     onAdd: () -> Unit,
     onDelete: () -> Unit,
-    checked: Boolean,
+    checkWatchedEp: Boolean,
     onClick: () -> Unit = {},
-    onUpdate: () -> Unit
 ) {
-    var checkedState by rememberSaveable { mutableStateOf(checked) }
+val checkState = remember { mutableStateOf(checkWatchedEp) }
 
     ListItem(
         headlineContent = { Text(text = name) },
         trailingContent = {
             Checkbox(
-                checked =  checkedState  ,
+                checked =  checkState.value,
                 onCheckedChange = {
-                    if (checkedState) {
+                    checkState.value = if (it) {
                         onDelete()
-                        checkedState = false
+                        false
                     }else{
                         onAdd()
-                        checkedState = true
+                        true
                     }
-                    onUpdate()
                 }
             )
         }

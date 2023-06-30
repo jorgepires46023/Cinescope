@@ -83,7 +83,7 @@ fun SeriesSeasonsTab(
                 }
             }
             val episodeList = watchedEpisodeList?.filter { it.season == currentSeason }
-            seasonDetails?.seasonDetails?.episodes?.forEach{ episode ->
+            seasonDetails?.seasonDetails?.episodes?.forEach{ episode -> //TODO novo componente onde enviamos a lista
                 EpisodeItem(
                     watchedEpisode = episodeList?.find {
                         it.episode == episode.episodeNumber && it.season == currentSeason

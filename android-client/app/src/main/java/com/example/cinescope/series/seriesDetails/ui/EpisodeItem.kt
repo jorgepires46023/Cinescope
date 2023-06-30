@@ -15,7 +15,6 @@ fun EpisodeItem(
         name = "${episodeDetails.episodeNumber}: ${episodeDetails.name} " ,
         onAdd = { onAddWatchedEpisode(episodeDetails.episodeNumber) },
         onDelete = { onDeleteWatchedEpisode(episodeDetails.episodeNumber) },
-        checked = watchedEpisode,
-        onUpdate = {}
+        checkWatchedEp = watchedEpisode,
     )
 }
