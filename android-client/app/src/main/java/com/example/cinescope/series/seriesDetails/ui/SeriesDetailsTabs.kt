@@ -8,25 +8,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.cinescope.domain.content.EpisodeData
-import com.example.cinescope.domain.searches.Season
-import com.example.cinescope.domain.searches.SeasonDetails
-import com.example.cinescope.domain.searches.SeasonInfo
+import com.example.cinescope.series.seriesDetails.SeasonData
 import com.example.cinescope.series.seriesDetails.SeriesDetailsState
+import com.example.cinescope.series.seriesDetails.SeriesUserData
 
 
 @Composable
 fun SeriesDetailsTabs(
     onError: () -> Unit,
-    onGetDetails: (Int) -> Unit, //TODO eliminar esta mierda millio
     onTabChanged: (String) -> Unit,
-    state: SeriesDetailsState,
-    loggedIn: Boolean,
-    onChangeState: (String) -> Unit,
-    seasonList: List<Season>?,
-    seasonDetails: SeasonInfo?,
-    watchedEpisodeList: List<EpisodeData>?,
-    onGetSeasonDetails: (Int) -> Unit
+    seasonData: SeasonData,
+    seriesDetails: SeriesDetailsState,
+    userData: SeriesUserData,
+    loggedIn: Boolean
 ) {
     var tabIdx by remember { mutableIntStateOf(0) }
     val tabs = listOf("Details", "Seasons")
@@ -43,7 +37,7 @@ fun SeriesDetailsTabs(
         }
     }
     when(tabIdx){
-        0 -> SeriesDetailsTab( onError, onGetDetails, state, loggedIn, onChangeState)
-        1 -> SeriesSeasonsTab( onError, onGetSeasonDetails, seasonList, seasonDetails,watchedEpisodeList, {}, {})
+        0 -> SeriesDetailsTab(onError, seriesDetails, userData, loggedIn)
+        1 -> SeriesSeasonsTab(seasonData, onError)
     }
 }

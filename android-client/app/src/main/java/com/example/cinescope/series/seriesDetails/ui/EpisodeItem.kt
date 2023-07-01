@@ -1,20 +1,45 @@
 package com.example.cinescope.series.seriesDetails.ui
 
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import com.example.cinescope.domain.searches.EpisodeDetails
-import com.example.cinescope.ui.list.ListItemCheckbox
 
 @Composable
 fun EpisodeItem(
-    watchedEpisode: Boolean,
-    episodeDetails: EpisodeDetails,
-    onAddWatchedEpisode: (Int) -> Unit,
-    onDeleteWatchedEpisode: (Int) -> Unit,
+    episode: EpisodeDetails,
+    onAddWatchedEpisode: () -> Unit,
+    onDeleteWatchedEpisode: () -> Unit,
+    watched: Boolean,
+    onClick: () -> Unit = {}
 ) {
-    ListItemCheckbox(
-        name = "${episodeDetails.episodeNumber}: ${episodeDetails.name} " ,
-        onAdd = { onAddWatchedEpisode(episodeDetails.episodeNumber) },
-        onDelete = { onDeleteWatchedEpisode(episodeDetails.episodeNumber) },
-        checkWatchedEp = watchedEpisode,
+    var checkedState by remember { mutableStateOf(watched) }
+    ListItem(
+        headlineContent = { Text(text = episode.name) },
+        trailingContent = {
+            Checkbox(
+                checked =  checkedState,
+                onCheckedChange = {
+                    checkedState = if (checkedState) {
+                        onDeleteWatchedEpisode()
+                        false
+                    }else{
+                        onAddWatchedEpisode()
+                        true
+                    }
+                }
+            )
+        },
+        modifier = Modifier.clickable { onClick() }
     )
+    Divider()
+
 }

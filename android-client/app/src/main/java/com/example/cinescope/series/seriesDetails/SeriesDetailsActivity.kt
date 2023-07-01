@@ -21,9 +21,9 @@ class SeriesDetailsActivity: ComponentActivity() {
             }
         }
     }
-    private val viewModel: SeriesDetailsScreenViewModel by viewModels {
+    private val viewModel: SeriesDetailsViewModel by viewModels {
         viewModelInit{
-            SeriesDetailsScreenViewModel(dependencies.searchServices, dependencies.seriesServices)
+            SeriesDetailsViewModel(dependencies.searchServices, dependencies.seriesServices)
         }
     }
 
@@ -41,11 +41,10 @@ class SeriesDetailsActivity: ComponentActivity() {
 
         setContent{
             SeriesDetailsScreen(
-                state = SeriesDetailsState(
+                seriesDetails = SeriesDetailsState(
                     series = viewModel.series,
                     loading = viewModel.loading,
-                    error = viewModel.error,
-                    seriesData = viewModel.userData
+                    error = viewModel.error
                 ),
                 userData = SeriesUserData(
                     seriesData = viewModel.userData,
@@ -58,31 +57,37 @@ class SeriesDetailsActivity: ComponentActivity() {
                     },
                     onGetLists = {
                         if(user != null) viewModel.getLists(user.cookie)
-                    }
+                    },
+                    onChangeState = {state ->
+                        if(user != null) viewModel.changeState(state, seriesId, user.cookie)
+                    },
+                    onUpdate = { /*if(user != null) viewModel.getSeriesUserData(seriesId, user.cookie)*/ }
                 ),
                 navController = dependencies.navController,
                 loggedIn = user != null,
-                onChangeState = {state ->
-                    if(user != null) viewModel.changeState(state, seriesId, user.cookie)
-                },
                 onSearchRequested = { SearchActivity.navigate(this)},
                 onTabChanged = {tab ->
                     if(tab == "Details"){
                         viewModel.getSeriesDetails(seriesId = seriesId)
                     }
                     else if(tab == "Seasons") {
-                        viewModel.getSeasonDetails(seriesId, 1) //todo nmr magico
                         if(user != null) viewModel.getWatchedEpisodeList(seriesId, user.cookie)
                     }
                 },
-                onGetDetails = {},
                 seasonData = SeasonData(
-                    seasonLists = viewModel.series?.seriesDetails?.seasons,
+                    seasons = viewModel.series?.seriesDetails?.seasons,
                     watchedEpisodeList = viewModel.watchedEpisodes,
-                    seasonDetails = viewModel.seasons,
-                    onGetSeasonDetails = { seasonNr -> viewModel.getSeasonDetails(seriesId, seasonNr) }
+                    seasonsDetails = viewModel.seasons,
+                    onGetSeasonDetails = { seasonNr -> viewModel.getSeasonDetails(seriesId, seasonNr) },
+                    onAddWatchedEpisode = { seasonNr,  episodeNr ->
+                        if(user != null)
+                            viewModel.addWatchedEpisode(seriesId, seasonNr, episodeNr, user.cookie)
+                    },
+                    onDeleteWatchedEpisode = { seasonNr,  episodeNr ->
+                        if(user != null)
+                            viewModel.deleteWatchedEpisode(seriesId, seasonNr, episodeNr, user.cookie)
+                    }
                 ),
-                onUpdate = { /*if(user != null) viewModel.getSeriesUserData(seriesId, user.cookie)*/ }
             )
         }
     }

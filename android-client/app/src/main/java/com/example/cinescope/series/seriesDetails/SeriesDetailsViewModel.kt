@@ -1,5 +1,6 @@
 package com.example.cinescope.series.seriesDetails
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,16 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.cinescope.domain.MovieState
 import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.EpisodeData
+import com.example.cinescope.domain.content.SeasonDataState
 import com.example.cinescope.domain.content.UserDataContent
-import com.example.cinescope.domain.searches.Season
-import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.SeriesInfo
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import com.example.cinescope.services.cinescopeAPI.SeriesServices
 import kotlinx.coroutines.launch
 import okhttp3.Cookie
 
-class SeriesDetailsScreenViewModel(
+@SuppressLint("MutableCollectionMutableState")
+class SeriesDetailsViewModel(
     private val searchServices: SearchServices,
     private val seriesServices: SeriesServices
 ): ViewModel() {
@@ -36,10 +37,13 @@ class SeriesDetailsScreenViewModel(
     var lists by mutableStateOf<List<ContentList>?>(null)
         private set
 
-    var seasons by mutableStateOf<SeasonInfo?>(null)
+    var seasons by mutableStateOf<MutableList<SeasonDataState>>(mutableListOf())
         private set
 
     var watchedEpisodes by mutableStateOf<List<EpisodeData>?>(null)
+
+    //var episodesUserInfo by mutableStateOf<List<EpisodeUserInfo>?>(null)
+        //private set
 
     fun getSeriesDetails(seriesId: Int){
         viewModelScope.launch {
@@ -113,28 +117,57 @@ class SeriesDetailsScreenViewModel(
     }
 
     fun getSeasonDetails(seriesId: Int, seasonNr: Int){
-        viewModelScope.launch {
-            try {
-                seasons = searchServices.getSeasonDetails(seriesId, seasonNr)
-            }catch (e: Exception) {
-                error = e.message
+        if(seasons.find { it.seasonNr == seasonNr } == null)
+            viewModelScope.launch {
+                try {
+                    seasons.add(SeasonDataState(seasonNr, searchServices.getSeasonDetails(seriesId, seasonNr)))
+                }catch (e: Exception) {
+                    error = e.message
+                }
             }
-        }
     }
 
     fun getWatchedEpisodeList(seriesId: Int, cookie: Cookie){
         viewModelScope.launch {
             try {
-                watchedEpisodes = seriesServices.getAllWatchedEpFromSeries(seriesId, cookie)
+               watchedEpisodes = seriesServices.getAllWatchedEpFromSeries(seriesId, cookie)
             }catch (e: Exception) {
                 error = e.message
             }
         }
     }
 
+    fun addWatchedEpisode(seriesId: Int, seasonNr: Int, episodeNr: Int, cookie: Cookie) {
+        viewModelScope.launch{
+            try {
+                seriesServices.addWatchedEpisode(seriesId, seasonNr, episodeNr, cookie)
+            }catch (e: Exception) {
+                error = e.message
+            }
+        }
+    }
 
-
-
-
-
+    fun deleteWatchedEpisode(seriesId: Int, seasonNr: Int, episodeNr: Int, cookie: Cookie) {
+        viewModelScope.launch{
+            try {
+                seriesServices.deleteWatchedEpisode(seriesId, seasonNr, episodeNr, cookie)
+            }catch (e: Exception) {
+                error = e.message
+            }
+        }
+    }
 }
+
+
+/*
+            seasons?.seasonDetails?.episodes?.forEach { episode ->
+                    episodesInfo.add(EpisodeUserInfo(
+                        name = episode.name,
+                        epId = episode.id,
+                        seasonNr = season,
+                        episodeNr = episode.episodeNumber,
+                        isWatched = watchedEpisodes.find { it.season == season && it.episode == episode.episodeNumber } != null
+                    ))
+                }
+                episodesUserInfo = episodesInfo
+ */

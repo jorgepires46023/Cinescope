@@ -14,9 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.EpisodeData
+import com.example.cinescope.domain.content.SeasonDataState
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.domain.searches.Season
-import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.SeriesInfo
 import com.example.cinescope.series.seriesDetails.ui.SeriesDetailsTabs
 import com.example.cinescope.ui.bottombar.BottomBar
@@ -29,37 +29,37 @@ data class SeriesDetailsState(
     val series: SeriesInfo?,
     val loading: Boolean,
     val error: String?,
-    val seriesData: UserDataContent?
 )
 data class SeriesUserData(
     val seriesData : UserDataContent?,
     val lists: List<ContentList>?,
     val onAddToList: (Int) -> Unit,
     val onDeleteFromList: (Int) -> Unit,
-    val onGetLists:  () -> Unit
+    val onGetLists:  () -> Unit,
+    val onChangeState: (String) -> Unit,
+    val onUpdate: () -> Unit
 )
 
 data class SeasonData(
-    val seasonLists: List<Season>?,
+    val seasons: List<Season>?,
     val watchedEpisodeList: List<EpisodeData>?,
-    val seasonDetails: SeasonInfo?,
-    val onGetSeasonDetails: (Int) -> Unit
+    val seasonsDetails: List<SeasonDataState>,
+    val onGetSeasonDetails: (Int) -> Unit,
+    val onAddWatchedEpisode: (Int, Int) -> Unit,
+    val onDeleteWatchedEpisode: (Int, Int) -> Unit
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeriesDetailsScreen(
-    state: SeriesDetailsState,
-    userData: SeriesUserData,
     navController: NavController,
     onSearchRequested: () -> Unit,
     loggedIn: Boolean,
-    onChangeState: (String) -> Unit,
-    onError: () -> Unit = {},
     onTabChanged: (String) -> Unit,
-    onGetDetails: (Int) -> Unit,
+    seriesDetails: SeriesDetailsState,
+    userData: SeriesUserData,
     seasonData: SeasonData,
-    onUpdate: () -> Unit
+    onError: () -> Unit = {}
 ) {
     CinescopeTheme {
         Scaffold(
@@ -76,8 +76,7 @@ fun SeriesDetailsScreen(
                     onAddToList = userData.onAddToList,
                     onDeleteFromList = userData.onDeleteFromList,
                     userData = userData.seriesData,
-                    onUpdate = onUpdate
-
+                    onUpdate = userData.onUpdate
                 )
             },
             floatingActionButtonPosition = FabPosition.End,
@@ -96,15 +95,11 @@ fun SeriesDetailsScreen(
                 ) {
                     SeriesDetailsTabs(
                         onError,
-                        onGetDetails,
                         onTabChanged,
                         loggedIn = loggedIn,
-                        onChangeState = onChangeState,
-                        state = state,
-                        seasonList = seasonData.seasonLists,
-                        watchedEpisodeList = seasonData.watchedEpisodeList,
-                        seasonDetails = seasonData.seasonDetails,
-                        onGetSeasonDetails = seasonData.onGetSeasonDetails
+                        seriesDetails = seriesDetails,
+                        userData = userData,
+                        seasonData = seasonData
                     )
                 }
             }
