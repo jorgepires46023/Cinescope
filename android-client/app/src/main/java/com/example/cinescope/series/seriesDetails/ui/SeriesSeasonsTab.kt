@@ -55,16 +55,16 @@ fun SeriesSeasonsTab(
                 }
 
                 if(expandable){
-                    val season = seasonData.seasonsDetails.find { it.seasonNr == s.seasonNumber }
-                    if (season?.seasonInfo?.seasonDetails?.episodes != null && seasonData.watchedEpisodeList != null)
+                    val season = seasonData.seasonsDetails[s.seasonNumber]
+                    if (season?.seasonDetails?.episodes != null && seasonData.watchedEpisodeList != null)
                         EpisodeList(
-                            seasonDetails = season.seasonInfo.seasonDetails,
+                            seasonDetails = season.seasonDetails,
                             watchedEpisodeList = seasonData.watchedEpisodeList,
                             onAddWatchedEpisode = seasonData.onAddWatchedEpisode,
                             onDeleteWatchedEpisode = seasonData.onDeleteWatchedEpisode
                         )
-                    if (season?.seasonInfo?.watchProviders?.results?.PT != null) { //TODO check if we should do something if there isn't any provider info
-                        WatchProviders(providers = season.seasonInfo.watchProviders.results.PT)
+                    if (season?.watchProviders?.results?.PT != null) { //TODO check if we should do something if there isn't any provider info
+                        WatchProviders(providers = season.watchProviders.results.PT)
                     }
                 }
             }

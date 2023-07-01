@@ -11,11 +11,13 @@ import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.EpisodeData
 import com.example.cinescope.domain.content.SeasonDataState
 import com.example.cinescope.domain.content.UserDataContent
+import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.SeriesInfo
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import com.example.cinescope.services.cinescopeAPI.SeriesServices
 import kotlinx.coroutines.launch
 import okhttp3.Cookie
+
 
 @SuppressLint("MutableCollectionMutableState")
 class SeriesDetailsViewModel(
@@ -37,7 +39,7 @@ class SeriesDetailsViewModel(
     var lists by mutableStateOf<List<ContentList>?>(null)
         private set
 
-    var seasons by mutableStateOf<MutableList<SeasonDataState>>(mutableListOf())
+    var seasons by mutableStateOf<HashMap<Int, SeasonInfo>>(hashMapOf())
         private set
 
     var watchedEpisodes by mutableStateOf<List<EpisodeData>?>(null)
@@ -117,11 +119,11 @@ class SeriesDetailsViewModel(
     }
 
     fun getSeasonDetails(seriesId: Int, seasonNr: Int){
-        if(seasons.find { it.seasonNr == seasonNr } == null)
+        if(seasons[seasonNr] == null)
             viewModelScope.launch {
                 loading = true
                 try {
-                    seasons.add(SeasonDataState(seasonNr, searchServices.getSeasonDetails(seriesId, seasonNr)))
+                    seasons[seasonNr] = searchServices.getSeasonDetails(seriesId, seasonNr)
                 }catch (e: Exception) {
                     error = e.message
                 }finally {

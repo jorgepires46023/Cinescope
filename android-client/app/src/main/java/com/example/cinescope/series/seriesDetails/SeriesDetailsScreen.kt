@@ -17,6 +17,7 @@ import com.example.cinescope.domain.content.EpisodeData
 import com.example.cinescope.domain.content.SeasonDataState
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.domain.searches.Season
+import com.example.cinescope.domain.searches.SeasonInfo
 import com.example.cinescope.domain.searches.SeriesInfo
 import com.example.cinescope.series.seriesDetails.ui.SeriesDetailsTabs
 import com.example.cinescope.ui.bottombar.BottomBar
@@ -43,7 +44,7 @@ data class SeriesUserData(
 data class SeasonData(
     val seasons: List<Season>?,
     val watchedEpisodeList: List<EpisodeData>?,
-    val seasonsDetails: List<SeasonDataState>,
+    val seasonsDetails: HashMap<Int, SeasonInfo>,
     val onGetSeasonDetails: (Int) -> Unit,
     val onAddWatchedEpisode: (Int, Int) -> Unit,
     val onDeleteWatchedEpisode: (Int, Int) -> Unit
