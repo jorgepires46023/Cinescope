@@ -119,10 +119,13 @@ class SeriesDetailsViewModel(
     fun getSeasonDetails(seriesId: Int, seasonNr: Int){
         if(seasons.find { it.seasonNr == seasonNr } == null)
             viewModelScope.launch {
+                loading = true
                 try {
                     seasons.add(SeasonDataState(seasonNr, searchServices.getSeasonDetails(seriesId, seasonNr)))
                 }catch (e: Exception) {
                     error = e.message
+                }finally {
+                    loading = false
                 }
             }
     }
@@ -141,6 +144,7 @@ class SeriesDetailsViewModel(
         viewModelScope.launch{
             try {
                 seriesServices.addWatchedEpisode(seriesId, seasonNr, episodeNr, cookie)
+                getWatchedEpisodeList(seriesId, cookie)
             }catch (e: Exception) {
                 error = e.message
             }
@@ -151,6 +155,7 @@ class SeriesDetailsViewModel(
         viewModelScope.launch{
             try {
                 seriesServices.deleteWatchedEpisode(seriesId, seasonNr, episodeNr, cookie)
+                getWatchedEpisodeList(seriesId, cookie)
             }catch (e: Exception) {
                 error = e.message
             }

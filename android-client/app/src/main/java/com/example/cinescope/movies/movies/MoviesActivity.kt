@@ -35,7 +35,8 @@ class MoviesActivity: ComponentActivity() {
 
         val user = dependencies.userRepo.user
         if(user != null){
-            viewModel.getMoviesByState(MovieState.PTW.state, user.cookie) //Default
+            viewModel.getMoviesByState(MovieState.PTW.state, user.cookie) //Default         //Everytime the activity is on, a request will be made to get all possible states
+            viewModel.getMoviesByState(MovieState.WATCHED.state, user.cookie)               //This allows for, whatever the tab selected, after performing a back, it will be updated
         }
 
         setContent{
