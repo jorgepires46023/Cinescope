@@ -20,7 +20,9 @@ fun SeriesDetailsTabs(
     seasonData: SeasonData,
     seriesDetails: SeriesDetailsState,
     userData: SeriesUserData,
-    loggedIn: Boolean
+    loggedIn: Boolean,
+    onNavigateToEpisode: (Int, Int, Boolean) -> Unit,
+    loading: Boolean
 ) {
     var tabIdx by remember { mutableIntStateOf(0) }
     val tabs = listOf("Details", "Seasons")
@@ -38,6 +40,6 @@ fun SeriesDetailsTabs(
     }
     when(tabIdx){
         0 -> SeriesDetailsTab(onError, seriesDetails, userData, loggedIn)
-        1 -> SeriesSeasonsTab(seasonData, onError)
+        1 -> SeriesSeasonsTab(seasonData, onError, onNavigateToEpisode, loading)
     }
 }

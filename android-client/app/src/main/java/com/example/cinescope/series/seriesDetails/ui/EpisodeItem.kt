@@ -23,7 +23,7 @@ fun EpisodeItem(
 ) {
     var checkedState by remember { mutableStateOf(watched) }
     ListItem(
-        headlineContent = { Text(text = episode.name) },
+        headlineContent = { Text(text = "${episode.episodeNumber}: ${episode.name}") },
         trailingContent = {
             Checkbox(
                 checked =  checkedState,

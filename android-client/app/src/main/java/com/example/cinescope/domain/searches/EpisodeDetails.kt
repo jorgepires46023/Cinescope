@@ -8,5 +8,5 @@ data class EpisodeDetails(
     @SerializedName("date")val airDate: String,
     @SerializedName("episode_number")val episodeNumber: Int,
     @SerializedName("overview")val description: String,
-    @SerializedName("still_path")val epImgPath: String
+    @SerializedName("still_path")val epImgPath: String?
 )

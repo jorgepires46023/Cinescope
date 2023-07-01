@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.cinescope.domain.content.ContentList
 import com.example.cinescope.domain.content.EpisodeData
-import com.example.cinescope.domain.content.SeasonDataState
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.domain.searches.Season
 import com.example.cinescope.domain.searches.SeasonInfo
@@ -60,7 +59,9 @@ fun SeriesDetailsScreen(
     seriesDetails: SeriesDetailsState,
     userData: SeriesUserData,
     seasonData: SeasonData,
-    onError: () -> Unit = {}
+    onError: () -> Unit = {},
+    onNavigateToEpisode: (Int, Int, Boolean) -> Unit,
+    loading: Boolean
 ) {
     CinescopeTheme {
         Scaffold(
@@ -100,7 +101,9 @@ fun SeriesDetailsScreen(
                         loggedIn = loggedIn,
                         seriesDetails = seriesDetails,
                         userData = userData,
-                        seasonData = seasonData
+                        seasonData = seasonData,
+                        onNavigateToEpisode = onNavigateToEpisode,
+                        loading = loading
                     )
                 }
             }

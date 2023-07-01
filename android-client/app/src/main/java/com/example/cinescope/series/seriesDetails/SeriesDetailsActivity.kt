@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.cinescope.DependenciesContainer
+import com.example.cinescope.episodes.EpisodeDetailsActivity
 import com.example.cinescope.search.SearchActivity
 import com.example.cinescope.utils.viewModelInit
 
@@ -35,8 +36,10 @@ class SeriesDetailsActivity: ComponentActivity() {
     override fun onResume() {
         super.onResume()
         val user = dependencies.userRepo.user
-        if(user != null)
+        if(user != null) {
             viewModel.getSeriesUserData(seriesId, user.cookie)
+            viewModel.getWatchedEpisodeList(seriesId, user.cookie)
+        }
         viewModel.getSeriesDetails(seriesId)
 
         setContent{
@@ -88,6 +91,10 @@ class SeriesDetailsActivity: ComponentActivity() {
                             viewModel.deleteWatchedEpisode(seriesId, seasonNr, episodeNr, user.cookie)
                     }
                 ),
+                onNavigateToEpisode = {seasonNr, episodeNr, isWatched ->
+                    EpisodeDetailsActivity.navigate(this, seriesId, seasonNr, episodeNr, isWatched)
+                },
+                loading = viewModel.loading
             )
         }
     }

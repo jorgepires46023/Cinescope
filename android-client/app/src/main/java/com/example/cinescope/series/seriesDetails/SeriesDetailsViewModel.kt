@@ -137,6 +137,7 @@ class SeriesDetailsViewModel(
             try {
                watchedEpisodes = seriesServices.getAllWatchedEpFromSeries(seriesId, cookie)
             }catch (e: Exception) {
+                watchedEpisodes = emptyList()
                 error = e.message
             }
         }
@@ -164,17 +165,3 @@ class SeriesDetailsViewModel(
         }
     }
 }
-
-
-/*
-            seasons?.seasonDetails?.episodes?.forEach { episode ->
-                    episodesInfo.add(EpisodeUserInfo(
-                        name = episode.name,
-                        epId = episode.id,
-                        seasonNr = season,
-                        episodeNr = episode.episodeNumber,
-                        isWatched = watchedEpisodes.find { it.season == season && it.episode == episode.episodeNumber } != null
-                    ))
-                }
-                episodesUserInfo = episodesInfo
- */

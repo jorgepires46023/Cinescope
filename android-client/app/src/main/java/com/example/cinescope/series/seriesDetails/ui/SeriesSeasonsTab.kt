@@ -28,6 +28,8 @@ import com.example.cinescope.ui.providers.WatchProviders
 fun SeriesSeasonsTab(
     seasonData: SeasonData,
     onError: () -> Unit,
+    onNavigateToEpisode: (Int, Int, Boolean) -> Unit,
+    loading: Boolean
 ) {
     if(seasonData.seasons != null) {
         Column(
@@ -55,17 +57,27 @@ fun SeriesSeasonsTab(
                 }
 
                 if(expandable){
-                    val season = seasonData.seasonsDetails[s.seasonNumber]
-                    if (season?.seasonDetails?.episodes != null && seasonData.watchedEpisodeList != null)
-                        EpisodeList(
-                            seasonDetails = season.seasonDetails,
-                            watchedEpisodeList = seasonData.watchedEpisodeList,
-                            onAddWatchedEpisode = seasonData.onAddWatchedEpisode,
-                            onDeleteWatchedEpisode = seasonData.onDeleteWatchedEpisode
-                        )
-                    if (season?.watchProviders?.results?.PT != null) { //TODO check if we should do something if there isn't any provider info
-                        WatchProviders(providers = season.watchProviders.results.PT)
+                    if(!loading) {
+                        val season = seasonData.seasonsDetails[s.seasonNumber]
+                        if (season?.seasonDetails?.episodes != null && seasonData.watchedEpisodeList != null)
+                            EpisodeList(
+                                seasonDetails = season.seasonDetails,
+                                watchedEpisodeList = seasonData.watchedEpisodeList,
+                                onAddWatchedEpisode = seasonData.onAddWatchedEpisode,
+                                onDeleteWatchedEpisode = seasonData.onDeleteWatchedEpisode,
+                                onNavigateToEpisode = { episodeNr, isWatched ->
+                                    onNavigateToEpisode(
+                                        season.seasonDetails.seasonNumber,
+                                        episodeNr,
+                                        isWatched
+                                    )
+                                }
+                            )
+                        if (season?.watchProviders?.results?.PT != null) { //TODO check if we should do something if there isn't any provider info
+                            WatchProviders(providers = season.watchProviders.results.PT)
+                        }
                     }
+                    else Text(text = "Loading")
                 }
             }
         }
