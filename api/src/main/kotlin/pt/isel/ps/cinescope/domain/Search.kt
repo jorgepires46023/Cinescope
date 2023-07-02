@@ -96,7 +96,8 @@ data class SeasonDetails(val air_date: String?, val episodes: Array<EpisodeDetai
 data class EpisodeDetails(
     val air_date: String?,
     val episode_number: Int?,
-    val id: Int?, val name: String?,
+    val id: Int?,
+    val name: String?,
     val overview: String?,
     val still_path:String?,
     val date: String? = reformatDate(air_date)

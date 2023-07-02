@@ -14,14 +14,10 @@ class SearchServices(val tmdbServices: TmdbService) {
     fun searchByQuery(input: String?, page: Int?): Search? {
         val p = page ?: 1
         if (input.isNullOrBlank()) return null
-        val res = tmdbServices.fetchQuery(input, p) ?: return null
-        val results = mutableListOf<Result>()
-        res.resultDTOS?.forEach { r ->
-            if(r.media_type == TVMEDIATYPE) results.add(Result(r.poster_path, r.id, r.name, r.media_type, r.popularity))
-            else if (r.media_type == MOVIEMEDIATYPE) results.add(Result(r.poster_path, r.id, r.title, r.media_type, r.popularity))
-        }
-        val diff = (res.resultDTOS?.size)?.minus(results.size) ?: 0
-        results.sortByDescending {it.popularity}
+        val res = tmdbServices.fetchQuery(input, p).toSearch() ?: return null
+        if(res.results == null) return res
+        val results = res.results.sortedByDescending { it.popularity }
+        val diff = (res.results.size).minus(results.size)
         return Search(res.page, results, res.total_results?.minus(diff), res.total_pages)
     }
 
