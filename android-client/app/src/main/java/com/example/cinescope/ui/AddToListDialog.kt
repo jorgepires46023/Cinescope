@@ -46,7 +46,7 @@ fun AddToListDialog(
                             name = list.name,
                             onAdd = { onAddToList(list.id) },
                             onDelete = { onDeleteFromList(list.id) },
-                            checkWatchedEp = userData?.lists != null && userData.lists.contains(list),
+                            checked = userData?.lists != null && userData.lists.contains(list),
                         )
                     }
                 } else
