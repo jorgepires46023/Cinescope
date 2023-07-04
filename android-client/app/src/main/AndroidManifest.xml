@@ -39,6 +39,7 @@
         <activity android:name=".lists.ListsActivity"/>
         <activity android:name=".search.SearchActivity"/>
         <activity android:name=".episodes.EpisodeDetailsActivity"/>
+        <activity android:name=".lists.listDetails.ListDetailsActivity"/>
     </application>
 
 </manifest>

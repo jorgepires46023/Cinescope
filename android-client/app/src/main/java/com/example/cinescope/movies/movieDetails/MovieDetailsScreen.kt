@@ -102,10 +102,7 @@ fun MovieDetailsScreen(
                                     MovieState.NO_STATE.state
                                 Dropdown(context = "Movie State", currentState, MovieState.getStates(), onChangeState)
                             }
-
-                            if (state.movie.watchProviders.results.PT != null) { //TODO check if we should do something if there isn't any provider info
-                                WatchProviders(providers = state.movie.watchProviders.results.PT)
-                            }
+                            WatchProviders(providers = state.movie.watchProviders.results.PT)
                         } else {
                             Text(text = "Cannot Render Movie Details")
                         }

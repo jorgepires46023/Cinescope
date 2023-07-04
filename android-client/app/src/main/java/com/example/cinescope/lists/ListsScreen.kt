@@ -20,8 +20,8 @@ fun ListsScreen(
     navController: NavController,
     movieActions: MovieActions,
     seriesActions: SeriesActions,
-    onChangeScreen: (Int, Int) -> Unit,
-    onSearchRequest: () -> Unit
+    onSearchRequest: () -> Unit,
+    onGetListDetails: (Int, String) -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
@@ -48,7 +48,7 @@ fun ListsScreen(
                     ListsTabs(
                         movieActions = movieActions,
                         seriesActions = seriesActions,
-                        onChangeScreen = onChangeScreen
+                        onGetListDetails = onGetListDetails
                     )
                 }
             }

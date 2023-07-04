@@ -73,9 +73,7 @@ fun SeriesSeasonsTab(
                                     )
                                 }
                             )
-                        if (season?.watchProviders?.results?.PT != null) { //TODO check if we should do something if there isn't any provider info
-                            WatchProviders(providers = season.watchProviders.results.PT)
-                        }
+                        WatchProviders(providers = season?.watchProviders?.results?.PT)
                     }
                     else Text(text = "Loading")
                 }

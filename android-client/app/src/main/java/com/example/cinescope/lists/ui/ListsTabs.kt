@@ -17,7 +17,7 @@ fun ListsTabs(
     onError: () -> Unit = { },
     movieActions: MovieActions,
     seriesActions: SeriesActions,
-    onChangeScreen: (Int, Int) -> Unit
+    onGetListDetails: (Int, String) -> Unit
 ) {
     var tabIdx by remember { mutableIntStateOf(0) }
     val tabs = listOf(
@@ -40,11 +40,13 @@ fun ListsTabs(
     when(tabIdx){
         0 -> { MoviesListsTab(
             movieActions,
-            onGetListDetails = { listId -> onChangeScreen(ListsState.MovieListDetails, listId) }
-        ) }
+            onGetListDetails = { listId -> onGetListDetails(listId, "Movies") }
+        )
+        }
         1 -> { SeriesListsTab(
             seriesActions,
-            onGetListDetails = { listId -> onChangeScreen(ListsState.SeriesListDetails, listId) }
-        ) }
+            onGetListDetails = { listId -> onGetListDetails(listId, "Series") }
+        )
+        }
     }
 }

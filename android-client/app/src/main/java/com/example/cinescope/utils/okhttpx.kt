@@ -44,4 +44,3 @@ suspend fun <T> OkHttpClient.send(request: Request, handler: (Response) -> T): T
     }
 
 //TODO: ver https://github.com/isel-leic-pdm/2223I-LEIC52D-LEIRT51D/blob/main/QuoteOfDay/app/src/main/java/palbp/laboratory/demos/quoteofday/utils/okhttpx.kt
-//Ver a melhor solução entre OkHttpClient.send() e Request.send() -> provavelmente a solução está numa das aulas
