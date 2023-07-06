@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component
 import pt.isel.ps.cinescope.controllers.TokenProcessor
 import pt.isel.ps.cinescope.domain.User
 import pt.isel.ps.cinescope.domain.UserState
-import pt.isel.ps.cinescope.repositories.TransactionManager
+import pt.isel.ps.cinescope.repositories.database.TransactionManager
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
 import pt.isel.ps.cinescope.services.exceptions.InternalServerErrorException
 import pt.isel.ps.cinescope.services.exceptions.NotFoundException

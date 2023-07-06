@@ -7,7 +7,7 @@ import pt.isel.ps.cinescope.services.exceptions.BadRequestException
 import pt.isel.ps.cinescope.services.exceptions.NotFoundException
 import pt.isel.ps.cinescope.testWithTransactionManagerAndRollback
 import pt.isel.ps.cinescope.utils.SHA256Encoder
-import pt.isel.ps.cinescope.utils.TmdbService
+import pt.isel.ps.cinescope.utils.TmdbRepository
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -16,7 +16,7 @@ import kotlin.test.assertTrue
 class SeriesServicesTests {
     companion object {
         val encoder = SHA256Encoder()
-        val searchServices = SearchServices(TmdbService())
+        val searchServices = SearchServices(TmdbRepository())
     }
 
     @Test

@@ -1,4 +1,4 @@
-package pt.isel.ps.cinescope.repositories
+package pt.isel.ps.cinescope.repositories.database
 
 import pt.isel.ps.cinescope.domain.User
 import java.util.*

@@ -50,11 +50,6 @@ fun reformatDate(release_date: String?): String?{
     return outputFormat.format(date)
 }
 
-data class MovieDetailsOutput(
-    val movieDetails: MovieDetails,
-    val watchProviders: WatchProviders,
-    val externalIds: ExternalIds?
-)
 
 data class SeriesDetails(
     val overview: String?,
@@ -66,24 +61,8 @@ data class SeriesDetails(
     val backdrop_path: String?
 )
 
-data class SeriesDetailsOutput(
-    val serieDetails: SeriesDetails,
-    val watchProviders: WatchProviders,
-    val externalIds: ExternalIds?
-)
-
-data class SeasonDetailsOutput(
-    val seasonDetails: SeasonDetails,
-    val watchProviders: WatchProviders
-)
-
-data class EpisodeDetailOutput(
-    val episodeDetails: EpisodeDetails,
-    val externalIds: ExternalIds?
-)
 
 data class ExternalIds(val imdb_id: String?, val facebook_id: String?, val twitter_id: String?)
-
 
 data class ImagesResponse(val backdrops: Array<Image>, val id: Int?)
 

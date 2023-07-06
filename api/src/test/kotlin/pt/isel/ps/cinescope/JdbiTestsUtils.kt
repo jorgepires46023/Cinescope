@@ -3,10 +3,10 @@ package pt.isel.ps.cinescope
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.postgresql.ds.PGSimpleDataSource
-import pt.isel.ps.cinescope.repositories.Transaction
-import pt.isel.ps.cinescope.repositories.TransactionManager
-import pt.isel.ps.cinescope.repositories.jdbi.JdbiTransaction
-import pt.isel.ps.cinescope.repositories.jdbi.configure
+import pt.isel.ps.cinescope.repositories.database.Transaction
+import pt.isel.ps.cinescope.repositories.database.TransactionManager
+import pt.isel.ps.cinescope.repositories.database.jdbi.JdbiTransaction
+import pt.isel.ps.cinescope.repositories.database.jdbi.configure
 
 private val jdbi = Jdbi.create(
     PGSimpleDataSource().apply {
@@ -27,7 +27,7 @@ fun testWithTransactionManagerAndRollback(block: (TransactionManager) -> Unit) =
     val transaction = JdbiTransaction(handle)
 
     //a test TransactionManager that never commits
-    val transactionManager = object : TransactionManager{
+    val transactionManager = object : TransactionManager {
         override fun <R> run(block: (Transaction) -> R): R {
             return block(transaction)
             // n.b. no commit happens

@@ -1,9 +1,9 @@
-package pt.isel.ps.cinescope.repositories.jdbi
+package pt.isel.ps.cinescope.repositories.database.jdbi
 
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
 import pt.isel.ps.cinescope.domain.*
-import pt.isel.ps.cinescope.repositories.MoviesRepository
+import pt.isel.ps.cinescope.repositories.database.MoviesRepository
 
 class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
 

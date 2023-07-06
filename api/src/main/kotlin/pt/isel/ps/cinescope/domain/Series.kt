@@ -9,6 +9,22 @@ fun checkSeriesState(state: String?):Boolean{
     return false
 }
 
+data class SeriesDetailsOutput(
+    val serieDetails: SeriesDetails,
+    val watchProviders: WatchProviders,
+    val externalIds: ExternalIds?
+)
+
+data class SeasonDetailsOutput(
+    val seasonDetails: SeasonDetails,
+    val watchProviders: WatchProviders
+)
+
+data class EpisodeDetailOutput(
+    val episodeDetails: EpisodeDetails,
+    val externalIds: ExternalIds?
+)
+
 enum class SeriesState(val state: String) {
     PTW("PTW"),
     Watched("Watched"),

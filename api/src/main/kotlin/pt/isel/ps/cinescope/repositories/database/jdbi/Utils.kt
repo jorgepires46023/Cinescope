@@ -1,4 +1,4 @@
-package pt.isel.ps.cinescope.repositories.jdbi
+package pt.isel.ps.cinescope.repositories.database.jdbi
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin

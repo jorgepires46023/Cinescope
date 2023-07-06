@@ -1,4 +1,4 @@
-package pt.isel.ps.cinescope.repositories.jdbi.mappers
+package pt.isel.ps.cinescope.repositories.database.jdbi.mappers
 
 import pt.isel.ps.cinescope.domain.MovieState
 import org.jdbi.v3.core.mapper.ColumnMapper

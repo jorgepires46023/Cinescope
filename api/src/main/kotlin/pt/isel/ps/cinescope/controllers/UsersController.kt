@@ -15,7 +15,7 @@ class UsersController(val usersService: UsersServices) {
 
     @PostMapping(Users.CREATE_USER)
     fun createUser(@RequestBody info: UserInputModel): ResponseEntity<*> {
-        val user = usersService.createUser(info.name, info.email, info.password)
+        val user = usersService.createUser(name = info.name, email = info.email, password = info.password)
         val cookie = createCookie(user)
         return ResponseEntity
             .status(201)
@@ -25,8 +25,7 @@ class UsersController(val usersService: UsersServices) {
 
     @PutMapping(Users.DELETE_USER)
     fun removeUser(@PathVariable id: Int): ResponseEntity<*> {
-        val user = usersService.removeUser(id)
-
+        val user = usersService.removeUser(id = id)
         return ResponseEntity
             .status(200)
             .body(user)

@@ -5,6 +5,12 @@ data class Movie(val imdbId: String?, val tmdbId: Int?, val name: String?, val i
 data class MovieUserData(val id: Int, val state: MovieState? = null, val lists: List<ListInfo>?)
 data class MovieOnLists(val mlid: Int, val userid: Int, val name: String, val mtmdbid: Int, val state: String?)
 
+data class MovieDetailsOutput(
+    val movieDetails: MovieDetails,
+    val watchProviders: WatchProviders,
+    val externalIds: ExternalIds?
+)
+
 fun checkMovieState(state: String?):Boolean{
     if(state == MovieState.PTW.state || state == MovieState.Watched.state) return true
     return false

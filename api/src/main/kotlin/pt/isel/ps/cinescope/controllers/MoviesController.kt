@@ -12,7 +12,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.ADD_MOVIE)
     fun addMovie(@PathVariable id: Int, @PathVariable lid: Int, @CookieValue(value = "userToken") cookie: String): ResponseEntity<*>{
-        val movie = moviesServices.addMovieToList(id,lid, cookie)
+        val movie = moviesServices.addMovieToList(tmdbMovieId = id, listId = lid, cookie = cookie)
         return ResponseEntity
             .status(200)
             .body(movie)
@@ -20,8 +20,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.CHANGE_STATE)
     fun changeMovieState(@PathVariable id: Int, @RequestBody info: MoviesModel.ChangeStateModel, @CookieValue(value = "userToken") cookie: String): ResponseEntity<*>{
-        val movie = moviesServices.changeState(movieId = id, info.state, cookie)
-
+        val movie = moviesServices.changeState(movieId = id, state = info.state, cookie = cookie)
         return ResponseEntity
             .status(200)
             .body(movie)
@@ -29,8 +28,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @GetMapping(Movies.GET_LIST_BY_STATE)
     fun getListsByState(@PathVariable state: String, @CookieValue(value = "userToken") cookie: String):ResponseEntity<*>{
-        val lists = moviesServices.getMoviesFromUserByState(cookie, state)
-
+        val lists = moviesServices.getMoviesFromUserByState(cookie = cookie, state = state)
         return ResponseEntity
             .status(200)
             .body(ListOutput(lists))
@@ -39,8 +37,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @GetMapping(Movies.GET_MOVIES_LISTS)
     fun getMoviesLists(@CookieValue(value = "userToken") cookie: String):ResponseEntity<*>{
-        val lists = moviesServices.getLists(cookie)
-
+        val lists = moviesServices.getLists(cookie = cookie)
         return ResponseEntity
             .status(200)
             .body(ListOutput(lists))
@@ -48,8 +45,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @GetMapping(Movies.GET_LIST)
     fun getMoviesList(@PathVariable id: Int, @CookieValue(value = "userToken") cookie: String): ResponseEntity<*>{
-        val list = moviesServices.getList(id, cookie)
-
+        val list = moviesServices.getList(listId = id, cookie = cookie)
         return ResponseEntity
             .status(200)
             .body(list)
@@ -57,8 +53,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @PostMapping(Movies.CREATE_LIST)
     fun createMoviesList(@RequestBody info: MoviesModel.ListModel, @CookieValue(value = "userToken") cookie: String): ResponseEntity<*>{
-        val list = moviesServices.createList(cookie, info.name)
-
+        val list = moviesServices.createList(cookie = cookie, name = info.name)
         return ResponseEntity
             .status(200)
             .body(list)
@@ -66,8 +61,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @DeleteMapping(Movies.DELETE_LIST)
     fun deleteMoviesList(@PathVariable id: Int, @CookieValue(value = "userToken") cookie: String): ResponseEntity<*>{
-        val list = moviesServices.deleteList(id, cookie)
-
+        val list = moviesServices.deleteList(listId = id, cookie = cookie)
         return ResponseEntity
             .status(200)
             .body(list)
@@ -75,8 +69,7 @@ class MoviesController(val moviesServices: MoviesServices) {
 
     @DeleteMapping(Movies.DELETE_MOVIE_FROM_LIST)
     fun deleteMovieFromList(@PathVariable id: Int, @PathVariable mid: Int?, @CookieValue(value = "userToken") cookie: String): ResponseEntity<*>{
-        val list = moviesServices.deleteMovieFromList(id, movieId = mid, cookie)
-
+        val list = moviesServices.deleteMovieFromList(listId = id, movieId = mid, cookie = cookie)
         return ResponseEntity
             .status(200)
             .body(list)
@@ -86,12 +79,12 @@ class MoviesController(val moviesServices: MoviesServices) {
     fun deleteStateFromMovie(@PathVariable mid: Int, @CookieValue(value = "userToken") cookie: String): ResponseEntity<*>{
         return ResponseEntity
             .status(200)
-            .body(moviesServices.deleteStateFromMovie(mid, cookie))
+            .body(moviesServices.deleteStateFromMovie(movieId = mid, cookie = cookie))
     }
 
     @GetMapping(Movies.MOVIE_USER_DATA)
     fun getMovieUserData(@PathVariable id: Int, @CookieValue(value = "userToken") cookie: String): ResponseEntity<*>{
-        val movieUserData = moviesServices.getMovieUserData(id, cookie)
+        val movieUserData = moviesServices.getMovieUserData(movieId = id, cookie = cookie)
         return ResponseEntity
             .status(200)
             .body(movieUserData)

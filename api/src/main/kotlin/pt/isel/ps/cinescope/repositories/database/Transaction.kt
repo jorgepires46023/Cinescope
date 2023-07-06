@@ -1,4 +1,4 @@
-package pt.isel.ps.cinescope.repositories
+package pt.isel.ps.cinescope.repositories.database
 
 interface Transaction {
     val userRepository: UsersRepository

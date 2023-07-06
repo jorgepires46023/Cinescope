@@ -1,10 +1,9 @@
-package pt.isel.ps.cinescope.repositories.jdbi
+package pt.isel.ps.cinescope.repositories.database.jdbi
 
 
 import org.jdbi.v3.core.Handle
 import pt.isel.ps.cinescope.domain.User
-import pt.isel.ps.cinescope.repositories.UsersRepository
-import pt.isel.ps.cinescope.services.exceptions.InternalServerErrorException
+import pt.isel.ps.cinescope.repositories.database.UsersRepository
 import java.util.*
 
 class  JdbiUsersRepository (private val handle: Handle): UsersRepository {

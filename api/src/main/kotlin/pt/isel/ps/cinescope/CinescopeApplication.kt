@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import pt.isel.ps.cinescope.controllers.AuthenticationInterceptor
-import pt.isel.ps.cinescope.repositories.jdbi.configure
-import pt.isel.ps.cinescope.repositories.jdbi.mappers.MovieStateMapper
+import pt.isel.ps.cinescope.repositories.database.jdbi.configure
+import pt.isel.ps.cinescope.repositories.database.jdbi.mappers.MovieStateMapper
 
 @SpringBootApplication
 class CinescopeApplication{

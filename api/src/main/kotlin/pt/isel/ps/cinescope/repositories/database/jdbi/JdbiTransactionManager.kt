@@ -1,10 +1,10 @@
-package pt.isel.ps.cinescope.repositories.jdbi
+package pt.isel.ps.cinescope.repositories.database.jdbi
 
 import org.jdbi.v3.core.Jdbi
 import org.postgresql.util.PSQLException
 import org.springframework.stereotype.Component
-import pt.isel.ps.cinescope.repositories.Transaction
-import pt.isel.ps.cinescope.repositories.TransactionManager
+import pt.isel.ps.cinescope.repositories.database.Transaction
+import pt.isel.ps.cinescope.repositories.database.TransactionManager
 import pt.isel.ps.cinescope.services.exceptions.InternalServerErrorException
 
 @Component

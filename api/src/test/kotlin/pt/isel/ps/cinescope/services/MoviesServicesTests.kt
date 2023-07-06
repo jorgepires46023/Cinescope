@@ -7,7 +7,7 @@ import pt.isel.ps.cinescope.services.exceptions.BadRequestException
 import pt.isel.ps.cinescope.services.exceptions.NotFoundException
 import pt.isel.ps.cinescope.testWithTransactionManagerAndRollback
 import pt.isel.ps.cinescope.utils.SHA256Encoder
-import pt.isel.ps.cinescope.utils.TmdbService
+import pt.isel.ps.cinescope.utils.TmdbRepository
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -17,8 +17,8 @@ class MoviesServicesTests {
 
     companion object {
         val encoder = SHA256Encoder()
-        val tmdbService = TmdbService()
-        val searchServices = SearchServices(tmdbService)
+        val tmdbRepository = TmdbRepository()
+        val searchServices = SearchServices(tmdbRepository)
     }
 
     @Test
@@ -29,7 +29,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -51,7 +51,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -76,7 +76,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             assertFailsWith<BadRequestException> {
                 moviesServices.createList(null, "Action Movies")
@@ -96,7 +96,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -118,7 +118,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             assertFailsWith<BadRequestException> {
                 moviesServices.getList(1, null)
@@ -138,7 +138,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -158,7 +158,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -186,7 +186,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             assertFailsWith<BadRequestException> {
                 moviesServices.deleteList(38, null)
@@ -206,7 +206,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -226,7 +226,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -272,7 +272,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -300,7 +300,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             assertFailsWith<BadRequestException> {
                 moviesServices.getLists(null)
@@ -321,7 +321,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -365,7 +365,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -387,7 +387,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -407,7 +407,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -434,7 +434,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -456,7 +456,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -506,7 +506,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -526,7 +526,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -552,7 +552,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -575,7 +575,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -597,7 +597,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -647,7 +647,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -682,7 +682,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -739,7 +739,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -788,7 +788,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -841,7 +841,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -887,7 +887,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -931,7 +931,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
@@ -971,7 +971,7 @@ class MoviesServicesTests {
 
             val tokenProcessor = TokenProcessor(usersServices)
 
-            val moviesServices = MoviesServices(transactionManager, tmdbService, tokenProcessor)
+            val moviesServices = MoviesServices(transactionManager, tmdbRepository, tokenProcessor)
 
             val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
 
