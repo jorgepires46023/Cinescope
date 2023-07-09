@@ -40,8 +40,8 @@ class CinescopeApplication : DependenciesContainer, Application() {
     }
 
     private val httpClient: OkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .cache(Cache(directory = cacheDir, maxSize = 50 * 1024 * 1024))
+        OkHttpClient
+            .Builder()
             .build()
     }
 
