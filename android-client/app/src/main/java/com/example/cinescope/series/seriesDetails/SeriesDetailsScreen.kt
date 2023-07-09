@@ -36,8 +36,7 @@ data class SeriesUserData(
     val onAddToList: (Int) -> Unit,
     val onDeleteFromList: (Int) -> Unit,
     val onGetLists:  () -> Unit,
-    val onChangeState: (String) -> Unit,
-    val onUpdate: () -> Unit
+    val onChangeState: (String) -> Unit
 )
 
 data class SeasonData(
@@ -49,7 +48,6 @@ data class SeasonData(
     val onDeleteWatchedEpisode: (Int, Int) -> Unit
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeriesDetailsScreen(
     navController: NavController,
@@ -77,8 +75,7 @@ fun SeriesDetailsScreen(
                     onGetLists =  userData.onGetLists,
                     onAddToList = userData.onAddToList,
                     onDeleteFromList = userData.onDeleteFromList,
-                    userData = userData.seriesData,
-                    onUpdate = userData.onUpdate
+                    userData = userData.seriesData
                 )
             },
             floatingActionButtonPosition = FabPosition.End,

@@ -11,20 +11,16 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.cinescope.domain.user.UserInfo
 import com.example.cinescope.ui.Title
-import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.theme.CinescopeTheme
+import com.example.cinescope.ui.topbar.TopBar
 
 data class NotLoggedInActions(
     val onLoginRequest: () -> Unit = {},
@@ -65,47 +61,43 @@ fun ProfileScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
             ){
-                if(!loading){
-                    if(!loggedIn){
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row {
-                                Button(onClick = { notLoggedInActions.onLoginRequest() }) {
-                                    Text(text = "Login")
-                                }
-                            }
-                            Row {
-                                Button(onClick = { notLoggedInActions.onSignUpRequest() }) {
-                                    Text(text = "Create Account")
-                                }
+                if(!loggedIn){
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row {
+                            Button(onClick = { notLoggedInActions.onLoginRequest() }) {
+                                Text(text = "Login")
                             }
                         }
-                    }else{
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth()
-                        ){
-                            if(loggedInState.user != null) {
-                                Row {
-                                    Title(title = loggedInState.user.name)
-                                }
-                            }
-                            Button(
-                                onClick = {
-                                    loggedInState.onLogoutRequest()
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Red
-                                )
-                            ) {
-                                Text(text = "Logout")
+                        Row {
+                            Button(onClick = { notLoggedInActions.onSignUpRequest() }) {
+                                Text(text = "Create Account")
                             }
                         }
                     }
-                }else {
-                    Text(text = "Loading...")
+                }else{
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        if(loggedInState.user != null) {
+                            Row {
+                                Title(title = loggedInState.user.name)
+                            }
+                        }
+                        Button(
+                            onClick = {
+                                loggedInState.onLogoutRequest()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Red
+                            )
+                        ) {
+                            Text(text = "Logout")
+                        }
+                    }
                 }
                 if(error != null) AlertError(error = error, dismiss = onError)
             }

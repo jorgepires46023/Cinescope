@@ -41,7 +41,6 @@ data class MovieUserData(
     val onDeleteFromList: (Int) -> Unit,
     val onGetLists:  () -> Unit
 )
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieDetailsScreen(
     state: MovieDetailsState,
@@ -49,8 +48,7 @@ fun MovieDetailsScreen(
     navController: NavController,
     onSearchRequested: () -> Unit,
     loggedIn: Boolean,
-    onChangeState: (String) -> Unit,
-    onUpdate: () -> Unit
+    onChangeState: (String) -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
@@ -67,9 +65,7 @@ fun MovieDetailsScreen(
                         onGetLists =  userData.onGetLists,
                         onAddToList = userData.onAddToList,
                         onDeleteFromList = userData.onDeleteFromList,
-                        userData = userData.movieData,
-                        onUpdate = onUpdate
-
+                        userData = userData.movieData
                     )
             },
             floatingActionButtonPosition = FabPosition.End,

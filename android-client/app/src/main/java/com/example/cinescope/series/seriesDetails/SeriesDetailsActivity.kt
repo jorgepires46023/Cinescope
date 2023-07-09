@@ -64,8 +64,7 @@ class SeriesDetailsActivity: ComponentActivity() {
                     },
                     onChangeState = {state ->
                         if(cookie != null) viewModel.changeState(state, seriesId, cookie)
-                    },
-                    onUpdate = { /*if(user != null) viewModel.getSeriesUserData(seriesId, user.cookie)*/ }
+                    }
                 ),
                 navController = dependencies.navController,
                 loggedIn = cookie != null,

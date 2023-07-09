@@ -23,8 +23,7 @@ fun AddToListDialog(
     lists: List<ContentList>?,
     onAddToList: (Int) -> Unit,
     onDeleteFromList: (Int) -> Unit,
-    userData: UserDataContent?,
-    onUpdate: () -> Unit
+    userData: UserDataContent?
 ) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
