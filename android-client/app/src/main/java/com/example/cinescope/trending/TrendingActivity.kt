@@ -1,7 +1,5 @@
 package com.example.cinescope.trending
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,18 +11,8 @@ import com.example.cinescope.search.SearchActivity
 import com.example.cinescope.series.seriesDetails.SeriesDetailsActivity
 import com.example.cinescope.utils.viewModelInit
 
-const val TRENDING_ACTIVITY_TAG = "Trending Activity"
 class TrendingActivity: ComponentActivity() {
     private val dependencies by lazy { application as DependenciesContainer}
-
-    companion object{
-        fun navigate(origin: Context){
-            with(origin){
-                val intent = Intent(this, TrendingActivity::class.java)
-                startActivity(intent)
-            }
-        }
-    }
 
     private val viewModel: TrendingScreenViewModel by viewModels {
         viewModelInit{

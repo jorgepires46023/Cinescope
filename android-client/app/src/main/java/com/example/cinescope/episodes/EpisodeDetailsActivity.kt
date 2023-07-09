@@ -2,6 +2,7 @@ package com.example.cinescope.episodes
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -55,8 +56,8 @@ class EpisodeDetailsActivity: ComponentActivity() {
         id.toBoolean()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         val user = dependencies.userRepo.user
         if(user != null)

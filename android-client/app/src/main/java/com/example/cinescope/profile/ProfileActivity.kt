@@ -1,10 +1,6 @@
 package com.example.cinescope.profile
 
-
-
-import android.content.Context
-import android.content.Intent
-import android.widget.Toast
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -22,17 +18,9 @@ class ProfileActivity: ComponentActivity() {
             ProfileScreenViewModel(dependencies.userServices)
         }
     }
-    companion object{
-        fun navigate(origin: Context){
-            with(origin){
-                val intent = Intent(this, ProfileActivity::class.java)
-                startActivity(intent)
-            }
-        }
-    }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         val user = dependencies.userRepo.user
         if(user != null){
@@ -41,7 +29,6 @@ class ProfileActivity: ComponentActivity() {
         val loggedIn = user != null
 
         setContent {
-            Toast.makeText(this, "LoggedIn: $loggedIn", Toast.LENGTH_SHORT).show() //TODO remove this Toast
             ProfileScreen(
                 loggedIn = loggedIn,
                 error = viewModel.error,

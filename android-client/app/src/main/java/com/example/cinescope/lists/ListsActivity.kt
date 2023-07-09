@@ -1,23 +1,12 @@
 package com.example.cinescope.lists
 
-import android.content.Context
-import android.content.Intent
-import android.widget.Toast
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.example.cinescope.DependenciesContainer
-import com.example.cinescope.domain.user.User
 import com.example.cinescope.lists.listDetails.ListDetailsActivity
-import com.example.cinescope.lists.ui.ListsState
-import com.example.cinescope.movies.movieDetails.MovieDetailsActivity
 import com.example.cinescope.search.SearchActivity
-import com.example.cinescope.series.seriesDetails.SeriesDetailsActivity
 import com.example.cinescope.ui.NotLoggedInScreen
 import com.example.cinescope.utils.viewModelInit
 
@@ -30,17 +19,9 @@ class ListsActivity: ComponentActivity() {
             ListsViewModel(dependencies.moviesServices, dependencies.seriesServices)
         }
     }
-    companion object {
-        fun navigate(origin: Context){
-            with(origin){
-                val intent = Intent(this, ListsActivity::class.java)
-                startActivity(intent)
-            }
-        }
-    }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         val user = dependencies.userRepo.user
         if(user != null){
