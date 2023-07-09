@@ -31,17 +31,12 @@ abstract class CinescopeServices(
     /** Builds a request **/
     internal fun buildRequest(
         url: URL, method: MethodHTTP = MethodHTTP.GET,
-        body: RequestBody? = null, token: String? = null,
-        cookie: Cookie? = null
+        body: RequestBody? = null, cookie: Cookie? = null
     ) =
         Request.Builder()
             .url(url)
             .header("Content-Type", JsonMediaType.toString())
             .method(method.type, body)
-            .let {
-                if (token == null) it
-                else it.header("Authorization", "Bearer $token")
-            }
             .let {
                 if(cookie == null) it
                 else it.header("Cookie", cookie.toString())

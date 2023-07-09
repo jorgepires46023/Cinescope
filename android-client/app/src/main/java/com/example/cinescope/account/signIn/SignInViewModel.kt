@@ -1,4 +1,4 @@
-package com.example.cinescope.account.signUp
+package com.example.cinescope.account.signIn
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +10,7 @@ import com.example.cinescope.services.cinescopeAPI.UserServices
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class SignUpScreenViewModel(
+class SignInViewModel(
     private val userInfoRepository: UserInfoRepository,
     private val userServices: UserServices
 ): ViewModel() {
@@ -22,16 +22,16 @@ class SignUpScreenViewModel(
 
     var error by mutableStateOf<String?>(null)
 
-    fun signUp(name: String, email: String, pwd: String){
+    fun signIn(email: String, pwd: String){
         viewModelScope.launch {
             try {
                 loading = true
-                userInfoRepository.user = userServices.createUser(name, email, pwd)
+                userInfoRepository.cookie = userServices.login(email, pwd).cookie
                 signedIn = true
             } catch(e: Exception){
                 error = e.message
             } finally {
-                loading = false
+              loading = false
             }
         }
     }

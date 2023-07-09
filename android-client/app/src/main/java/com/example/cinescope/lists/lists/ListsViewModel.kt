@@ -1,4 +1,4 @@
-package com.example.cinescope.lists
+package com.example.cinescope.lists.lists
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

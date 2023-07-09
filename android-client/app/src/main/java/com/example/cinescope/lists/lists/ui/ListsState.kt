@@ -1,4 +1,4 @@
-package com.example.cinescope.lists.ui
+package com.example.cinescope.lists.lists.ui
 
 object ListsState {
     const val Lists = 0

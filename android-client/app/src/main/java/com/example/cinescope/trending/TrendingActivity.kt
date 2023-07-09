@@ -14,9 +14,9 @@ import com.example.cinescope.utils.viewModelInit
 class TrendingActivity: ComponentActivity() {
     private val dependencies by lazy { application as DependenciesContainer}
 
-    private val viewModel: TrendingScreenViewModel by viewModels {
+    private val viewModel: TrendingViewModel by viewModels {
         viewModelInit{
-            TrendingScreenViewModel(dependencies.searchServices)
+            TrendingViewModel(dependencies.searchServices)
         }
     }
 

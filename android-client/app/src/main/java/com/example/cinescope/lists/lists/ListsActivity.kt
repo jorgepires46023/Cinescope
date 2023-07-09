@@ -1,4 +1,4 @@
-package com.example.cinescope.lists
+package com.example.cinescope.lists.lists
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

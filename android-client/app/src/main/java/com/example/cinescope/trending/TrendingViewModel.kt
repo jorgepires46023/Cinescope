@@ -9,7 +9,7 @@ import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import kotlinx.coroutines.launch
 
-class TrendingScreenViewModel(private val searchServices: SearchServices): ViewModel() {
+class TrendingViewModel(private val searchServices: SearchServices): ViewModel() {
     var loading by mutableStateOf(false)
         private set
 

@@ -1,4 +1,4 @@
-package com.example.cinescope.lists
+package com.example.cinescope.lists.lists
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.cinescope.lists.ui.ListsTabs
+import com.example.cinescope.lists.lists.ui.ListsTabs
 import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController

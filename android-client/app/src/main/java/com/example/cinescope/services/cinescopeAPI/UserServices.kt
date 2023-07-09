@@ -9,6 +9,7 @@ import com.example.cinescope.services.serviceInterfaces.CinescopeUsersServices
 import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.send
 import com.google.gson.Gson
+import okhttp3.Cookie
 import okhttp3.OkHttpClient
 import java.net.URL
 
@@ -50,19 +51,15 @@ class UserServices(
         }
     }
 
-    override suspend fun getUserInfo(token: String): UserInfo {
+    override suspend fun getUserInfo(cookie: Cookie): UserInfo {
         //TODO to be decided how we will handle this request: token vs id
         val request = buildRequest(
             url = cinescopeURL.joinPath(Users.GET_USER_INFO),
-            token = token
+            cookie = cookie
         )
         //TODO handle this exceptions with our errors(try-catch)
         return httpClient.send(request){ response ->
             handleResponse(response, UserInfo::class.java)
         }
-    }
-
-    override suspend fun deleteUser(userId: Int) {
-        TODO("Not yet implemented")
     }
 }

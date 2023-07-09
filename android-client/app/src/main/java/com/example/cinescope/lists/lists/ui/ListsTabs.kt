@@ -1,4 +1,4 @@
-package com.example.cinescope.lists.ui
+package com.example.cinescope.lists.lists.ui
 
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -8,9 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.cinescope.domain.content.ContentList
-import com.example.cinescope.lists.MovieActions
-import com.example.cinescope.lists.SeriesActions
+import com.example.cinescope.lists.lists.MovieActions
+import com.example.cinescope.lists.lists.SeriesActions
 data class ListsTabsInfo(val title: String, val onUpdate: () -> Unit)
 @Composable
 fun ListsTabs(

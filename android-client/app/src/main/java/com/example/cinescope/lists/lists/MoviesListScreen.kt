@@ -1,4 +1,4 @@
-package com.example.cinescope.lists
+package com.example.cinescope.lists.lists
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package com.example.cinescope.lists.ui
+package com.example.cinescope.lists.lists.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -6,8 +6,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.example.cinescope.domain.content.ContentList
-import com.example.cinescope.lists.SeriesActions
+import com.example.cinescope.lists.lists.SeriesActions
 import com.example.cinescope.ui.DeleteDialog
 import com.example.cinescope.ui.list.ContentListItem
 import com.example.cinescope.ui.inputs.CreateListDialog

@@ -14,11 +14,6 @@ interface CinescopeSearchServices {
 
     suspend fun getPopularSeries(): List<MediaContent>
 
-    suspend fun getSeriesRecommendations(id:Int): List<MediaContent>
-
-    //TODO check if we will implement this functionalities
-    suspend fun getMovieRecommendations(id:Int): List<MediaContent>
-
     suspend fun getMovieDetails(movieId: Int): MovieInfo
 
     suspend fun getSeriesDetails(seriesId: Int): SeriesInfo

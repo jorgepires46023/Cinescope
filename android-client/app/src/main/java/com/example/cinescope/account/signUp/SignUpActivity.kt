@@ -13,9 +13,9 @@ import com.example.cinescope.utils.viewModelInit
 class SignUpActivity: ComponentActivity() {
     private val dependencies by lazy { application as DependenciesContainer }
 
-    private val viewModel: SignUpScreenViewModel by viewModels {
+    private val viewModel: SignUpViewModel by viewModels {
         viewModelInit{
-            SignUpScreenViewModel(dependencies.userRepo, dependencies.userServices)
+            SignUpViewModel(dependencies.userRepo, dependencies.userServices)
         }
     }
     companion object {

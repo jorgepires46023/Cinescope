@@ -55,30 +55,6 @@ class SearchServices(
         return contentAPIDto.toContent()
     }
 
-    override suspend fun getSeriesRecommendations(id: Int): List<MediaContent> {
-        val request = buildRequest(
-            url = cinescopeURL
-                .joinPathWithVariables(Searches.SERIE_RECOMMENDATIONS, listOf(id.toString()))
-        )
-        //TODO handle this exceptions with our errors(try-catch)
-        val contentAPIDto = httpClient.send(request){ response ->
-            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
-        }
-        return contentAPIDto.toContent()
-    }
-
-    override suspend fun getMovieRecommendations(id: Int): List<MediaContent> {
-        val request = buildRequest(
-            url = cinescopeURL
-                .joinPathWithVariables(Searches.MOVIE_RECOMMENDATIONS, listOf(id.toString()))
-        )
-        //TODO handle this exceptions with our errors(try-catch)
-        val contentAPIDto = httpClient.send(request){ response ->
-            handleResponse<ContentAPIDto>(response, ContentAPIDto::class.java)
-        }
-        return contentAPIDto.toContent()
-    }
-
     override suspend fun getMovieDetails(movieId: Int): MovieInfo {
         val request = buildRequest(
             url = cinescopeURL

@@ -13,9 +13,9 @@ import com.example.cinescope.utils.viewModelInit
 class ProfileActivity: ComponentActivity() {
     private val dependencies by lazy { application as DependenciesContainer }
 
-    private val viewModel: ProfileScreenViewModel by viewModels {
+    private val viewModel: ProfileViewModel by viewModels {
         viewModelInit {
-            ProfileScreenViewModel(dependencies.userServices)
+            ProfileViewModel(dependencies.userServices)
         }
     }
 
@@ -24,7 +24,7 @@ class ProfileActivity: ComponentActivity() {
 
         val user = dependencies.userRepo.user
         if(user != null){
-            viewModel.getUserInfo(user.cookie.value) //TODO this method needs to change on API
+            viewModel.getUserInfo(user.cookie) //TODO this method needs to change on API
         }
         val loggedIn = user != null
 

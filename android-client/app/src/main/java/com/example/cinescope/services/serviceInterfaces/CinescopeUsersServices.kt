@@ -2,6 +2,7 @@ package com.example.cinescope.services.serviceInterfaces
 
 import com.example.cinescope.domain.user.User
 import com.example.cinescope.domain.user.UserInfo
+import okhttp3.Cookie
 
 interface CinescopeUsersServices {
 
@@ -9,8 +10,5 @@ interface CinescopeUsersServices {
 
     suspend fun login(email: String, pwd: String): User
 
-    suspend fun getUserInfo(token: String): UserInfo
-
-    suspend fun deleteUser(userId: Int)
-
+    suspend fun getUserInfo(cookie: Cookie): UserInfo
 }

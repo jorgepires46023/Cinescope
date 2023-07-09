@@ -7,12 +7,11 @@ import com.example.cinescope.domain.content.SeriesData
 import com.example.cinescope.domain.content.SeriesListDetails
 import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.services.MethodHTTP
-import com.example.cinescope.services.cinescopeAPI.outputs.CreateListOutput
-import com.example.cinescope.services.cinescopeAPI.outputs.StateOutput
-import com.example.cinescope.services.cinescopeAPI.outputs.WatchedEpOutput
+import com.example.cinescope.services.cinescopeAPI.outputData.CreateListOutput
+import com.example.cinescope.services.cinescopeAPI.outputData.StateOutput
+import com.example.cinescope.services.cinescopeAPI.outputData.WatchedEpOutput
 import com.example.cinescope.services.dtosMapping.ListEpisodeData
 import com.example.cinescope.services.dtosMapping.ListOfContentList
-import com.example.cinescope.services.dtosMapping.ListOfUserDataContent
 import com.example.cinescope.services.dtosMapping.ListSeriesData
 import com.example.cinescope.services.serviceInterfaces.CinescopeSeriesServices
 import com.example.cinescope.utils.joinPath

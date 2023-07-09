@@ -22,7 +22,7 @@
         <activity
             android:name=".trending.TrendingActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:alwaysRetainTaskState="true"
             android:theme="@style/Theme.Cinescope">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,7 +36,7 @@
         <activity android:name=".profile.ProfileActivity"/>
         <activity android:name=".account.signIn.SignInActivity"/>
         <activity android:name=".account.signUp.SignUpActivity"/>
-        <activity android:name=".lists.ListsActivity"/>
+        <activity android:name=".lists.lists.ListsActivity"/>
         <activity android:name=".search.SearchActivity"/>
         <activity android:name=".episodes.EpisodeDetailsActivity"/>
         <activity android:name=".lists.listDetails.ListDetailsActivity"/>

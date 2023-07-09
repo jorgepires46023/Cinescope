@@ -23,12 +23,6 @@ fun ContentAPIDto.toContent(): List<MediaContent> {
     val contentList = mutableListOf<MediaContent>()
 
     this.results.forEach {
-        /*val content = MediaContent(
-            id = it.id,
-            title = it.title,
-            imgPath = it.poster_path,
-            mediaType = MediaType.fromString(it.media_type)
-        )*/
         contentList.add(MediaContent(
             id = it.id,
             title = it.title,

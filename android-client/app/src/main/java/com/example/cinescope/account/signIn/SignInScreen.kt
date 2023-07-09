@@ -89,7 +89,7 @@ fun SignInScreen(
                         if(credentials != null)
                             onSignInRequest(credentials)
                         },
-                        enabled = !loading //TODO maybe this can change after validating email and password
+                        enabled = !loading
                     ) {
                         Text(text = "Login")//TODO refactor this after translation
                     }

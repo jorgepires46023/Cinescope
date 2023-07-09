@@ -1,5 +1,7 @@
 package com.example.cinescope.domain.user
 
+import okhttp3.Cookie
+
 interface UserInfoRepository {
-    var user: User?
+    var cookie: Cookie?
 }

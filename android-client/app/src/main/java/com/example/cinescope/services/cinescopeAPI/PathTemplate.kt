@@ -1,9 +1,7 @@
 package com.example.cinescope.services.cinescopeAPI
 
 object Users {
-    const val CREATE_USER = "/users"                                            // Register a new user.
-    const val DELETE_USER = "/users/{id}"                                       // Deactivate user
-    const val UPDATE_USER = "/users/{id}/edit"                                  // Update user
+    const val CREATE_USER = "/users"                                            // Register a new user
     const val GET_USER_INFO = "/users/{id}"                                      // Gets user info
     const val LOGIN = "/login"                                                  // Logins the user
 }
@@ -43,8 +41,6 @@ object Searches{
     const val SERIE_DETAILS = "/api_series/{id}"                                    // Search Serie details on external API
     const val SEASON_DETAILS = "/api_series/{id}/season/{seasonnum}"                // Search season details on external API
     const val EPISODE_DETAILS = "/api_series/{id}/season/{seasonnum}/ep/{epnum}"    // Search episode details on external API
-    const val MOVIE_RECOMMENDATIONS = "/api_movies/{id}/recommendations"            // Returns movie recommendations based on id provided
-    const val SERIE_RECOMMENDATIONS = "/api_series/{id}/recommendations"            // Returns serie recommendations based on id provided
     const val GET_POPULAR_MOVIES = "/api_movies/popular"                            // Returns popular movies
     const val GET_POPULAR_SERIES = "/api_series/popular"                            // Returns popular movies
 }

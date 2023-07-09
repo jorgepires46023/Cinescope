@@ -9,35 +9,25 @@ class UserRepositorySharedPrefs(
     private val gson: Gson
     ): UserInfoRepository {
     private val userTokenKey = "token"
-    private val userNameKey = "name"
-    private val userEmailKey = "email"
     private val userInfoPrefs = "userPrefs"
 
     private val prefs by lazy {
         context.getSharedPreferences(userInfoPrefs, Context.MODE_PRIVATE)
     }
 
-    override var user: User?
+    override var cookie: Cookie?
         get() {
-            val name = prefs.getString(userNameKey, null)
-            val email = prefs.getString(userEmailKey, null)
-            val userToken = gson.fromJson(prefs.getString(userTokenKey, null), Cookie::class.java)
-            return if(userToken != null && name != null && email != null) User(userToken, email, name)
-            else null
+            return gson.fromJson(prefs.getString(userTokenKey, null), Cookie::class.java)
         }
 
         set(value) {
             if(value == null)
                 prefs.edit()
                     .remove(userTokenKey)
-                    .remove(userNameKey)
-                    .remove(userEmailKey)
                     .apply()
             else
                 prefs.edit()
-                    .putString(userTokenKey, gson.toJson(value.cookie))
-                    .putString(userNameKey, value.name)
-                    .putString(userEmailKey, value.email)
+                    .putString(userTokenKey, gson.toJson(value))
                     .apply()
         }
 }

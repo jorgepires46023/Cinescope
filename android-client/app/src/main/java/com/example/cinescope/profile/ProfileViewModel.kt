@@ -1,41 +1,39 @@
-package com.example.cinescope.account.signIn
+package com.example.cinescope.profile
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cinescope.domain.user.UserInfoRepository
+import com.example.cinescope.domain.user.UserInfo
 import com.example.cinescope.services.cinescopeAPI.UserServices
 import kotlinx.coroutines.launch
-import java.lang.Exception
+import okhttp3.Cookie
 
-class SignInScreenViewModel(
-    private val userInfoRepository: UserInfoRepository,
+class ProfileViewModel(
     private val userServices: UserServices
 ): ViewModel() {
+
     var loading by mutableStateOf(false)
         private set
 
-    var signedIn by mutableStateOf(false)
+    var userInfo by mutableStateOf<UserInfo?>(null)
         private set
 
     var error by mutableStateOf<String?>(null)
 
-    fun signIn(email: String, pwd: String){
+    fun getUserInfo(cookie: Cookie){
         viewModelScope.launch {
             try {
                 loading = true
-                userInfoRepository.user = userServices.login(email, pwd)
-                signedIn = true
-            } catch(e: Exception){
+                userInfo = userServices.getUserInfo(cookie)
+            }catch(e: Exception){
                 error = e.message
-            } finally {
-              loading = false
+            }finally {
+                loading = false
             }
         }
     }
-
     fun clearError(){
         error = null
     }

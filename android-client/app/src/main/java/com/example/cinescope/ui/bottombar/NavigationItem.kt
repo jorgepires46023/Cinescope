@@ -1,21 +1,14 @@
 package com.example.cinescope.ui.bottombar
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material.icons.filled.Whatshot
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.core.content.ContextCompat.getDrawable
-import com.example.cinescope.R
-import com.example.cinescope.lists.ListsActivity
+import com.example.cinescope.lists.lists.ListsActivity
 import com.example.cinescope.movies.movies.MoviesActivity
 import com.example.cinescope.profile.ProfileActivity
 import com.example.cinescope.series.series.SeriesActivity
