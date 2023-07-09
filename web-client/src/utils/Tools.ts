@@ -1,6 +1,6 @@
 import { deleteMovieFromList, deleteMoviesList } from "../RequestsHelpers/MoviesRequestsHelper"
 import { deleteSerieFromList, deleteSeriesList } from "../RequestsHelpers/SeriesRequestsHelper"
-import { Content, ContentIndexs, ListResults } from "./Types"
+import { Content, ContentIndexs, ContentUserData, ListResults, UserListsElems, WatchedEpisode } from "./Types"
 
 
 export const IMAGE_DOMAIN = "https://image.tmdb.org/t/p/w500"
@@ -108,4 +108,76 @@ export async function deleteContentFromList(
     contentDiv.remove()
     const array = list.filter(elem => elem.tmdbId != contentId)
     setContent(array)
+}
+
+
+export function showCheckedEpisode(watchedList: ListResults<WatchedEpisode>, episodeNum: number, episodeSeason: number) {
+
+    if (watchedList.results != null) {
+        const ep = watchedList.results.find(episode => episode.episode == episodeNum && episode.season == episodeSeason)
+
+        if (ep) {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+export function showChecked(contentStateInfo: ContentUserData, listId: number) {
+    if (contentStateInfo.lists) {
+        const list = contentStateInfo.lists.find(list => list.id === listId)
+        if (list) {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+export async function showUserLists(
+    getContentLists: () => Promise<ListResults<UserListsElems>>, 
+    getContentUserData: (id: number) => Promise<ContentUserData>, 
+    setContentStateInfo: (contentStateInfo: ContentUserData) => void, 
+    setShowLists: (lists: ListResults<UserListsElems>) => void,
+    setShowListsDiv: (boolean: boolean) => void,
+    contentId: number
+) {
+
+    const lists = await getContentLists()
+    try {
+        const contentStateInfo = await getContentUserData(contentId)
+        setContentStateInfo(contentStateInfo)
+    } catch (error) {
+    
+    }
+
+    setShowLists(lists)
+    setShowListsDiv(true)
+}
+
+export async function addToList(
+    ev, 
+    listId: number, 
+    contentId: number, 
+    addContentToList:  (id: number, listId: number) => Promise<void>, 
+    getContentUserData: (id: number) => Promise<ContentUserData>,
+    deleteContentFromList: (listId: number, id: number) => Promise<void>
+) {
+    const checked = ev.currentTarget.checked
+    const checkbox = document.getElementById(`${listId}`) as HTMLInputElement;
+    if (checked) {
+        await addContentToList(contentId, listId)
+
+        try {
+            const movieStateInfo = await getContentUserData(contentId)
+            const select: HTMLSelectElement = document.querySelector('#showState')
+            select.options.namedItem(movieStateInfo.state).selected = true
+        } catch (error) { }
+
+        checkbox.checked = true
+    } else {
+        await deleteContentFromList(listId, contentId)
+        checkbox.checked = false
+    }
 }

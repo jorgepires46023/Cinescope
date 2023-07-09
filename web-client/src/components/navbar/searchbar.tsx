@@ -9,7 +9,7 @@ export function SearchBar() {
 
     function search(ev: React.FormEvent<HTMLInputElement>) {
         ev.preventDefault()
-        navigate(`search/${searchQuery}`)
+        navigate(`/search/${searchQuery}`)
     }
 
     function handleChange(ev: React.FormEvent<HTMLInputElement>) {

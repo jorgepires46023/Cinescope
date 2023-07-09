@@ -24,14 +24,6 @@ class  JdbiUsersRepository (private val handle: Handle): UsersRepository {
                 .mapTo(Int::class.java)
                 .firstOrNull()
 
-    override fun removeUser(id: Int) {
-        handle.createUpdate("update cinescope.users set state = :state where userid = :userid")
-            .bind("state", "Inactive")
-            .bind("userid", id)
-            .execute()
-    }
-
-
     override fun getUserByEmail(email: String): User? =
         handle.createQuery("select userid as id, token, name, email, password from cinescope.users " +
                 "where email = :email AND state = 'Active'")
@@ -45,16 +37,6 @@ class  JdbiUsersRepository (private val handle: Handle): UsersRepository {
             .bind("token", token)
             .mapTo(Int::class.java)
             .singleOrNull()
-
-    override fun updateUserInfo(user: User) {
-        handle.createUpdate("update cinescope.users set name = :name, email = :email, password = :password " +
-                "where userid = :userid")
-            .bind("name", user.name)
-            .bind("email", user.email)
-            .bind("password", user.password)
-            .bind("userid", user.id)
-            .execute()
-    }
 
     override fun getUserByToken(token: String): User? =
         handle.createQuery("select userid as id, name, email, token, password, state from cinescope.users " +

@@ -35,27 +35,6 @@ class UsersServices(val passwordEncoder: Encoder, private val transactionManager
         return getUserById(id)
     }
 
-    fun removeUser(id :Int?) {
-        if (id == null) throw BadRequestException("Id cannot be null")
-        transactionManager.run { it.userRepository.removeUser(id) }
-    }
-
-  /*  fun editUser(bearer: String?, name: String?, email: String?,password: String?) {
-        if(name.isNullOrBlank() || email.isNullOrBlank() || password.isNullOrBlank()) {
-            throw BadRequestException("Info to edit cannot be empty")
-        }
-
-        if(bearer.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
-        val user = tokenProcessor.processToken(bearer) ?: throw NotFoundException("User not found")
-
-        transactionManager.run {
-            val encodedPassword = passwordEncoder.encodeInfo(password)
-            val updatedUser = User(user.id, name, email, encodedPassword, user.token, user.state)
-            it.userRepository.updateUserInfo(updatedUser)
-        }
-    }
-*/
-
     fun login(email: String?, password: String?): User {
         if (email.isNullOrBlank() || password.isNullOrBlank()) {
             throw BadRequestException("You must provide valid email or password")

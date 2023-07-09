@@ -23,29 +23,12 @@ class UsersController(val usersService: UsersServices) {
             .body(UserOutputModel(user.name, user.email))
     }
 
-    @PutMapping(Users.DELETE_USER)
-    fun removeUser(@PathVariable id: Int): ResponseEntity<*> {
-        val user = usersService.removeUser(id = id)
-        return ResponseEntity
-            .status(200)
-            .body(user)
-    }
-
-    /*@PostMapping(Users.UPDATE_USER)
-    fun editUser(@RequestBody info: UserInputModel, @PathVariable id: Int): ResponseEntity<*> {
-        val user = usersService.editUser(id, info.name, info.email, info.password)
-
-        return ResponseEntity
-            .status(200)
-            .body(user)
-    }*/
-
     @GetMapping(Users.GET_USER_INFO)
-    fun getUserInfo(@PathVariable id: Int): ResponseEntity<*> {
-        val user = usersService.getUserById(id)
+    fun getUserInfo(@CookieValue(value = "userToken") token: String): ResponseEntity<*> {
+        val user = usersService.getUserByToken(token)
         return ResponseEntity
             .status(200)
-            .body(UserOutputModel(user.name, user.email))
+            .body(UserOutputModel(user?.name, user?.email))
     }
 
     @PostMapping(Users.LOGIN)

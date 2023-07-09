@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { getEpisodeDetails } from "../RequestsHelpers/SearchRequestsHelper";
 import { useParams } from "react-router-dom";
 import { EpisodeDetailsResults, EMPTY_EPISODE_DETAILS_RESULT, EMPTY_WATCHED_EPISODE, WatchedEpisode, ListResults, EMPTY_LIST_RESULTS_WATCHED_EPISODES } from "../utils/Types";
-import { BACKDROP_IMAGE_DOMAIN, getCookie, handleError } from "../utils/Tools";
+import { BACKDROP_IMAGE_DOMAIN, getCookie, handleError, showCheckedEpisode } from "../utils/Tools";
 import { addWatchedEpisode, getWatchedEpisodesList, removeWatchedEpisode } from "../RequestsHelpers/SeriesRequestsHelper";
+import { NavBar } from "./navbar/Navbar";
 
 
 
-export function EpisodesDetails() {  //TODO links sociais
+export function EpisodesDetails() {
 
     const { serieId, season, episodeNum } = useParams()
 
@@ -44,54 +45,43 @@ export function EpisodesDetails() {  //TODO links sociais
         }
     }
 
-    function showCheckedEpisode(episodeNum: number, episodeSeason: number) {
-
-        if (watchedList) {
-            const ep = watchedList.results.find(episode => episode.episode == episodeNum && episode.season == episodeSeason)
-
-            if (ep) {
-                return true
-            } else {
-                return false
-            }
-        }
-    }
-
     return (
-        <div className="pageDiv">
-            <div className="episodeDiv" style={{ backgroundImage: `url(${BACKDROP_IMAGE_DOMAIN}/${episodeInfo.episodeDetails.still_path})` }}>
-                <div className="posterDiv">
-                    <div className="imageDiv">
-                        <img src={`${BACKDROP_IMAGE_DOMAIN}/${episodeInfo.episodeDetails.still_path}`} alt={episodeInfo.episodeDetails.name} onError={handleError} className="episodeImg" />
+        <div className='firstDiv'>
+            <NavBar />
+            <div className="pageDiv">
+                <div className="episodeDiv" style={{ backgroundImage: `url(${BACKDROP_IMAGE_DOMAIN}/${episodeInfo.episodeDetails.still_path})` }}>
+                    <div className="posterDiv">
+                        <div className="imageDiv">
+                            <img src={`${BACKDROP_IMAGE_DOMAIN}/${episodeInfo.episodeDetails.still_path}`} alt={episodeInfo.episodeDetails.name} onError={handleError} className="episodeImg" />
+                        </div>
+                        {userToken && <div className="watchedDiv">
+                            <label htmlFor={episodeInfo.episodeDetails.name}>Watched: </label>
+                            <input id={`${episodeInfo.episodeDetails.id}`} name={episodeInfo.episodeDetails.name} type="checkbox" checked={showCheckedEpisode(watchedList, +episodeNum, +season)} onClick={(event) => addToWatchedList(event, episodeInfo.episodeDetails.id, +episodeNum, +season)} className="checkmarkEpisode" />
+                        </div>}
                     </div>
-                    { userToken && <div className="watchedDiv">
-                        <label htmlFor={episodeInfo.episodeDetails.name}>Watched: </label>
-                        <input id={`${episodeInfo.episodeDetails.id}`} name={episodeInfo.episodeDetails.name} type="checkbox" checked={showCheckedEpisode(+episodeNum, +season)} onClick={(event) => addToWatchedList(event, episodeInfo.episodeDetails.id, +episodeNum, +season)} className="checkmarkEpisode" />
-                    </div>}
-                </div>
-                <div className="textInfoEpisodeDiv">
-                    <h2 className="contentTitle">{episodeInfo.episodeDetails.name}</h2>
-                    <div className="overview">
-                        <p>{episodeInfo.episodeDetails.overview}</p>
+                    <div className="textInfoEpisodeDiv">
+                        <h2 className="contentTitle">{episodeInfo.episodeDetails.name}</h2>
+                        <div className="overview">
+                            <p>{episodeInfo.episodeDetails.overview}</p>
+                        </div>
+                        <div className="contentStats">
+                            <p> Air Date: {episodeInfo.episodeDetails.date}</p>
+                        </div>
                     </div>
-                    <div className="contentStats">
-                        <p> Air Date: {episodeInfo.episodeDetails.date}</p>
+                    <div className="apiDiv">
+                        {episodeInfo.externalIds.imdb_id && <div className="apiInfo" onClick={() => window.open(`http://www.imdb.com/title/${episodeInfo.externalIds.imdb_id}`)}>
+                            <img src="/imdb logo.png" alt="Imdb" className="apiLogo" />
+                            <h2 className="apiTitle">IMDB</h2>
+                        </div>}
+                        {episodeInfo.externalIds.twitter_id && <div className="apiInfo" onClick={() => window.open(`http://www.twitter.com/${episodeInfo.externalIds.twitter_id}`)}>
+                            <img src="/twitter logo.png" alt="Twitter" className="apiLogo" />
+                            <h2 className="apiTitle">Twitter</h2>
+                        </div>}
+                        {episodeInfo.externalIds.facebook_id && <div className="apiInfo" onClick={() => window.open(`http://www.facebook.com/${episodeInfo.externalIds.facebook_id}`)}>
+                            <img src="/Facebook logo.png" alt="Facebook" className="apiLogo" />
+                            <h2 className="apiTitle">Facebook</h2>
+                        </div>}
                     </div>
-                </div>
-                <div className="apiDiv">
-                    <div className="apiInfo">
-                        <img src="/imdb logo.png" alt="Imdb" className="apiLogo" />
-                        <h2 className="apiTitle">IMDB</h2>
-                    </div>
-                    <div className="apiInfo">
-                        <img src="/twitter logo.png" alt="Twitter" className="apiLogo" />
-                        <h2 className="apiTitle">Twitter</h2>
-                    </div>
-                    <div className="apiInfo">
-                        <img src="/Facebook logo.png" alt="Facebook" className="apiLogo" />
-                        <h2 className="apiTitle">Facebook</h2>
-                    </div>
-
                 </div>
             </div>
         </div>

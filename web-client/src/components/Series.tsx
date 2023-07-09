@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Content, ContentIndexs, EMPTY_CONTENT, EMPTY_LIST_RESULTS, INIT_INDEXS, ListResults } from "../utils/Types";
 import { IMAGE_DOMAIN, getCookie, getSerie, getShowArray, next, previous } from "../utils/Tools";
 import { getSeriesByState } from "../RequestsHelpers/SeriesRequestsHelper";
+import { NavBar } from "./navbar/Navbar";
 
 
 export function Series() {
@@ -54,76 +55,79 @@ export function Series() {
     }, [])
 
     return (
-        <div className="pageDiv">
-            <div className="stateListsDiv">
-                <div className="seriesDiv">
-                    <h2 className="stateListTitle">PTW Series</h2>
-                    <div className="contentDisplay">
-                        <div className="navigationButtonDiv">
-                            <button className="navigationButton" onClick={() => previous(contentIndexsPTW, setContextIndexsPTW, ptwSeries, setShowPTWSeries)} hidden={contentIndexsPTW.init <= 0} > {"<"} </button>
-                        </div>
-                        <div className="contentGrid">
-                            {
-                                showPTWSeries.map(series =>
-                                    <div className="contentGridElem" onClick={() => getSerie(series.tmdbId, navigate)}>
-                                        <img src={`${IMAGE_DOMAIN}${series.img}`} alt={series.name} className="contentImg" />
-                                        <div className="cardOverlayElem">
-                                            <p>{series.name}</p>
+        <div className='firstDiv'>
+            <NavBar />
+            <div className="pageDiv">
+                <div className="stateListsDiv">
+                    <div className="seriesDiv">
+                        <h2 className="stateListTitle">PTW Series</h2>
+                        <div className="contentDisplay">
+                            <div className="navigationButtonDiv">
+                                <button className="navigationButton" onClick={() => previous(contentIndexsPTW, setContextIndexsPTW, ptwSeries, setShowPTWSeries)} hidden={contentIndexsPTW.init <= 0} > {"<"} </button>
+                            </div>
+                            <div className="contentGrid">
+                                {
+                                    showPTWSeries.map(series =>
+                                        <div className="contentGridElem" onClick={() => getSerie(series.tmdbId, navigate)}>
+                                            <img src={`${IMAGE_DOMAIN}${series.img}`} alt={series.name} className="contentImg" />
+                                            <div className="cardOverlayElem">
+                                                <p>{series.name}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            }
-                        </div>
-                        <div className="navigationButtonDiv">
-                            <button className="navigationButton" onClick={() => next(contentIndexsPTW, setContextIndexsPTW, ptwSeries, setShowPTWSeries)} hidden={contentIndexsPTW.end >= ptwSeries.results.length} > {">"} </button>
+                                    )
+                                }
+                            </div>
+                            <div className="navigationButtonDiv">
+                                <button className="navigationButton" onClick={() => next(contentIndexsPTW, setContextIndexsPTW, ptwSeries, setShowPTWSeries)} hidden={contentIndexsPTW.end >= ptwSeries.results.length} > {">"} </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="seriesDiv">
-                    <h2 className="stateListTitle">Watching Series</h2>
-                    <div className="contentDisplay">
-                        <div className="navigationButtonDiv">
-                            <button className="navigationButton" onClick={() => previous(contentIndexsWatching, setContextIndexsWatching, watchingSeries, setShowWatchingSeries)} hidden={contentIndexsWatching.init <= 0} > {"<"} </button>
-                        </div>
-                        <div className="contentGrid">
-                            {
-                                showWatchingSeries.map(series =>
-                                    <div className="contentGridElem" onClick={() => getSerie(series.tmdbId, navigate)}>
-                                        <img src={`${IMAGE_DOMAIN}${series.img}`} alt={series.name} className="contentImg" />
-                                        <div className="cardOverlayElem">
-                                            <p>{series.name}</p>
+                    <div className="seriesDiv">
+                        <h2 className="stateListTitle">Watching Series</h2>
+                        <div className="contentDisplay">
+                            <div className="navigationButtonDiv">
+                                <button className="navigationButton" onClick={() => previous(contentIndexsWatching, setContextIndexsWatching, watchingSeries, setShowWatchingSeries)} hidden={contentIndexsWatching.init <= 0} > {"<"} </button>
+                            </div>
+                            <div className="contentGrid">
+                                {
+                                    showWatchingSeries.map(series =>
+                                        <div className="contentGridElem" onClick={() => getSerie(series.tmdbId, navigate)}>
+                                            <img src={`${IMAGE_DOMAIN}${series.img}`} alt={series.name} className="contentImg" />
+                                            <div className="cardOverlayElem">
+                                                <p>{series.name}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            }
-                        </div>
-                        <div className="navigationButtonDiv">
-                            <button className="navigationButton" onClick={() => next(contentIndexsWatching, setContextIndexsWatching, watchingSeries, setShowWatchingSeries)} hidden={contentIndexsWatching.end >= watchingSeries.results.length} > {">"} </button>
+                                    )
+                                }
+                            </div>
+                            <div className="navigationButtonDiv">
+                                <button className="navigationButton" onClick={() => next(contentIndexsWatching, setContextIndexsWatching, watchingSeries, setShowWatchingSeries)} hidden={contentIndexsWatching.end >= watchingSeries.results.length} > {">"} </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="seriesDiv">
-                    <h2 className="stateListTitle">Watched Series</h2>
-                    <div className="contentDisplay">
-                        <div className="navigationButtonDiv">
-                            <button className="navigationButton" onClick={() => previous(contentIndexsWatched, setContextIndexsWatched, watchedSeries, setShowWatchedSeries)} hidden={contentIndexsWatched.init <= 0} > {"<"} </button>
-                        </div>
-                        <div className="contentGrid">
-                            {
-                                showWatchedSeries.map(series =>
-                                    <div className="contentGridElem" onClick={() => getSerie(series.tmdbId, navigate)}>
-                                        <img src={`${IMAGE_DOMAIN}${series.img}`} alt={series.name} className="contentImg" />
-                                        <div className="cardOverlayElem">
-                                            <p>{series.name}</p>
+                    <div className="seriesDiv">
+                        <h2 className="stateListTitle">Watched Series</h2>
+                        <div className="contentDisplay">
+                            <div className="navigationButtonDiv">
+                                <button className="navigationButton" onClick={() => previous(contentIndexsWatched, setContextIndexsWatched, watchedSeries, setShowWatchedSeries)} hidden={contentIndexsWatched.init <= 0} > {"<"} </button>
+                            </div>
+                            <div className="contentGrid">
+                                {
+                                    showWatchedSeries.map(series =>
+                                        <div className="contentGridElem" onClick={() => getSerie(series.tmdbId, navigate)}>
+                                            <img src={`${IMAGE_DOMAIN}${series.img}`} alt={series.name} className="contentImg" />
+                                            <div className="cardOverlayElem">
+                                                <p>{series.name}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            }
-                        </div>
-                        <div className="navigationButtonDiv">
-                            <button className="navigationButton" onClick={() => next(contentIndexsWatched, setContextIndexsWatched, watchedSeries, setShowWatchedSeries)} hidden={contentIndexsWatched.end >= watchedSeries.results.length} > {">"} </button>
+                                    )
+                                }
+                            </div>
+                            <div className="navigationButtonDiv">
+                                <button className="navigationButton" onClick={() => next(contentIndexsWatched, setContextIndexsWatched, watchedSeries, setShowWatchedSeries)} hidden={contentIndexsWatched.end >= watchedSeries.results.length} > {">"} </button>
+                            </div>
                         </div>
                     </div>
                 </div>

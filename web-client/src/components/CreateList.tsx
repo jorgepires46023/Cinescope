@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createMoviesList } from "../RequestsHelpers/MoviesRequestsHelper"
 import { NewListInfo, EMPTY_NEW_LIST_INFO } from "../utils/Types"
 import { createSeriesList } from "../RequestsHelpers/SeriesRequestsHelper"
+import { NavBar } from "./navbar/Navbar"
 
 export function CreateList() {
 
@@ -46,7 +47,9 @@ export function CreateList() {
     }
 
     return (
-        <div >
+       
+        <div > 
+            <NavBar/>
             <div className="centerDiv">
                 <div className="titleDiv">
                     <h1 className="titleClass">Create a New List</h1>

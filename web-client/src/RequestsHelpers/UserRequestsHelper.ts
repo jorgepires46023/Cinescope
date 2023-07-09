@@ -15,8 +15,8 @@ export async function createUser(name: string, email: string, password: string) 
         .then(res => res.json())
 }
 
-export async function getUserById(userId: number) {
-    return await fetch(`${DOMAIN_URL}/users/${userId}`, {
+export async function getUserByToken() {
+    return await fetch(`${DOMAIN_URL}/users`, {
         method: "GET",
         credentials: 'include',
         headers: {

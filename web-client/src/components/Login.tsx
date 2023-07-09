@@ -1,9 +1,9 @@
 import * as React from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { login } from "../RequestsHelpers/UserRequestsHelper"
-import { useContext, useState } from "react"
-import { UserContext } from "./UserProvider"
+import { useState } from "react"
 import { EMPTY_LOGIN_INFO, LoginInfo } from "../utils/Types"
+import { NavBar } from "./navbar/Navbar"
 
 
 export function Login() {
@@ -33,6 +33,7 @@ export function Login() {
 
     return (
         <div>
+            <NavBar/>
             <div className="centerDiv">
                 <div className="titleDiv">
                     <h1 className="titleClass">Login</h1>
@@ -54,12 +55,6 @@ export function Login() {
                     </div>
                     <div className='createUserDiv'>
                         <Link className='createUserLink' to="/createuser">Create User</Link>
-                    </div>
-                    <div className="hrDiv">
-                        <hr className="hrClass" />
-                    </div>
-                    <div>
-                        <h1>OpenId</h1>
                     </div>
                 </form>
             </div>

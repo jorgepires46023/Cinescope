@@ -3,6 +3,7 @@ import { createUser } from "../RequestsHelpers/UserRequestsHelper"
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { EMPTY_NEW_USER_INFO, NewUserInfo } from "../utils/Types"
+import { NavBar } from "./navbar/Navbar"
 
 export function CreateUser() {
 
@@ -35,6 +36,7 @@ export function CreateUser() {
     
     return (
         <div >
+            <NavBar/>
             <div className="centerDiv">
                 <div className="titleDiv">
                     <h1 className="titleClass">Create a New User</h1>
