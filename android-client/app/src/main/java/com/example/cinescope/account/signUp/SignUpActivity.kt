@@ -2,6 +2,7 @@ package com.example.cinescope.account.signUp
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -26,8 +27,8 @@ class SignUpActivity: ComponentActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         setContent{
             SignUpScreen(

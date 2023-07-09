@@ -1,5 +1,6 @@
 package com.example.cinescope.series.series
 
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -19,8 +20,8 @@ class SeriesActivity: ComponentActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         val user = dependencies.userRepo.user
         if(user != null){
