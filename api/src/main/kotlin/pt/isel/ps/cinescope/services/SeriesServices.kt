@@ -16,10 +16,10 @@ class SeriesServices(
     private val tokenProcessor: TokenProcessor
     ) {
 
-    fun addSeriesToList(tmdbSeriesId: Int?, listId: Int?, cookie: String?) {
+    fun addSeriesToList(tmdbSeriesId: Int?, listId: Int?, token: String?) {
         if(isNull(tmdbSeriesId) || isNull(listId)) throw BadRequestException("Missing information to add series to list")
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
             it.seriesRepository.getSeriesFromSeriesData(tmdbSeriesId) ?: run {
@@ -41,14 +41,14 @@ class SeriesServices(
             }
         }
 
-    fun changeState(seriesId: Int?, state: String?, cookie: String?){
+    fun changeState(seriesId: Int?, state: String?, token: String?){
         if(seriesId == null) throw BadRequestException("Missing information to change this state")
 
         if(!checkSeriesState(state)) throw BadRequestException("State not valid")
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         if(user.id == null) throw NotFoundException("User not found")
 
@@ -67,10 +67,10 @@ class SeriesServices(
         }
     }
 
-    fun addWatchedEpisode(seriesId: Int?, epNum: Int?, seasonNum: Int?, cookie: String?){
+    fun addWatchedEpisode(seriesId: Int?, epNum: Int?, seasonNum: Int?, token: String?){
         if(isNull(seriesId) || isNull(epNum) || isNull(seasonNum)) throw BadRequestException("Missing information to add this watched episode")
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
             it.seriesRepository.getSeriesFromSeriesData(seriesId) ?: run {
@@ -101,12 +101,12 @@ class SeriesServices(
             }
         }
 
-    fun removeWatchedEpisode(seriesId: Int?, epNum: Int?, seasonNum: Int?, cookie: String?){
+    fun removeWatchedEpisode(seriesId: Int?, epNum: Int?, seasonNum: Int?, token: String?){
         if(isNull(seriesId) || isNull(epNum) || isNull(seasonNum)) throw BadRequestException("Missing information to remove this watched episode")
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
             val episode = it.seriesRepository.getEpisodeFromEpData(seriesId, seasonNum, epNum) ?: throw BadRequestException("Database - episode not found")
@@ -115,12 +115,12 @@ class SeriesServices(
         }
     }
 
-    fun getWatchedEpList(seriesId: Int?, cookie: String?): ListOutput {
+    fun getWatchedEpList(seriesId: Int?, token: String?): ListOutput {
         if(isNull(seriesId)) throw BadRequestException("Missing information to get this list")
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         return transactionManager.run {
             val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)?.epListId ?: throw NotFoundException("Series Not Found")
@@ -128,21 +128,21 @@ class SeriesServices(
         }
     }
 
-    fun getLists(cookie: String?): ListOutput {
+    fun getLists(token: String?): ListOutput {
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         return transactionManager.run { ListOutput(it.seriesRepository.getLists(user.id)) }
     }
 
-    fun getList(listId: Int?, cookie: String?): ListDetails {
+    fun getList(listId: Int?, token: String?): ListDetails {
         if(isNull(listId)) throw BadRequestException("Missing information to get this list")
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         return transactionManager.run {
             val list = it.seriesRepository.getSeriesList(listId, user.id)
@@ -151,32 +151,32 @@ class SeriesServices(
         }
     }
 
-    fun createList(cookie: String?, name: String?): Int? {
+    fun createList(token: String?, name: String?): Int? {
         if(isNull(name)) throw BadRequestException("Missing information to create list")
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         return transactionManager.run { it.seriesRepository.createSeriesList(user.id, name)}
     }
 
-    fun deleteSeriesFromList(listId: Int?, seriesId: Int?, cookie: String?){
+    fun deleteSeriesFromList(listId: Int?, seriesId: Int?, token: String?){
         if(isNull(listId) || isNull(seriesId)) throw BadRequestException("Missing information to get this list")
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         transactionManager.run { it.seriesRepository.deleteSeriesFromList(listId, seriesId, user.id) }
     }
 
-    fun deleteList(listId: Int?, cookie: String?){
+    fun deleteList(listId: Int?, token: String?){
         if(isNull(listId)) throw BadRequestException("Missing information to delete list")
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         transactionManager.run {
             it.seriesRepository.deleteSeriesFromList(listId)
@@ -184,32 +184,32 @@ class SeriesServices(
         }
     }
 
-    fun getSeriesFromUserByState(cookie: String?, state: String?): List<Series> {
+    fun getSeriesFromUserByState(token: String?, state: String?): List<Series> {
         if (!checkSeriesState(state)) throw BadRequestException("State not valid")
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         return transactionManager.run { it.seriesRepository.getSeriesFromUserByState(user.id, SeriesState.fromString(state)) }
     }
 
-    fun removeStateFromSerie(seriesId: Int?, cookie: String?){
+    fun removeStateFromSerie(seriesId: Int?, token: String?){
         if(isNull(seriesId)) throw BadRequestException("Missing information to get this list")
 
-        if(cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
+        if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         return transactionManager.run {
             it.seriesRepository.removeStateFromSerie(user.id, seriesId)
         }
     }
 
-    fun getSerieUserData(seriesId: Int?, cookie: String?): SerieUserData?{
+    fun getSerieUserData(seriesId: Int?, token: String?): SerieUserData?{
         if (seriesId == null) throw BadRequestException("serieId cant be null")
-        if (cookie.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
-        val user = tokenProcessor.processToken(cookie) ?: throw NotFoundException("User not found")
+        if (token.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
+        val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
         val state = transactionManager.run{
             return@run it.seriesRepository.getSerieState(user.id, seriesId)
         } ?: return SerieUserData(seriesId, null, null)
