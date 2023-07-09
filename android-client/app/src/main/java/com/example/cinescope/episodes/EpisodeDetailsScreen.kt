@@ -76,10 +76,8 @@ fun EpisodeDetailsScreen(
                             if (episodeDetails.episodeDetails.description.isNotBlank())
                                 DescriptionCard(episodeDetails.episodeDetails.description)
                         }else {
-                            Text(text = "Cannot Render Movie Details")
+                            Text(text = "Loading...")
                         }
-                    }else {
-                        Text(text = "Loading...")
                     }
                 }
             }

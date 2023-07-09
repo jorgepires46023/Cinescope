@@ -23,7 +23,6 @@ data class TrendingScreenState(
     val error: String?
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrendingScreen(
     state: TrendingScreenState,

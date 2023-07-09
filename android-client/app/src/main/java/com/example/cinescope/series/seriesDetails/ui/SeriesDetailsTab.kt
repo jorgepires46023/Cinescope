@@ -34,9 +34,7 @@ fun SeriesDetailsTab(
                 Dropdown(context = "Series State", currentState, SeriesState.getStates(), userData.onChangeState)
             }
         } else {
-            Text(text = "Cannot Render Series Details")
+            Text(text = "Loading...")
         }
-    } else {
-        Text(text = "Loading...")
     }
 }

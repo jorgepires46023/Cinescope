@@ -16,7 +16,7 @@ import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.grid.MediaContentGrid
 
 @Composable
-fun SeriesTab(
+fun TrendingSeriesTab(
     state: TrendingScreenState,
     onError: () -> Unit,
     onGetSeriesDetails: (Int, MediaType) -> Unit
@@ -32,10 +32,8 @@ fun SeriesTab(
             if(!state.popSeries.isNullOrEmpty()){
                 MediaContentGrid(list = state.popSeries, onGetDetails = onGetSeriesDetails)
             }else{
-                Text(text = "Cannot Render Series")
+                Text(text = "Loading")
             }
-        } else {
-            Text(text = "Loading...")
         }
         if(state.error != null){
             AlertError(error = state.error, onError)

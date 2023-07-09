@@ -100,10 +100,8 @@ fun MovieDetailsScreen(
                             }
                             WatchProviders(providers = state.movie.watchProviders.results.PT)
                         } else {
-                            Text(text = "Cannot Render Movie Details")
+                            Text(text = "Loading...")
                         }
-                    } else {
-                        Text(text = "Loading...")
                     }
                 }
             }

@@ -5,7 +5,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.cinescope.domain.MediaType
@@ -17,8 +17,8 @@ fun TrendingTabs(
     onError: () -> Unit,
     onGetDetails: (Int, MediaType) -> Unit,
 ) {
-    var tabIdx by remember { mutableStateOf(0) }
-    val tabs = listOf("Movies", "Series") //TODO insert this strings in xml for translations
+    var tabIdx by remember { mutableIntStateOf(0) }
+    val tabs = listOf("Movies", "Series")
 
     TabRow(selectedTabIndex = tabIdx) {
         tabs.forEachIndexed { index, title ->
@@ -31,6 +31,6 @@ fun TrendingTabs(
     }
     when(tabIdx){
         0 -> TrendingMoviesTab(state = state, onError, onGetDetails)
-        1 -> SeriesTab(state = state, onError, onGetDetails)
+        1 -> TrendingSeriesTab(state = state, onError, onGetDetails)
     }
 }

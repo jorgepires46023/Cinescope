@@ -17,7 +17,6 @@ import com.example.cinescope.ui.grid.MediaContentGrid
 
 @Composable
 fun TrendingMoviesTab(state: TrendingScreenState, onError: () -> Unit, onGetMovieDetails: (Int, MediaType) -> Unit) {
-    //TODO check if we should pass state or only the lists
     Column(
         modifier = Modifier
             .padding(all = 16.dp)
@@ -29,10 +28,8 @@ fun TrendingMoviesTab(state: TrendingScreenState, onError: () -> Unit, onGetMovi
             if(!state.popMovies.isNullOrEmpty()){
                 MediaContentGrid(list = state.popMovies, onGetDetails = onGetMovieDetails)
             }else{
-                Text(text = "Cannot Render Movies")
+                Text(text = "Loading...")
             }
-        } else {
-            Text(text = "Loading...")
         }
         if(state.error != null){
             AlertError(error = state.error, onError)

@@ -17,7 +17,12 @@ class UserRepositorySharedPrefs(
 
     override var cookie: Cookie?
         get() {
-            return gson.fromJson(prefs.getString(userTokenKey, null), Cookie::class.java)
+            val authCookie = gson.fromJson(prefs.getString(userTokenKey, null), Cookie::class.java) ?: return null
+            if(authCookie.expiresAt < System.currentTimeMillis()){
+                cookie = null
+                return null
+            }
+            return authCookie
         }
 
         set(value) {
