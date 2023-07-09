@@ -23,17 +23,15 @@ class SeriesActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val user = dependencies.userRepo.user
-        if(user != null){
-            viewModel.getSeriesByState(SeriesState.PTW.state, user.cookie) //Default
-            viewModel.getSeriesByState(SeriesState.WATCHING.state, user.cookie)        //Everytime the activity is on, a request will be made to get all possible states
-            viewModel.getSeriesByState(SeriesState.WATCHED.state, user.cookie)         //This allows for, whatever the tab selected, after performing a back, it will be updated
+        val cookie = dependencies.userRepo.cookie
+        if(cookie != null){
+            viewModel.getSeriesByState(SeriesState.PTW.state, cookie) //Default
+            viewModel.getSeriesByState(SeriesState.WATCHING.state, cookie)        //Everytime the activity is on, a request will be made to get all possible states
+            viewModel.getSeriesByState(SeriesState.WATCHED.state, cookie)         //This allows for, whatever the tab selected, after performing a back, it will be updated
         }
 
-        //TODO forcar update quando back e realizado
-
         setContent{
-            if(user != null){
+            if(cookie != null){
                 SeriesScreen(
                     state = SeriesScreenState(
                         ptwSeries = viewModel.ptwList,
@@ -44,7 +42,7 @@ class SeriesActivity: ComponentActivity() {
                     ),
                     navController = dependencies.navController,
                     onError = { viewModel.clearError() },
-                    onTabChanged = {state -> viewModel.getSeriesByState(state, user.cookie) },
+                    onTabChanged = {state -> viewModel.getSeriesByState(state, cookie) },
                     onGetDetails = { seriesId ->
                         SeriesDetailsActivity.navigate(this, seriesId)
                     },

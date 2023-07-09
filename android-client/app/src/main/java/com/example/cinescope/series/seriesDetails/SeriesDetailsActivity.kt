@@ -36,10 +36,10 @@ class SeriesDetailsActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val user = dependencies.userRepo.user
-        if(user != null) {
-            viewModel.getSeriesUserData(seriesId, user.cookie)
-            viewModel.getWatchedEpisodeList(seriesId, user.cookie)
+        val cookie = dependencies.userRepo.cookie
+        if(cookie != null) {
+            viewModel.getSeriesUserData(seriesId, cookie)
+            viewModel.getWatchedEpisodeList(seriesId, cookie)
         }
         viewModel.getSeriesDetails(seriesId)
 
@@ -54,28 +54,28 @@ class SeriesDetailsActivity: ComponentActivity() {
                     seriesData = viewModel.userData,
                     lists = viewModel.lists,
                     onAddToList = { listId ->
-                        if(user != null) viewModel.addSeriesToList(listId, seriesId, user.cookie)
+                        if(cookie != null) viewModel.addSeriesToList(listId, seriesId, cookie)
                     },
                     onDeleteFromList = { listId ->
-                        if(user != null) viewModel.deleteSeriesFromList(listId, seriesId, user.cookie)
+                        if(cookie != null) viewModel.deleteSeriesFromList(listId, seriesId, cookie)
                     },
                     onGetLists = {
-                        if(user != null) viewModel.getLists(user.cookie)
+                        if(cookie != null) viewModel.getLists(cookie)
                     },
                     onChangeState = {state ->
-                        if(user != null) viewModel.changeState(state, seriesId, user.cookie)
+                        if(cookie != null) viewModel.changeState(state, seriesId, cookie)
                     },
                     onUpdate = { /*if(user != null) viewModel.getSeriesUserData(seriesId, user.cookie)*/ }
                 ),
                 navController = dependencies.navController,
-                loggedIn = user != null,
+                loggedIn = cookie != null,
                 onSearchRequested = { SearchActivity.navigate(this)},
                 onTabChanged = {tab ->
                     if(tab == "Details"){
                         viewModel.getSeriesDetails(seriesId = seriesId)
                     }
                     else if(tab == "Seasons") {
-                        if(user != null) viewModel.getWatchedEpisodeList(seriesId, user.cookie)
+                        if(cookie != null) viewModel.getWatchedEpisodeList(seriesId, cookie)
                     }
                 },
                 seasonData = SeasonData(
@@ -84,12 +84,12 @@ class SeriesDetailsActivity: ComponentActivity() {
                     seasonsDetails = viewModel.seasons,
                     onGetSeasonDetails = { seasonNr -> viewModel.getSeasonDetails(seriesId, seasonNr) },
                     onAddWatchedEpisode = { seasonNr,  episodeNr ->
-                        if(user != null)
-                            viewModel.addWatchedEpisode(seriesId, seasonNr, episodeNr, user.cookie)
+                        if(cookie != null)
+                            viewModel.addWatchedEpisode(seriesId, seasonNr, episodeNr, cookie)
                     },
                     onDeleteWatchedEpisode = { seasonNr,  episodeNr ->
-                        if(user != null)
-                            viewModel.deleteWatchedEpisode(seriesId, seasonNr, episodeNr, user.cookie)
+                        if(cookie != null)
+                            viewModel.deleteWatchedEpisode(seriesId, seasonNr, episodeNr, cookie)
                     }
                 ),
                 onNavigateToEpisode = {seasonNr, episodeNr, isWatched ->

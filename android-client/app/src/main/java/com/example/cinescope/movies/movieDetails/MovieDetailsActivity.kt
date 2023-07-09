@@ -35,9 +35,10 @@ class MovieDetailsActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val user = dependencies.userRepo.user
-        if(user != null)
-            viewModel.getMovieUserData(movieId, user.cookie)
+
+        val cookie = dependencies.userRepo.cookie
+        if(cookie != null)
+            viewModel.getMovieUserData(movieId, cookie)
         viewModel.getMovieDetails(movieId)
 
         setContent{
@@ -52,19 +53,19 @@ class MovieDetailsActivity: ComponentActivity() {
                     movieData = viewModel.userData,
                     lists = viewModel.lists,
                     onAddToList = { listId ->
-                        if(user != null) viewModel.addMovieToList(listId, movieId, user.cookie)
+                        if(cookie != null) viewModel.addMovieToList(listId, movieId, cookie)
                     },
                     onDeleteFromList = { listId ->
-                        if(user != null) viewModel.deleteMovieFromList(listId, movieId, user.cookie)
+                        if(cookie != null) viewModel.deleteMovieFromList(listId, movieId, cookie)
                     },
                     onGetLists = {
-                        if(user != null) viewModel.getLists(user.cookie)
+                        if(cookie != null) viewModel.getLists(cookie)
                     }
                 ),
                 navController = dependencies.navController,
-                loggedIn = user != null,
+                loggedIn = cookie != null,
                 onChangeState = {state ->
-                    if(user != null) viewModel.changeState(state, movieId, user.cookie)
+                    if(cookie != null) viewModel.changeState(state, movieId, cookie)
                 },
                 onSearchRequested = { SearchActivity.navigate(this)},
                 onUpdate = { /*if(user != null) viewModel.getMovieUserData(movieId, user.cookie)*/ }

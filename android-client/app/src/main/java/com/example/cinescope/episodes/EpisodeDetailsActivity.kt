@@ -59,8 +59,8 @@ class EpisodeDetailsActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val user = dependencies.userRepo.user
-        if(user != null)
+        val cookie = dependencies.userRepo.cookie
+        if(cookie != null)
             viewModel.changeWatchState(isWatched)
         viewModel.getEpisodeDetails(seriesId, seasonNr, episodeNr)
 
@@ -68,24 +68,24 @@ class EpisodeDetailsActivity: ComponentActivity() {
             EpisodeDetailsScreen(
                 episodeDetails = viewModel.episode,
                 isWatched = viewModel.watchedEpisode,
-                onAddWatchedEpisode = { if(user != null)
+                onAddWatchedEpisode = { if(cookie != null)
                     viewModel.addWatchedEpisode(
                         seriesId,
                         seasonNr,
                         episodeNr,
-                        user.cookie
+                        cookie
                     )
                 },
                 onDeleteWatchedEpisode = {
-                    if (user != null)
+                    if (cookie != null)
                         viewModel.deleteWatchedEpisode(
                             seriesId,
                             seasonNr,
                             episodeNr,
-                            user.cookie
+                            cookie
                         )
                 },
-                loggedIn = user != null,
+                loggedIn = cookie != null,
                 onSearchRequested = { SearchActivity.navigate(this)},
                 navController = dependencies.navController,
                 isLoading = viewModel.loading

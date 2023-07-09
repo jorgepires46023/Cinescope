@@ -13,6 +13,8 @@ import okhttp3.Cookie
 class ProfileViewModel(
     private val userServices: UserServices
 ): ViewModel() {
+    var signedIn by mutableStateOf(false)
+        private set
 
     var loading by mutableStateOf(false)
         private set
@@ -34,6 +36,11 @@ class ProfileViewModel(
             }
         }
     }
+
+    fun setLoggedInValue(value: Boolean){
+        signedIn = value
+    }
+
     fun clearError(){
         error = null
     }

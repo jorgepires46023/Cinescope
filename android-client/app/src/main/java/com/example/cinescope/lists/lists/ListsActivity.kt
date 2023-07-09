@@ -23,33 +23,33 @@ class ListsActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val user = dependencies.userRepo.user
-        if(user != null){
-            viewModel.getMoviesLists(user.cookie)
-            viewModel.getSeriesLists(user.cookie)
+        val cookie = dependencies.userRepo.cookie
+        if(cookie != null){
+            viewModel.getMoviesLists(cookie)
+            viewModel.getSeriesLists(cookie)
         }
 
         setContent{
-            if(user != null){
+            if(cookie != null){
                 ListsScreen(
                     navController = dependencies.navController,
                     movieActions = MovieActions(
                         onCreateMovieList = { name ->
-                            viewModel.createMovieList(name, user.cookie)
+                            viewModel.createMovieList(name, cookie)
                         },
                         moviesLists = viewModel.moviesLists,
-                        onUpdateMoviesLists = { viewModel.getMoviesLists(user.cookie) },
+                        onUpdateMoviesLists = { viewModel.getMoviesLists(cookie) },
                         deleteMovieList = { listId ->
-                            viewModel.deleteMovieList(listId, user.cookie)
-                            viewModel.getMoviesList(listId, user.cookie)
+                            viewModel.deleteMovieList(listId, cookie)
+                            viewModel.getMoviesList(listId, cookie)
                         }
                     ),
                     seriesActions = SeriesActions(
-                        onCreateSeriesList = { name -> viewModel.createSeriesList(name, user.cookie) },
+                        onCreateSeriesList = { name -> viewModel.createSeriesList(name, cookie) },
                         seriesLists = viewModel.seriesLists,
-                        onUpdateSeriesLists = { viewModel.getSeriesLists(user.cookie) },
+                        onUpdateSeriesLists = { viewModel.getSeriesLists(cookie) },
                         deleteSeriesList = { listId ->
-                            viewModel.deleteSeriesList(listId, user.cookie)
+                            viewModel.deleteSeriesList(listId, cookie)
                         }
                     ),
                     onGetListDetails = { listId, type ->

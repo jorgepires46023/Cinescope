@@ -11,27 +11,40 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.cinescope.domain.user.User
+import com.example.cinescope.domain.user.UserInfo
 import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
+import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.theme.CinescopeTheme
 
+data class NotLoggedInActions(
+    val onLoginRequest: () -> Unit = {},
+    val onSignUpRequest: () -> Unit = {}
+)
+
+data class LoggedInState(
+    val onLogoutRequest: () -> Unit = {},
+    val user: UserInfo?
+)
 
 @Composable
 fun ProfileScreen(
     loggedIn: Boolean,
+    loading: Boolean,
     error: String?,
     onError: () -> Unit,
     onSearchRequested: () -> Unit,
-    onLoginRequest: () -> Unit = {},
-    onSignUpRequest: () -> Unit = {},
-    onLogoutRequest: () -> Unit = {},
-    user: User?,
+    notLoggedInActions: NotLoggedInActions,
+    loggedInState: LoggedInState,
     navController: NavController
 ) {
     CinescopeTheme {
@@ -47,50 +60,54 @@ fun ProfileScreen(
                     navController = navController
                 )
             }
-        ){
-                innerPadding ->
+        ){ innerPadding ->
             Box(modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
             ){
-                if(!loggedIn){
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Row {
-                            Button(onClick = { onLoginRequest() }) {
-                                Text(text = "Login")
-                            }
-                        }
-                        Row {
-                            Button(onClick = { onSignUpRequest() }) {
-                                Text(text = "Create Account")
-                            }
-                        }
-                    }
-                }else{
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
-                    ){
-                        if(user != null){
-                            Row {
-                                Title(title = user.name)
-                            }
-                        }
-                        Button(
-                            onClick = {
-                            onLogoutRequest()
-                        },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Red
-                            )
+                if(!loading){
+                    if(!loggedIn){
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(text = "Logout")
+                            Row {
+                                Button(onClick = { notLoggedInActions.onLoginRequest() }) {
+                                    Text(text = "Login")
+                                }
+                            }
+                            Row {
+                                Button(onClick = { notLoggedInActions.onSignUpRequest() }) {
+                                    Text(text = "Create Account")
+                                }
+                            }
+                        }
+                    }else{
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+                            if(loggedInState.user != null) {
+                                Row {
+                                    Title(title = loggedInState.user.name)
+                                }
+                            }
+                            Button(
+                                onClick = {
+                                    loggedInState.onLogoutRequest()
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Red
+                                )
+                            ) {
+                                Text(text = "Logout")
+                            }
                         }
                     }
+                }else {
+                    Text(text = "Loading...")
                 }
+                if(error != null) AlertError(error = error, dismiss = onError)
             }
         }
     }

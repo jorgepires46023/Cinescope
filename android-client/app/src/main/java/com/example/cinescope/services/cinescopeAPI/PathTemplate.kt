@@ -2,7 +2,7 @@ package com.example.cinescope.services.cinescopeAPI
 
 object Users {
     const val CREATE_USER = "/users"                                            // Register a new user
-    const val GET_USER_INFO = "/users/{id}"                                      // Gets user info
+    const val GET_USER_INFO = "/users"                                          // Gets user info
     const val LOGIN = "/login"                                                  // Logins the user
 }
 

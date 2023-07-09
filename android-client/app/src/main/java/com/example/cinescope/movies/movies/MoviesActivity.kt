@@ -23,14 +23,14 @@ class MoviesActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val user = dependencies.userRepo.user
-        if(user != null){
-            viewModel.getMoviesByState(MovieState.PTW.state, user.cookie) //Default         //Everytime the activity is on, a request will be made to get all possible states
-            viewModel.getMoviesByState(MovieState.WATCHED.state, user.cookie)               //This allows for, whatever the tab selected, after performing a back, it will be updated
+        val cookie = dependencies.userRepo.cookie
+        if(cookie != null){
+            viewModel.getMoviesByState(MovieState.PTW.state, cookie)        //Everytime the activity is on, a request will be made to get all possible states
+            viewModel.getMoviesByState(MovieState.WATCHED.state, cookie)    //This allows for, whatever the tab selected, after performing a back, it will be updated
         }
 
         setContent{
-            if(user != null){
+            if(cookie != null){
                 MoviesScreen(
                     state = MoviesScreenState(
                         ptwMovies = viewModel.ptwList,
@@ -40,7 +40,7 @@ class MoviesActivity: ComponentActivity() {
                     ),
                     navController = dependencies.navController,
                     onError = { viewModel.clearError() },
-                    onTabChanged = {state -> viewModel.getMoviesByState(state, user.cookie) },
+                    onTabChanged = {state -> viewModel.getMoviesByState(state, cookie) },
                     onGetDetails = { moviesId ->
                         MovieDetailsActivity.navigate(this, moviesId)
                     },

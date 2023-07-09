@@ -48,9 +48,9 @@ class ListDetailsActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val user = dependencies.userRepo.user
-        if (user != null) {
-            viewModel.getListDetails(listId, type, user.cookie)
+        val cookie = dependencies.userRepo.cookie
+        if (cookie != null) {
+            viewModel.getListDetails(listId, type, cookie)
         }
 
         setContent {
@@ -59,9 +59,9 @@ class ListDetailsActivity: ComponentActivity() {
                     list = viewModel.moviesList,
                     onGetDetails = {id -> MovieDetailsActivity.navigate(this, id)},
                     onDeleteFromList = {id ->
-                        if (user != null) {
-                            viewModel.deleteContentFromList(listId, id, type, user.cookie)
-                            viewModel.getListDetails(listId, type, user.cookie)
+                        if (cookie != null) {
+                            viewModel.deleteContentFromList(listId, id, type, cookie)
+                            viewModel.getListDetails(listId, type, cookie)
                         }
                     },
                     onSearchRequest = { SearchActivity.navigate(this) },
@@ -72,39 +72,15 @@ class ListDetailsActivity: ComponentActivity() {
                     list = viewModel.seriesList,
                     onGetDetails = { id -> SeriesDetailsActivity.navigate(this, id) },
                     onDeleteFromList = { id ->
-                        if (user != null) {
-                            viewModel.deleteContentFromList(listId, id, type, user.cookie)
-                            viewModel.getListDetails(listId, type, user.cookie)
+                        if (cookie != null) {
+                            viewModel.deleteContentFromList(listId, id, type, cookie)
+                            viewModel.getListDetails(listId, type, cookie)
                         }
                     },
                     onSearchRequest = { SearchActivity.navigate(this) },
                     navController = dependencies.navController
                 )
             }
-
+        }
     }
-    /*ListDetailsScreen(
-    list = viewModel.list,
-    type = type,
-    onGetDetails = { id ->
-        if(type == "Movies") {
-            MovieDetailsActivity.navigate(this, id)
-        }
-        if (type == "Series") {
-            SeriesDetailsActivity.navigate(this, id)
-        }
-    },
-    onDeleteFromList = { id ->
-        if(type == "Movies") {
-            if (user != null) viewModel.deleteContentFromList(listId, id, type, user.cookie)
-        }
-        if (type == "Series") {
-            if (user != null) viewModel.deleteContentFromList(listId, id, type, user.cookie)
-        }
-    },
-    onSearchRequest = { SearchActivity.navigate(this) },
-    navController = dependencies.navController
-    )*/
-}
-
 }
