@@ -52,7 +52,6 @@ class UserServices(
     }
 
     override suspend fun getUserInfo(cookie: Cookie): UserInfo {
-        //TODO to be decided how we will handle this request: token vs id
         val request = buildRequest(
             url = cinescopeURL.joinPath(Users.GET_USER_INFO),
             cookie = cookie

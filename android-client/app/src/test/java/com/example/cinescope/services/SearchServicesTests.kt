@@ -1,24 +1,19 @@
 package com.example.cinescope.services
 
 
-import com.example.cinescope.services.mockdata.searchContentObjWithEmptyLists
-import com.example.cinescope.services.mockdata.emptyResponse
-import com.example.cinescope.services.mockdata.expectedSearchContent
-import com.example.cinescope.services.mockdata.expectedPopularMovies
-import com.example.cinescope.services.mockdata.expectedPopularSeries
-import com.example.cinescope.services.mockdata.expectedRecommendedMovies
-import com.example.cinescope.services.mockdata.expectedRecommendedSeries
-import com.example.cinescope.services.mockdata.movie1
-import com.example.cinescope.services.mockdata.popMovieResponse
-import com.example.cinescope.services.mockdata.popSeriesResponse
-import com.example.cinescope.services.mockdata.recommendedMovieResponse
-import com.example.cinescope.services.mockdata.recommendedSeriesResponse
-import com.example.cinescope.services.mockdata.searchByQueryResponse
-import com.example.cinescope.services.mockdata.series1
-import com.example.cinescope.services.mockdata.wrongObjToMap
+import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.services.cinescopeAPI.SearchServices
 import com.example.cinescope.services.exceptions.UnexpectedResponseException
 import com.example.cinescope.services.exceptions.UnsuccessfulResponseException
+import com.example.cinescope.services.mockdata.emptyResponse
+import com.example.cinescope.services.mockdata.expectedPopularMovies
+import com.example.cinescope.services.mockdata.expectedPopularSeries
+import com.example.cinescope.services.mockdata.expectedSearchContent
+import com.example.cinescope.services.mockdata.popMovieResponse
+import com.example.cinescope.services.mockdata.popSeriesResponse
+import com.example.cinescope.services.mockdata.searchByQueryResponse
+import com.example.cinescope.services.mockdata.searchContentObjWithEmptyLists
+import com.example.cinescope.services.mockdata.wrongObjToMap
 import com.example.cinescope.testutils.MockWebServerRule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -34,8 +29,6 @@ import java.net.URL
 class SearchServicesTests {
     @get:Rule
     val testRule = MockWebServerRule()
-
-
 
     private val httpClient: OkHttpClient = OkHttpClient()
     private val gson: Gson= Gson()
@@ -55,8 +48,6 @@ class SearchServicesTests {
                 .setBody(jsonFormatter.toJson( popMovieResponse))
             )
 
-            //val cinescopeAPI = "http://localhost:9000"
-            //val searchServices = SearchServices(URL(cinescopeAPI), gson, httpClient)
             val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
@@ -112,7 +103,7 @@ class SearchServicesTests {
             val actual = searchServices.getPopularMovies()
 
             //Assert
-            Assert.assertEquals(emptyList<Movie>(), actual)
+            Assert.assertEquals(emptyList<MediaContent>(), actual)
         }
 
     //GET POPULAR SERIES TESTS
@@ -181,146 +172,10 @@ class SearchServicesTests {
             val actual = searchServices.getPopularSeries()
 
             //Assert
-            Assert.assertEquals(emptyList<Series>(), actual)
+            Assert.assertEquals(emptyList<MediaContent>(), actual)
         }
 
-    //GET RECOMMENDED MOVIES TESTS
-    @Test
-    fun `getRecommendedMovies returns list of movies when response is understood`(): Unit =
-        runBlocking {
-            // Arrange
-            val mockServer = testRule.server
-            mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", jsonMediaType)
-                .setBody(jsonFormatter.toJson( recommendedMovieResponse))
-            )
 
-            val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
-
-            // Act
-            val actual = searchServices.getMovieRecommendations(movie1.movieId)
-
-            // Assert
-            Assert.assertEquals(expectedRecommendedMovies, actual)
-        }
-
-    @Test(expected = UnsuccessfulResponseException::class)
-    fun `getRecommendedMovies throws UnsuccessfulResponseException when the response is not expected`(): Unit =
-        runBlocking {
-            // Arrange
-            val mockServer = testRule.server
-            mockServer.enqueue(response = MockResponse().setResponseCode(404)
-            )
-
-            val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
-
-            // Act
-            searchServices.getMovieRecommendations(movie1.movieId)
-        }
-
-    @Test(expected = UnexpectedResponseException::class)
-    fun `getRecommendedMovies throws UnexpectedResponseException when cannot understand response`(): Unit =
-        runBlocking {
-            // Arrange
-            val mockServer = testRule.server
-            mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", jsonMediaType)
-                .setBody(jsonFormatter.toJson( wrongObjToMap))
-            )
-
-            val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
-
-            // Act
-            searchServices.getMovieRecommendations(movie1.movieId)
-        }
-
-    @Test
-    fun `getRecommendedMovies throws UnexpectedResponseException when empty response`(): Unit =
-        runBlocking {
-            // Arrange
-            val mockServer = testRule.server
-            mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", jsonMediaType)
-                .setBody(jsonFormatter.toJson( emptyResponse))
-            )
-
-            val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
-
-            // Act
-            val actual = searchServices.getMovieRecommendations(movie1.movieId)
-
-            //Assert
-            Assert.assertEquals(emptyList<Movie>(), actual)
-        }
-
-    //GET RECOMMENDED SERIES TESTS
-    @Test
-    fun `getRecommendedSeries returns list of movies when response is understood`(): Unit =
-        runBlocking {
-            // Arrange
-            val mockServer = testRule.server
-            mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", jsonMediaType)
-                .setBody(jsonFormatter.toJson( recommendedSeriesResponse))
-            )
-
-            val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
-
-            // Act
-            val actual = searchServices.getSeriesRecommendations(series1.seriesId)
-
-            // Assert
-            Assert.assertEquals(expectedRecommendedSeries, actual)
-        }
-
-    @Test(expected = UnsuccessfulResponseException::class)
-    fun `getRecommendedSeries throws UnsuccessfulResponseException when the response is not expected`(): Unit =
-        runBlocking {
-            // Arrange
-            val mockServer = testRule.server
-            mockServer.enqueue(response = MockResponse().setResponseCode(404)
-            )
-
-            val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
-
-            // Act
-            searchServices.getSeriesRecommendations(series1.seriesId)
-        }
-
-    @Test(expected = UnexpectedResponseException::class)
-    fun `getRecommendedSeries throws UnexpectedResponseException when cannot understand response`(): Unit =
-        runBlocking {
-            // Arrange
-            val mockServer = testRule.server
-            mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", jsonMediaType)
-                .setBody(jsonFormatter.toJson( wrongObjToMap))
-            )
-
-            val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
-
-            // Act
-            searchServices.getSeriesRecommendations(series1.seriesId)
-        }
-
-    @Test
-    fun `getRecommendedSeries throws UnexpectedResponseException when empty response`(): Unit =
-        runBlocking {
-            // Arrange
-            val mockServer = testRule.server
-            mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", jsonMediaType)
-                .setBody(jsonFormatter.toJson( emptyResponse))
-            )
-
-            val searchServices = SearchServices(mockServer.url("/").toUrl(), gson, httpClient)
-
-            // Act
-            val actual = searchServices.getSeriesRecommendations(series1.seriesId)
-
-            //Assert
-            Assert.assertEquals(emptyList<Series>(), actual)
-        }
 
     //GET SEARCH BY QUERY TESTS
     @Test

@@ -1,5 +1,6 @@
 package com.example.cinescope.services
 
+import com.example.cinescope.services.cinescopeAPI.SeriesServices
 import com.example.cinescope.services.mockdata.createSeriesListResponse
 import com.example.cinescope.services.mockdata.expectedCreateSeriesList
 import com.example.cinescope.services.mockdata.expectedGetAllSeriesByState
@@ -9,17 +10,16 @@ import com.example.cinescope.services.mockdata.expectedGetSeriesList
 import com.example.cinescope.services.mockdata.expectedGetSeriesUserData
 import com.example.cinescope.services.mockdata.fakeEpisodeNr
 import com.example.cinescope.services.mockdata.fakeSeasonNr
+import com.example.cinescope.services.mockdata.fakeSeriesCookie
 import com.example.cinescope.services.mockdata.fakeSeriesId
 import com.example.cinescope.services.mockdata.fakeSeriesListId
 import com.example.cinescope.services.mockdata.fakeSeriesListName
 import com.example.cinescope.services.mockdata.fakeSeriesState
-import com.example.cinescope.services.mockdata.fakeUserToken
 import com.example.cinescope.services.mockdata.getAllSeriesByStateResponse
 import com.example.cinescope.services.mockdata.getAllSeriesListsResponse
 import com.example.cinescope.services.mockdata.getAllWatchedEpFromSeriesResponse
 import com.example.cinescope.services.mockdata.getSeriesListResponse
 import com.example.cinescope.services.mockdata.getSeriesUserDataResponse
-import com.example.cinescope.services.cinescopeAPI.SeriesServices
 import com.example.cinescope.testutils.MockWebServerRule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -55,7 +55,9 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            seriesServices.addSeriesToList(fakeSeriesId, fakeSeriesListId, fakeUserToken)
+            if (fakeSeriesCookie != null) {
+                seriesServices.addSeriesToList(fakeSeriesId, fakeSeriesListId, fakeSeriesCookie)
+            }
         }
 
     //CHANGE SERIES STATE TESTS
@@ -71,7 +73,9 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            seriesServices.changeSeriesState(fakeSeriesId, fakeSeriesState, fakeUserToken)
+            if (fakeSeriesCookie != null) {
+                seriesServices.changeSeriesState(fakeSeriesId, fakeSeriesState, fakeSeriesCookie)
+            }
         }
 
     //DELETE STATE FROM SERIES TESTS
@@ -87,7 +91,9 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            seriesServices.deleteStateFromSeries(fakeSeriesId, fakeUserToken)
+            if (fakeSeriesCookie != null) {
+                seriesServices.deleteStateFromSeries(fakeSeriesId, fakeSeriesCookie)
+            }
         }
 
     //DELETE SERIES FROM LIST TESTS
@@ -103,7 +109,9 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            seriesServices.deleteSeriesFromList(fakeSeriesId, fakeSeriesListId, fakeUserToken)
+            if (fakeSeriesCookie != null) {
+                seriesServices.deleteSeriesFromList(fakeSeriesId, fakeSeriesListId, fakeSeriesCookie)
+            }
         }
 
     //ADD WATCHED EPISODE TESTS
@@ -119,7 +127,9 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            seriesServices.addWatchedEpisode(fakeSeriesId, fakeSeasonNr, fakeEpisodeNr, fakeUserToken)
+            if (fakeSeriesCookie != null) {
+                seriesServices.addWatchedEpisode(fakeSeriesId, fakeSeasonNr, fakeEpisodeNr, fakeSeriesCookie)
+            }
         }
 
     //DELETE SERIES LIST TESTS
@@ -135,7 +145,9 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            seriesServices.deleteSeriesList(fakeSeriesListId, fakeUserToken)
+            if (fakeSeriesCookie != null) {
+                seriesServices.deleteSeriesList(fakeSeriesListId, fakeSeriesCookie)
+            }
         }
 
     //DELETE WATCHED EPISODE TESTS
@@ -151,7 +163,9 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            seriesServices.deleteWatchedEpisode(fakeSeriesId, fakeSeasonNr, fakeEpisodeNr, fakeUserToken)
+            if (fakeSeriesCookie != null) {
+                seriesServices.deleteWatchedEpisode(fakeSeriesId, fakeSeasonNr, fakeEpisodeNr, fakeSeriesCookie)
+            }
         }
 
     //GET ALL SERIES BY STATE TESTS
@@ -168,7 +182,8 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = seriesServices.getAllSeriesByState(fakeSeriesState, fakeUserToken)
+            val actual =
+                fakeSeriesCookie?.let { seriesServices.getAllSeriesByState(fakeSeriesState, it) }
 
             // Assert
             Assert.assertEquals(expectedGetAllSeriesByState, actual)
@@ -188,7 +203,7 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = seriesServices.getAllSeriesLists(fakeUserToken)
+            val actual = fakeSeriesCookie?.let { seriesServices.getAllSeriesLists(it) }
 
             // Assert
             Assert.assertEquals(expectedGetAllSeriesLists, actual)
@@ -208,7 +223,11 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = seriesServices.getSeriesList(fakeSeriesListId, fakeUserToken)
+            val actual = fakeSeriesCookie?.let {
+                seriesServices.getSeriesList(fakeSeriesListId,
+                    it
+                )
+            }
 
             // Assert
             Assert.assertEquals(expectedGetSeriesList, actual)
@@ -228,7 +247,8 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = seriesServices.createSeriesList(fakeSeriesListName, fakeUserToken)
+            val actual =
+                fakeSeriesCookie?.let { seriesServices.createSeriesList(fakeSeriesListName, it) }
 
             // Assert
             Assert.assertEquals(expectedCreateSeriesList, actual)
@@ -248,7 +268,11 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = seriesServices.getSeriesUserData(fakeSeriesId, fakeUserToken)
+            val actual = fakeSeriesCookie?.let {
+                seriesServices.getSeriesUserData(fakeSeriesId,
+                    it
+                )
+            }
 
             // Assert
             Assert.assertEquals(expectedGetSeriesUserData, actual)
@@ -268,7 +292,8 @@ class SeriesServicesTests {
             val seriesServices = SeriesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = seriesServices.getAllWatchedEpFromSeries(fakeSeriesId, fakeUserToken)
+            val actual =
+                fakeSeriesCookie?.let { seriesServices.getAllWatchedEpFromSeries(fakeSeriesId, it) }
 
             // Assert
             Assert.assertEquals(expectedGetAllWatchedEpFromSeries, actual)

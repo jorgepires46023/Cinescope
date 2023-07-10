@@ -22,7 +22,7 @@ data class SeriesScreenState(
     val error: String?,
     val loading: Boolean
 )
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun SeriesScreen(
     state: SeriesScreenState,

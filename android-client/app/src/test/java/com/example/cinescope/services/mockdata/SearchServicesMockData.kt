@@ -2,22 +2,22 @@ package com.example.cinescope.services.mockdata
 
 import com.example.cinescope.domain.searches.SearchContent
 import com.example.cinescope.domain.MediaType
+import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.services.dtosMapping.ContentAPIDto
 import com.example.cinescope.services.dtosMapping.Results
 
 
 /** Simple Data **/
-internal val movie1 = Movie(1, "Movie1", "testImg1")
-internal val movie2 = Movie(2, "Movie2", "testImg2")
+internal val movie1 = MediaContent(1, "Movie1", "testImg1", MediaType.Movie)
+internal val movie2 = MediaContent(2, "Movie2", "testImg2", MediaType.Movie)
 
-internal val series1 = Series(1, "Series1", "testImg1")
-internal val series2 = Series(2, "Series2", "testImg2")
+internal val series1 = MediaContent(1, "Series1", "testImg1", MediaType.Series)
+internal val series2 = MediaContent(2, "Series2", "testImg2", MediaType.Series)
 
 private val resultMovie1 = Results(
     poster_path = "testImg1",
     id = 1,
     title = "Movie1",
-    name = "Movie1",
     media_type = MediaType.Movie.type,
     popularity = 50
 )
@@ -26,7 +26,6 @@ private val resultMovie2 = Results(
     poster_path = "testImg2",
     id = 2,
     title = "Movie2",
-    name = "Movie2",
     media_type = MediaType.Movie.type,
     popularity = 99
 )
@@ -35,7 +34,6 @@ private val resultSeries1 = Results(
     poster_path = "testImg1",
     id = 1,
     title = "Series1",
-    name = "Series1",
     media_type = MediaType.Series.type,
     popularity = 50
 )
@@ -44,7 +42,6 @@ private val resultSeries2 = Results(
     poster_path = "testImg2",
     id = 2,
     title = "Series2",
-    name = "Series2",
     media_type = MediaType.Series.type,
     popularity = 99
 )
@@ -55,11 +52,9 @@ private val seriesList = listOf(series1, series2)
 
 internal const val wrongObjToMap = "Hello Cinescope"
 
-internal val emptyMoviesList = listOf<Movie>()
+internal val emptyMediaContentList = listOf<MediaContent>()
 
-internal val emptySeriesList = listOf<Series>()
-
-internal val searchContentObjWithEmptyLists = SearchContent(emptyMoviesList, emptySeriesList)
+internal val searchContentObjWithEmptyLists = SearchContent(emptyMediaContentList)
 
 /** Building Results **/
 
@@ -77,11 +72,7 @@ internal val emptyResponse = ContentAPIDto(page = 0, results = emptyResultsList,
 
 internal val popMovieResponse = ContentAPIDto(page = 0, results = resultMoviesList, total_results = 2, total_pages = 0)
 
-internal val recommendedMovieResponse = ContentAPIDto(page = 0, results = resultMoviesList, total_results = 2, total_pages = 0)
-
 internal val popSeriesResponse = ContentAPIDto(page = 0, results = resultSeriesList, total_results = 2, total_pages = 0)
-
-internal val recommendedSeriesResponse = ContentAPIDto(page = 0, results = resultSeriesList, total_results = 2, total_pages = 0)
 
 internal val searchByQueryResponse = ContentAPIDto(page = 0, results = resultContentList, total_results = 2, total_pages = 0)
 
@@ -89,10 +80,6 @@ internal val searchByQueryResponse = ContentAPIDto(page = 0, results = resultCon
 
 internal val expectedPopularMovies = listOf(movie1, movie2)
 
-internal val expectedRecommendedMovies = listOf(movie1, movie2)
-
 internal val expectedPopularSeries = listOf(series1, series2)
 
-internal val expectedRecommendedSeries = listOf(series1, series2)
-
-internal val expectedSearchContent = SearchContent(moviesList, seriesList)
+internal val expectedSearchContent = SearchContent(moviesList)

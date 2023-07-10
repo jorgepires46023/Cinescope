@@ -8,9 +8,11 @@ import com.example.cinescope.domain.content.UserDataContent
 import com.example.cinescope.services.dtosMapping.ListMovieData
 import com.example.cinescope.services.dtosMapping.ListOfContentList
 import com.example.cinescope.services.dtosMapping.ListOfUserDataContent
+import okhttp3.Cookie
+import okhttp3.HttpUrl
 
 /** Simple Data **/
-const val fakeToken = "1904-02-28"
+val fakeMoviesCookie = Cookie.parse(HttpUrl.Builder().build(), "exampleCookie")
 const val fakeMovieId = 1
 const val fakeListId = 2
 const val fakeListName = "Some Name"

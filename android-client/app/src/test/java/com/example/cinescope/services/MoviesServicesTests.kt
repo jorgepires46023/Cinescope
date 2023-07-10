@@ -1,21 +1,21 @@
 package com.example.cinescope.services
 
+import com.example.cinescope.domain.MovieState
+import com.example.cinescope.services.cinescopeAPI.MoviesServices
 import com.example.cinescope.services.mockdata.createMoviesListResponse
 import com.example.cinescope.services.mockdata.expectedCreateMoviesList
 import com.example.cinescope.services.mockdata.expectedGetAllMoviesByState
 import com.example.cinescope.services.mockdata.expectedGetAllMoviesLists
 import com.example.cinescope.services.mockdata.expectedGetMovieUserData
 import com.example.cinescope.services.mockdata.expectedGetMoviesList
+import com.example.cinescope.services.mockdata.fakeMoviesCookie
 import com.example.cinescope.services.mockdata.fakeListId
 import com.example.cinescope.services.mockdata.fakeListName
 import com.example.cinescope.services.mockdata.fakeMovieId
-import com.example.cinescope.services.mockdata.fakeToken
 import com.example.cinescope.services.mockdata.getAllMoviesByStateResponse
 import com.example.cinescope.services.mockdata.getAllMoviesListsResponse
 import com.example.cinescope.services.mockdata.getMovieUserDataResponse
 import com.example.cinescope.services.mockdata.getMoviesListResponse
-import com.example.cinescope.domain.MovieState
-import com.example.cinescope.services.cinescopeAPI.MoviesServices
 import com.example.cinescope.testutils.MockWebServerRule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -46,12 +46,15 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            movieServices.addMovieToList(fakeMovieId, fakeListId, fakeToken)
+            if (fakeMoviesCookie != null) {
+                movieServices.addMovieToList(fakeMovieId, fakeListId, fakeMoviesCookie)
+            }
         }
 
     //CHANGE MOVIE STATE TESTS
@@ -62,12 +65,15 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            movieServices.changeMovieState(fakeMovieId, MovieState.WATCHED.state, fakeToken)
+            if (fakeMoviesCookie != null) {
+                movieServices.changeMovieState(fakeMovieId, MovieState.WATCHED.state, fakeMoviesCookie)
+            }
         }
 
     //DELETE STATE FROM MOVIE TESTS
@@ -78,12 +84,15 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            movieServices.deleteStateFromMovie(fakeMovieId, fakeToken)
+            if (fakeMoviesCookie != null) {
+                movieServices.deleteStateFromMovie(fakeMovieId, fakeMoviesCookie)
+            }
         }
 
     //DELETE MOVIE FROM LIST TESTS
@@ -94,12 +103,15 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            movieServices.deleteMovieFromList(fakeMovieId, fakeListId, fakeToken)
+            if (fakeMoviesCookie != null) {
+                movieServices.deleteMovieFromList(fakeMovieId, fakeListId, fakeMoviesCookie)
+            }
         }
 
     //DELETE MOVIES LIST TESTS
@@ -110,12 +122,15 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            movieServices.deleteMoviesList(fakeListId, fakeToken)
+            if (fakeMoviesCookie != null) {
+                movieServices.deleteMoviesList(fakeListId, fakeMoviesCookie)
+            }
         }
 
     //GET ALL MOVIES BY STATE TESTS
@@ -126,13 +141,15 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
                 .setBody(jsonFormatter.toJson(getAllMoviesByStateResponse))
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = movieServices.getAllMoviesByState(MovieState.WATCHED.state, fakeToken)
+            val actual =
+                fakeMoviesCookie?.let { movieServices.getAllMoviesByState(MovieState.WATCHED.state, it) }
 
             // Assert
             Assert.assertEquals(expectedGetAllMoviesByState, actual)
@@ -146,13 +163,14 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
                 .setBody(jsonFormatter.toJson(getAllMoviesListsResponse))
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = movieServices.getAllMoviesLists(fakeToken)
+            val actual = fakeMoviesCookie?.let { movieServices.getAllMoviesLists(it) }
 
             // Assert
             Assert.assertEquals(expectedGetAllMoviesLists, actual)
@@ -166,13 +184,14 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
                 .setBody(jsonFormatter.toJson(getMoviesListResponse))
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = movieServices.getMoviesList(fakeListId, fakeToken)
+            val actual = fakeMoviesCookie?.let { movieServices.getMoviesList(fakeListId, it) }
 
             // Assert
             Assert.assertEquals(expectedGetMoviesList, actual)
@@ -186,13 +205,14 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
                 .setBody(jsonFormatter.toJson(createMoviesListResponse))
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = movieServices.createMoviesList(fakeListName, fakeToken)
+            val actual = fakeMoviesCookie?.let { movieServices.createMoviesList(fakeListName, it) }
 
             // Assert
             Assert.assertEquals(expectedCreateMoviesList, actual)
@@ -206,13 +226,14 @@ class MoviesServicesTests {
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
+                .setHeader("Cookie", fakeMoviesCookie.toString())
                 .setBody(jsonFormatter.toJson(getMovieUserDataResponse))
             )
 
             val movieServices = MoviesServices(mockServer.url("/").toUrl(), gson, httpClient)
 
             // Act
-            val actual = movieServices.getMovieUserData(fakeMovieId, fakeToken)
+            val actual = fakeMoviesCookie?.let { movieServices.getMovieUserData(fakeMovieId, it) }
 
             // Assert
             Assert.assertEquals(expectedGetMovieUserData, actual)

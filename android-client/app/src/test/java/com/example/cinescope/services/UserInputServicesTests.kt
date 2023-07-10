@@ -1,13 +1,16 @@
 package com.example.cinescope.services
 
+import com.example.cinescope.services.cinescopeAPI.UserServices
+import com.example.cinescope.services.mockdata.cookieRuiBorders
 import com.example.cinescope.services.mockdata.createUserResponse
 import com.example.cinescope.services.mockdata.emailRuiBorders
 import com.example.cinescope.services.mockdata.expectedCreateUserResponse
+import com.example.cinescope.services.mockdata.expectedGetUserInfoResponse
 import com.example.cinescope.services.mockdata.expectedLoginResponse
+import com.example.cinescope.services.mockdata.getUserInfoResponse
 import com.example.cinescope.services.mockdata.loginResponse
-import com.example.cinescope.services.mockdata.pwdRuiBorders
-import com.example.cinescope.services.cinescopeAPI.UserServices
 import com.example.cinescope.services.mockdata.nameRuiBorders
+import com.example.cinescope.services.mockdata.pwdRuiBorders
 import com.example.cinescope.testutils.MockWebServerRule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -18,7 +21,6 @@ import okhttp3.mockwebserver.MockResponse
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import java.net.URL
 
 class UserInputServicesTests {
     @get:Rule
@@ -53,30 +55,31 @@ class UserInputServicesTests {
 
     //LOGIN TESTS
     @Test
-    fun `login returns user token when the request is successful`(): Unit =
-        runBlocking {
-            // Arrange
-            val mockServer = testRule.server
-            mockServer.enqueue(response = MockResponse()
-                .setHeader("content-type", jsonMediaType)
-                .setBody(jsonFormatter.toJson( loginResponse))
-            )
+    fun `login returns user token when the request is successful`() {
+            runBlocking {
+                // Arrange
+                val mockServer = testRule.server
+                mockServer.enqueue(
+                    response = MockResponse()
+                        .setHeader("content-type", jsonMediaType)
+                        .setBody(jsonFormatter.toJson(loginResponse))
+                )
 
-            val userServices = UserServices(mockServer.url("/").toUrl(), gson, httpClient)
+                val userServices = UserServices(mockServer.url("/").toUrl(), gson, httpClient)
 
-            // Act
-            val actual = userServices.login(emailRuiBorders, pwdRuiBorders)
+                // Act
+                val actual = userServices.login(emailRuiBorders, pwdRuiBorders)
 
-            // Assert
-            Assert.assertEquals(expectedLoginResponse, actual)
+                // Assert
+                Assert.assertEquals(expectedLoginResponse, actual)
+            }
         }
 
-    //GET USER INFO TESTS(TODO - not fully implemented yet)
+    //GET USER INFO TESTS
     @Test
-    fun `getUserInfo returns email and password when the request is successful`(): Unit =
+    fun `getUserInfo returns name and email when the request is successful`(): Unit =
         runBlocking {
             // Arrange
-            /*
             val mockServer = testRule.server
             mockServer.enqueue(response = MockResponse()
                 .setHeader("content-type", jsonMediaType)
@@ -85,18 +88,12 @@ class UserInputServicesTests {
 
             val userServices = UserServices(mockServer.url("/").toUrl(), gson, httpClient)
 
-            // Act
-            val actual = userServices.getUserInfo(tokenRuiBorders)
+            if(cookieRuiBorders != null) {
+                // Act
+                val actual = userServices.getUserInfo(cookieRuiBorders)
 
-            // Assert
-            Assert.assertEquals(expectedGetUserInfoResponse, actual)
-             */
-            val userServices = UserServices(
-                URL("https://e0da-2001-818-e880-a700-bc43-95a6-274-69a0.ngrok-free.app"),
-                gson,
-                httpClient
-            )
-            val actual = userServices.login("jorge@slb.pt", "1")
-            println(actual)
+                // Assert
+                Assert.assertEquals(expectedGetUserInfoResponse, actual)
+            }
         }
 }
