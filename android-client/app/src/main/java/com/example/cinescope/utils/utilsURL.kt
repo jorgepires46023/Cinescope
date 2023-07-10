@@ -1,8 +1,8 @@
 package com.example.cinescope.utils
 
-import com.example.cinescope.exceptions.IllegalPathInitializationException
-import com.example.cinescope.exceptions.IllegalPathVariablesException
-import com.example.cinescope.exceptions.MismatchingPathVariablesException
+import com.example.cinescope.services.exceptions.IllegalPathInitializationException
+import com.example.cinescope.services.exceptions.IllegalPathVariablesException
+import com.example.cinescope.services.exceptions.MismatchingPathVariablesException
 import java.net.URL
 
 //TODO implement exceptions in cases that '/' path doesn't contain at the beginning

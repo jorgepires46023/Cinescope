@@ -1,8 +1,8 @@
 package com.example.cinescope.testutils
 
-import com.example.cinescope.exceptions.IllegalPathInitializationException
-import com.example.cinescope.exceptions.IllegalPathVariablesException
-import com.example.cinescope.exceptions.MismatchingPathVariablesException
+import com.example.cinescope.services.exceptions.IllegalPathInitializationException
+import com.example.cinescope.services.exceptions.IllegalPathVariablesException
+import com.example.cinescope.services.exceptions.MismatchingPathVariablesException
 import com.example.cinescope.utils.joinPath
 import com.example.cinescope.utils.joinPathWithVariables
 import com.example.cinescope.utils.validatePathVariables
