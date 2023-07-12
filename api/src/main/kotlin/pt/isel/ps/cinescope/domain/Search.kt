@@ -10,20 +10,27 @@ data class SearchDTO(val page: Int?, @JsonProperty("results")val resultDTOS: Arr
 
 data class Search(val page: Int?, val results: List<Result>?, val total_results: Int?, val total_pages: Int?)
 
-data class ResultDTO(val poster_path: String?, val id: Int?, val title: String?, val name: String?, val media_type: String?, val popularity: Int?)
+data class ResultDTO(val poster_path: String?, val id: Int?, val title: String?, val name: String?, val media_type: String?, val popularity: Int?, val adult: Boolean)
 
-data class Result(val poster_path: String?, val id: Int?, val title: String?, val media_type: String?, val popularity: Int?)
+data class Result(val poster_path: String?, val id: Int?, val title: String?, val media_type: String?, val popularity: Int?, val adult: Boolean)
 
-fun SearchDTO?.toSearch(): Search?{
+fun SearchDTO?.toSearch(adult: Boolean): Search?{
     if(this == null) return null
     val list = mutableListOf<Result>()
-    this.resultDTOS?.forEach { result ->
-        if(result.media_type == TVMEDIATYPE)
-            list.add(Result(result.poster_path, result.id, result.name, result.media_type, result.popularity))
-        else if(result.media_type == MOVIEMEDIATYPE)
-            list.add(Result(result.poster_path, result.id, result.title, result.media_type, result.popularity))
+    this.resultDTOS?.forEach { res ->
+        val result = res.toResult()
+        if(result != null)
+            list.add(result)
     }
+    if(!adult)
+        list.filter { result -> !result.adult }
     return Search(this.page, list, this.total_results, total_pages)
+}
+
+fun ResultDTO.toResult(): Result?{
+    return if(this.media_type == TVMEDIATYPE || this.media_type == MOVIEMEDIATYPE)
+        Result(this.poster_path, this.id, this.name, this.media_type, this.popularity, this.adult)
+    else null
 }
 
 

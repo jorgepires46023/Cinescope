@@ -2,7 +2,6 @@ package pt.isel.ps.cinescope.controllers
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.reactive.function.client.WebClient.ResponseSpec
 import pt.isel.ps.cinescope.services.SearchServices
 
 @RestController
@@ -25,7 +24,7 @@ class SearchController(val searchServices: SearchServices) {
 
     @GetMapping(Searches.SERIE_DETAILS)
     fun serieDetails(@PathVariable id: Int): ResponseEntity<*>{
-        val serieDetails = searchServices.serieDetails(id = id)
+        val serieDetails = searchServices.seriesDetails(id = id)
         return ResponseEntity
             .status(200)
             .body(serieDetails)
@@ -72,6 +71,6 @@ class SearchController(val searchServices: SearchServices) {
     fun getSeriesRecommendations(@PathVariable id: Int, @RequestParam page: Int?): ResponseEntity<*>{
         return ResponseEntity
             .status(200)
-            .body(searchServices.getSerieRecommendations(id = id, page = page))
+            .body(searchServices.getSeriesRecommendations(id = id, page = page))
     }
 }

@@ -24,7 +24,7 @@ class SeriesServices(
         transactionManager.run {
             it.seriesRepository.getSeriesFromSeriesData(tmdbSeriesId) ?: run {
                 val seriesDetails =
-                    if (tmdbSeriesId != null) searchServices.serieDetails(tmdbSeriesId)
+                    if (tmdbSeriesId != null) searchServices.seriesDetails(tmdbSeriesId)
                     else throw BadRequestException("Tmdb Id cannot be null")
                 val series = Series(seriesDetails?.externalIds?.imdb_id, seriesDetails?.serieDetails?.id, seriesDetails?.serieDetails?.name, seriesDetails?.serieDetails?.poster_path,null)
                 it.seriesRepository.addSeriesToSeriesData(series)
@@ -54,7 +54,7 @@ class SeriesServices(
 
         transactionManager.run {
             it.seriesRepository.getSeriesFromSeriesData(seriesId) ?: run {
-                val seriesDetails = searchServices.serieDetails(seriesId)
+                val seriesDetails = searchServices.seriesDetails(seriesId)
                 val series = Series(seriesDetails?.externalIds?.imdb_id, seriesDetails?.serieDetails?.id, seriesDetails?.serieDetails?.name, seriesDetails?.serieDetails?.poster_path,null)
                 it.seriesRepository.addSeriesToSeriesData(series)
             }
@@ -74,7 +74,7 @@ class SeriesServices(
 
         transactionManager.run {
             it.seriesRepository.getSeriesFromSeriesData(seriesId) ?: run {
-                val seriesDetails = searchServices.serieDetails(seriesId)
+                val seriesDetails = searchServices.seriesDetails(seriesId)
                 val series = Series(seriesDetails?.externalIds?.imdb_id, seriesDetails?.serieDetails?.id, seriesDetails?.serieDetails?.name, seriesDetails?.serieDetails?.poster_path,null)
                 it.seriesRepository.addSeriesToSeriesData(series)
             }

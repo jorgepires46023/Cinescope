@@ -75,6 +75,3 @@ create table cinescope.serieList (
     slid int NOT NULL REFERENCES cinescope.seriesLists(slid),
     stmdbid INT NOT NULL REFERENCES cinescope.seriesData(stmdbid)
 );
-
-delete from cinescope.movieList ml using cinescope.moviesLists mls
-        where mls.userId = 1 and ml.mlid = 1 and ml.mlid = mls.mlid and ml.mtmdbid = 447360;

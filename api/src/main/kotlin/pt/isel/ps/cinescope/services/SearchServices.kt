@@ -8,13 +8,11 @@ import pt.isel.ps.cinescope.repositories.tmdb.TmdbRepository
 @Component
 class SearchServices(val tmdbRepository: TmdbRepository) {
 
-    private final val TVMEDIATYPE = "tv"
-    private final val MOVIEMEDIATYPE = "movie"
 
     fun searchByQuery(input: String?, page: Int?): Search? {
         val p = page ?: 1
         if (input.isNullOrBlank()) return null
-        val res = tmdbRepository.fetchQuery(input, p).toSearch() ?: return null
+        val res = tmdbRepository.fetchQuery(input, p).toSearch(true) ?: return null
         if(res.results == null) return res
         val results = res.results.sortedByDescending { it.popularity }
         val diff = (res.results.size).minus(results.size)
@@ -35,7 +33,7 @@ class SearchServices(val tmdbRepository: TmdbRepository) {
             watchProviders, externalIds)
     }
 
-    fun serieDetails(id: Int?): SeriesDetailsOutput?{
+    fun seriesDetails(id: Int?): SeriesDetailsOutput?{
         if (id == null) return null
         val seriesDetails = tmdbRepository.getSerieDetails(id) ?: return null
         val externalIds = tmdbRepository.getSeriesExternalId(id) ?: return null
@@ -66,29 +64,23 @@ class SearchServices(val tmdbRepository: TmdbRepository) {
 
     fun getPopularMovies(page: Int?): Search? {
         val p = page ?: 1
-        return tmdbRepository.getPopularMovies(p).toSearch()
+        return tmdbRepository.getPopularMovies(p).toSearch(false)
     }
 
     fun getPopularSeries(page: Int?): Search? {
         val p = page ?: 1
-//        val res = tmdbServices.getPopularSeries(p) ?: return null
-//        val results = mutableListOf<Result>()
-//        res.resultDTOS?.forEach { r ->
-//            results.add(Result(r.poster_path, r.id, r.name, r.media_type, r.popularity))
-//        }
-//        return Search(res.page, results, res.total_results, res.total_pages)
-        return tmdbRepository.getPopularSeries(p).toSearch()
+        return tmdbRepository.getPopularSeries(p).toSearch(false)
     }
 
     fun getMovieRecommendations(id: Int?, page: Int?): Search? {
         val p = page ?: 1
         if (id == null) return null
-        return tmdbRepository.getMovieRecommendations(id, p).toSearch()
+        return tmdbRepository.getMovieRecommendations(id, p).toSearch(false)
     }
 
-    fun getSerieRecommendations(id: Int?, page: Int?): Search? {
+    fun getSeriesRecommendations(id: Int?, page: Int?): Search? {
         val p = page ?: 1
         if (id == null) return null
-        return tmdbRepository.getSerieRecommendations(id, p).toSearch()
+        return tmdbRepository.getSerieRecommendations(id, p).toSearch(false)
     }
 }
