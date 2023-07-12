@@ -27,8 +27,9 @@ dependencies {
 	implementation("org.jdbi:jdbi3-kotlin:3.37.1")
 	implementation("org.jdbi:jdbi3-postgres:3.37.1")
 	implementation("org.postgresql:postgresql:42.5.4")
+    implementation("junit:junit:4.13.2")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webflux")
 	testImplementation(kotlin("test"))
 }

@@ -30,8 +30,8 @@ class MoviesServices(
         if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or blank")
         val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
         return transactionManager.run {
+            val info = it.moviesRepository.getMovieListInfo(listId, user.id) ?: throw BadRequestException("List not found")
             val list = it.moviesRepository.getMoviesListById(listId, user.id)
-            val info = it.moviesRepository.getMovieListInfo(listId, user.id)
             return@run ListDetails(info, list)
         }
     }

@@ -2,6 +2,7 @@ package pt.isel.ps.cinescope.repositories.database.jdbi
 
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
+import org.jdbi.v3.core.result.ResultProducer
 import pt.isel.ps.cinescope.domain.*
 import pt.isel.ps.cinescope.repositories.database.MoviesRepository
 
@@ -17,23 +18,23 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
     }
 
     override fun getMoviesListById(id: Int?, userId: Int?): List<Movie> {
-        return handle.createQuery("select md.mimdbid as imdbid, md.mtmdbId as tmdbId, md.name, md.image as img, state " +
-                                    "from cinescope.movieslists mls inner join cinescope.movielist ml on ml.mlid = mls.mlid " +
-                                    "inner join cinescope.moviesdata md on md.mtmdbid = ml.mtmdbid " +
-                                    "inner join cinescope.movieuserdata mud on mud.mtmdbid = md.mtmdbid " +
-                                    "where mls.mlid = :id and mls.userid = :userId")
+       return handle.createQuery("select md.mimdbid as imdbid, md.mtmdbId as tmdbId, md.name, md.image as img, state " +
+                "from cinescope.movieslists mls inner join cinescope.movielist ml on ml.mlid = mls.mlid " +
+                "inner join cinescope.moviesdata md on md.mtmdbid = ml.mtmdbid " +
+                "inner join cinescope.movieuserdata mud on mud.mtmdbid = md.mtmdbid " +
+                "where mls.mlid = :id and mls.userid = :userId")
             .bind("id",id)
             .bind("userId", userId)
             .mapTo(Movie::class.java)
-            .list()
+           .list()
     }
 
-    override fun getMovieListInfo(id: Int?, userId: Int?): ListInfo {
+    override fun getMovieListInfo(id: Int?, userId: Int?): ListInfo? {
         return handle.createQuery("select mlid as id, name from cinescope.movieslists where mlid = :id and userid = :userId")
             .bind("id", id)
             .bind("userId", userId)
             .mapTo(ListInfo::class.java)
-            .first()
+            .firstOrNull()
     }
 
     override fun addMovieToList(listId: Int?, movie: Movie) {

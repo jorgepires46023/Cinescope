@@ -55,7 +55,7 @@ data class SeriesDetails(
     val overview: String?,
     val id: Int?,
     val name: String?,
-    val seasons: Array<Seasons>?, //TODO alterar o nome do parametro
+    val seasons: Array<Seasons>?,
     val status: String?,
     val poster_path: String?,
     val backdrop_path: String?

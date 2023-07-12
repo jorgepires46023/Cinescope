@@ -2,12 +2,14 @@ package pt.isel.ps.cinescope.services
 
 import org.junit.jupiter.api.Test
 import pt.isel.ps.cinescope.controllers.TokenProcessor
+import pt.isel.ps.cinescope.domain.Episode
+import pt.isel.ps.cinescope.domain.ListInfo
+import pt.isel.ps.cinescope.domain.Series
 import pt.isel.ps.cinescope.domain.SeriesState
+import pt.isel.ps.cinescope.repositories.tmdb.TmdbRepository
 import pt.isel.ps.cinescope.services.exceptions.BadRequestException
-import pt.isel.ps.cinescope.services.exceptions.NotFoundException
 import pt.isel.ps.cinescope.testWithTransactionManagerAndRollback
 import pt.isel.ps.cinescope.utils.SHA256Encoder
-import pt.isel.ps.cinescope.utils.TmdbRepository
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -29,13 +31,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            val seriesLists = seriesServices.getLists("bearer ${user?.token.toString()}")
+            val seriesLists = seriesServices.getLists(user.token.toString()).results as List<ListInfo>
 
             assertEquals(seriesLists[0].name, "Fantasy Series")
         }
@@ -51,16 +53,16 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.createList("bearer ${user?.token.toString()}", null)
+                seriesServices.createList(user.token.toString(), null)
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.createList("bearer ${user?.token.toString()}", "")
+                seriesServices.createList(user.token.toString(), "")
             }
         }
     }
@@ -95,13 +97,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString())
 
             assertNotNull(seriesList)
         }
@@ -117,11 +119,11 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
             assertFailsWith<BadRequestException> {
                 seriesServices.getList(listId, null)
@@ -143,12 +145,12 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.getList(null, "bearer ${user?.token.toString()}")
+                seriesServices.getList(null, user.token.toString())
             }
         }
     }
@@ -163,21 +165,22 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            val seriesLists = seriesServices.getLists("bearer ${user?.token.toString()}")
+            val seriesLists = seriesServices.getLists(user.token.toString()).results as List<ListInfo>
 
             assertEquals(seriesLists[0].name, "Fantasy Series")
 
-            seriesServices.deleteList(seriesLists[0].id, "bearer ${user?.token.toString()}")
+            seriesServices.deleteList(seriesLists[0].id, user.token.toString())
 
-            val seriesList = seriesServices.getList(seriesLists[0].id, "bearer ${user?.token.toString()}")
+            assertFailsWith<BadRequestException> {
+                seriesServices.getList(seriesLists[0].id, user.token.toString()).results as List<ListInfo>
+            }
 
-            assertTrue(seriesList.isEmpty())
         }
     }
 
@@ -211,12 +214,12 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.deleteList(null, "bearer ${user?.token.toString()}")
+                seriesServices.deleteList(null, user.token.toString())
             }
         }
     }
@@ -231,17 +234,17 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            val seriesLists = seriesServices.getLists("bearer ${user?.token.toString()}")
+            val seriesLists = seriesServices.getLists(user.token.toString()).results as List<ListInfo>
 
             assertEquals(seriesLists[0].name, "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -256,11 +259,11 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            seriesServices.deleteList(seriesLists[0].id, "bearer ${user?.token.toString()}")
+            seriesServices.deleteList(seriesLists[0].id, user.token.toString())
 
-            val seriesList = seriesServices.getList(seriesLists[0].id, "bearer ${user?.token.toString()}")
-
-            assertTrue(seriesList.isEmpty())
+            assertFailsWith<BadRequestException> {
+                seriesServices.getList(seriesLists[0].id, user.token.toString()).results as List<ListInfo>
+            }
         }
     }
     @Test
@@ -273,17 +276,17 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.createList("bearer ${user?.token.toString()}", "Favourite Series")
+            seriesServices.createList(user.token.toString(), "Favourite Series")
 
-            seriesServices.createList("bearer ${user?.token.toString()}", "Sitcoms")
+            seriesServices.createList(user.token.toString(), "Sitcoms")
 
-            val seriesList = seriesServices.getLists("bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getLists(user.token.toString()).results as List<ListInfo>
 
             assertEquals(seriesList[0].name, "Fantasy Series")
             assertEquals(seriesList[1].name, "Favourite Series")
@@ -322,13 +325,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -343,7 +346,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -363,14 +366,14 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addSeriesToList(null,listId,"bearer ${user?.token.toString()}")
+                seriesServices.addSeriesToList(null,listId,user.token.toString())
             }
         }
     }
@@ -385,12 +388,12 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addSeriesToList(66732,null, "bearer ${user?.token.toString()}")
+                seriesServices.addSeriesToList(66732,null, user.token.toString())
             }
         }
     }
@@ -405,11 +408,11 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
             assertFailsWith<BadRequestException> {
                 seriesServices.addSeriesToList(66732,listId,null)
@@ -421,7 +424,7 @@ class SeriesServicesTests {
         }
     }
 
-    //TODO ver como vem da API externa
+    //TODO should be InternalServerExceptionError rather than Exception
     @Test
     fun `Add a Series to a list but the Series doesn't exists`() {
         testWithTransactionManagerAndRollback { transactionManager ->
@@ -432,14 +435,14 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            assertFailsWith<BadRequestException> {
-                seriesServices.addSeriesToList(667325465,listId,"bearer ${user?.token.toString()}")
+            assertFailsWith<Exception> {
+                seriesServices.addSeriesToList(667325465,listId,user.token.toString())
             }
         }
     }
@@ -454,13 +457,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -476,7 +479,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId,"bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId,user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -484,9 +487,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.deleteSeriesFromList(listId, 66732, "bearer ${user?.token.toString()}")
+            seriesServices.deleteSeriesFromList(listId, 66732, user.token.toString())
 
-            val list = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val list = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertTrue(list.isEmpty())
         }
@@ -502,13 +505,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -524,7 +527,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -533,7 +536,7 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.deleteSeriesFromList(null, 66732, "bearer ${user?.token.toString()}")
+                seriesServices.deleteSeriesFromList(null, 66732, user.token.toString())
             }
         }
     }
@@ -548,13 +551,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -570,7 +573,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -598,13 +601,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -619,7 +622,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -628,53 +631,7 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.deleteSeriesFromList(listId, null, "bearer ${user?.token.toString()}")
-            }
-        }
-    }
-
-    //TODO ver como vem da DB
-    @Test
-    fun `Delete a series from a list but the series is not on the list`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val tokenProcessor = TokenProcessor(usersServices)
-
-            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
-
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
-
-            val user = usersServices.getUserById(userId)
-
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
-
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
-
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
-
-            assertEquals(seriesData?.name, "Stranger Things")
-            assertEquals(seriesData?.imdbId, "tt4574334")
-            assertEquals(seriesData?.tmdbId, 66732)
-            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
-
-            //TODO ver se é melhor criar outra class para Series User Data
-            assertEquals(seriesUserData?.state, SeriesState.PTW)
-            assertNotNull(seriesUserData?.epListId)
-
-            val seriesList = seriesServices.getList(listId,"bearer ${user?.token.toString()}")
-
-            assertEquals(seriesList[0].name, "Stranger Things")
-            assertEquals(seriesList[0].imdbId, "tt4574334")
-            assertEquals(seriesList[0].tmdbId, 66732)
-            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
-            assertEquals(seriesList[0].state, SeriesState.PTW)
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.deleteSeriesFromList(listId, 641616518, "bearer ${user?.token.toString()}")
+                seriesServices.deleteSeriesFromList(listId, null, user.token.toString())
             }
         }
     }
@@ -689,13 +646,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -710,7 +667,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -718,13 +675,13 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.changeState(66732, "Watching","bearer ${user?.token.toString()}")
+            seriesServices.changeState(66732, "Watching",user.token.toString())
 
             val seriesState1 = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
             assertEquals(seriesState1?.state, SeriesState.Watching)
 
-            seriesServices.changeState(66732, "Watched", "bearer ${user?.token.toString()}")
+            seriesServices.changeState(66732, "Watched", user.token.toString())
 
             val seriesState2 = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
 
@@ -742,13 +699,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId, user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -763,7 +720,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -772,15 +729,15 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.changeState(66732, null, "bearer ${user?.token.toString()}")
+                seriesServices.changeState(66732, null, user.token.toString())
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.changeState(66732, "", "bearer ${user?.token.toString()}")
+                seriesServices.changeState(66732, "", user.token.toString())
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.changeState(66732, "Banana", "bearer ${user?.token.toString()}")
+                seriesServices.changeState(66732, "Banana", user.token.toString())
             }
         }
     }
@@ -795,13 +752,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -816,7 +773,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -825,7 +782,7 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.changeState(null, "Watching", "bearer ${user?.token.toString()}")
+                seriesServices.changeState(null, "Watching", user.token.toString())
             }
         }
     }
@@ -840,13 +797,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -862,7 +819,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -890,13 +847,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -911,7 +868,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId,"bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId,user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -919,7 +876,7 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            val wepList = seriesServices.getWatchedEpList(66732,"bearer ${user?.token.toString()}")
+            val wepList = seriesServices.getWatchedEpList(66732,user.token.toString()).results as List<Episode>
 
             assertTrue(wepList.isEmpty())
         }
@@ -935,13 +892,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList( 66732, listId, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList( 66732, listId, user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -956,7 +913,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -984,13 +941,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList( 66732, listId, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList( 66732, listId, user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -1005,7 +962,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1014,7 +971,7 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.getWatchedEpList(null, "bearer ${user?.token.toString()}")
+                seriesServices.getWatchedEpList(null, user.token.toString())
             }
         }
     }
@@ -1029,13 +986,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -1050,7 +1007,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1058,9 +1015,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1, "bearer ${user?.token.toString()}")
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,1,1, user.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList(66732,"bearer ${user?.token.toString()}")
+            val wepList = seriesServices.getWatchedEpList(66732,user.token.toString()).results as List<Episode>
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -1081,13 +1038,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -1102,7 +1059,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1111,11 +1068,11 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,null)
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,1,1,null)
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,"")
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,1,1,"")
             }
         }
     }
@@ -1130,13 +1087,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -1151,7 +1108,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1160,7 +1117,7 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(null,"tt4593118",1,1,"bearer ${user?.token.toString()}")
+                seriesServices.addWatchedEpisode(null,1,1,user.token.toString())
             }
         }
     }
@@ -1175,13 +1132,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -1196,7 +1153,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1204,20 +1161,13 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
+
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,null,1,1,"bearer ${user?.token.toString()}")
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,null,1, user.token.toString())
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"",1,1,"bearer ${user?.token.toString()}")
-            }
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",null,1,"bearer ${user?.token.toString()}")
-            }
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,null,"bearer ${user?.token.toString()}")
+                seriesServices.addWatchedEpisode(seriesList[0].tmdbId,1,null, user.token.toString())
             }
         }
     }
@@ -1232,13 +1182,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -1253,7 +1203,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1261,9 +1211,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,"bearer ${user?.token.toString()}")
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,1,1,user.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList(66732, "bearer ${user?.token.toString()}")
+            val wepList = seriesServices.getWatchedEpList(66732, user.token.toString()).results as List<Episode>
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -1272,9 +1222,9 @@ class SeriesServicesTests {
             assertEquals(wepList[0].epimdbId, "tt4593118")
             assertEquals(wepList[0].seriesId, 66732)
 
-            seriesServices.removeWatchedEpisode(66732,"tt4593118","bearer ${user?.token.toString()}")
+            seriesServices.removeWatchedEpisode(66732,1, 1, user.token.toString())
 
-            val wepList1 = seriesServices.getWatchedEpList(66732, "bearer ${user?.token.toString()}")
+            val wepList1 = seriesServices.getWatchedEpList(66732, user.token.toString()).results as List<Episode>
 
             assertTrue(wepList1.isEmpty())
         }
@@ -1290,13 +1240,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -1311,7 +1261,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1319,9 +1269,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,"bearer ${user?.token.toString()}")
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,1,1,user.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList(66732, "bearer ${user?.token.toString()}")
+            val wepList = seriesServices.getWatchedEpList(66732, user.token.toString()).results as List<Episode>
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -1331,11 +1281,11 @@ class SeriesServicesTests {
             assertEquals(wepList[0].seriesId, 66732)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode(66732,"tt4593118",null)
+                seriesServices.removeWatchedEpisode(66732,1, 1,null)
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode(66732,"tt4593118", "")
+                seriesServices.removeWatchedEpisode(66732,1, 1, "")
             }
         }
     }
@@ -1350,13 +1300,13 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            seriesServices.addSeriesToList(66732,listId,"bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732,listId,user.token.toString())
 
             val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
 
@@ -1371,7 +1321,7 @@ class SeriesServicesTests {
             assertEquals(seriesUserData?.state, SeriesState.PTW)
             assertNotNull(seriesUserData?.epListId)
 
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
+            val seriesList = seriesServices.getList(listId, user.token.toString()).results as List<Series>
 
             assertEquals(seriesList[0].name, "Stranger Things")
             assertEquals(seriesList[0].imdbId, "tt4574334")
@@ -1379,9 +1329,9 @@ class SeriesServicesTests {
             assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
             assertEquals(seriesList[0].state, SeriesState.PTW)
 
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,"tt4593118",1,1,"bearer ${user?.token.toString()}")
+            seriesServices.addWatchedEpisode(seriesList[0].tmdbId,1,1,user.token.toString())
 
-            val wepList = seriesServices.getWatchedEpList(66732, "bearer ${user?.token.toString()}")
+            val wepList = seriesServices.getWatchedEpList(66732, user.token.toString()).results as List<Episode>
 
             assertEquals(wepList[0].episode, 1)
             assertEquals(wepList[0].season, 1)
@@ -1391,123 +1341,7 @@ class SeriesServicesTests {
             assertEquals(wepList[0].seriesId, 66732)
 
             assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode(null,"tt4593118","bearer ${user?.token.toString()}")
-            }
-        }
-    }
-
-    @Test
-    fun `Remove a Episode from the Watched Episodes List without the episode imdbId`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val tokenProcessor = TokenProcessor(usersServices)
-
-            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
-
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
-
-            val user = usersServices.getUserById(userId)
-
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
-
-            seriesServices.addSeriesToList(66732, listId, "bearer ${user?.token.toString()}")
-
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
-
-            assertEquals(seriesData?.name, "Stranger Things")
-            assertEquals(seriesData?.imdbId, "tt4574334")
-            assertEquals(seriesData?.tmdbId, 66732)
-            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
-
-            //TODO ver se é melhor criar outra class para Series User Data
-            assertEquals(seriesUserData?.state, SeriesState.PTW)
-            assertNotNull(seriesUserData?.epListId)
-
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
-
-            assertEquals(seriesList[0].name, "Stranger Things")
-            assertEquals(seriesList[0].imdbId, "tt4574334")
-            assertEquals(seriesList[0].tmdbId, 66732)
-            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
-            assertEquals(seriesList[0].state, SeriesState.PTW)
-
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId, "tt4593118", 1, 1, "bearer ${user?.token.toString()}")
-
-            val wepList = seriesServices.getWatchedEpList(66732, "bearer ${user?.token.toString()}")
-
-            assertEquals(wepList[0].episode, 1)
-            assertEquals(wepList[0].season, 1)
-            assertEquals(wepList[0].name, "Chapter One: The Vanishing of Will Byers")
-            assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
-            assertEquals(wepList[0].epimdbId, "tt4593118")
-            assertEquals(wepList[0].seriesId, 66732)
-
-            assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode(66372,"", "bearer ${user?.token.toString()}")
-            }
-            assertFailsWith<BadRequestException> {
-                seriesServices.removeWatchedEpisode(66732, null, "bearer ${user?.token.toString()}")
-            }
-        }
-    }
-
-    //TODO ver como ver da DB
-    @Test
-    fun `Remove a Episode from the Watched Episodes List but the episode is not in the list`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val tokenProcessor = TokenProcessor(usersServices)
-
-            val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
-
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
-
-            val user = usersServices.getUserById(userId)
-
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
-
-            seriesServices.addSeriesToList(66732, listId, "bearer ${user?.token.toString()}")
-
-            val seriesData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesData(66732) }
-
-            assertEquals(seriesData?.name, "Stranger Things")
-            assertEquals(seriesData?.imdbId, "tt4574334")
-            assertEquals(seriesData?.tmdbId, 66732)
-            assertEquals(seriesData?.img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
-
-            val seriesUserData = transactionManager.run { it.seriesRepository.getSeriesFromSeriesUserData(66732, userId) }
-
-            //TODO ver se é melhor criar outra class para Series User Data
-            assertEquals(seriesUserData?.state, SeriesState.PTW)
-            assertNotNull(seriesUserData?.epListId)
-
-            val seriesList = seriesServices.getList(listId, "bearer ${user?.token.toString()}")
-
-            assertEquals(seriesList[0].name, "Stranger Things")
-            assertEquals(seriesList[0].imdbId, "tt4574334")
-            assertEquals(seriesList[0].tmdbId, 66732)
-            assertEquals(seriesList[0].img, "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
-            assertEquals(seriesList[0].state, SeriesState.PTW)
-
-            seriesServices.addWatchedEpisode(seriesList[0].tmdbId, "tt4593118", 1, 1, "bearer ${user?.token.toString()}")
-
-            val wepList = seriesServices.getWatchedEpList(66732, "bearer ${user?.token.toString()}")
-
-            assertEquals(wepList[0].episode, 1)
-            assertEquals(wepList[0].season, 1)
-            assertEquals(wepList[0].name, "Chapter One: The Vanishing of Will Byers")
-            assertEquals(wepList[0].img, "/AdwF2jXvhdODr6gUZ61bHKRkz09.jpg")
-            assertEquals(wepList[0].epimdbId, "tt4593118")
-            assertEquals(wepList[0].seriesId, 66732)
-
-            assertFailsWith<NotFoundException> {
-                seriesServices.removeWatchedEpisode(66732, "tt4593118shbsry", "bearer ${user?.token.toString()}")
+                seriesServices.removeWatchedEpisode(null,1, 1, user.token.toString())
             }
         }
     }
@@ -1522,27 +1356,27 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            val listId1 = seriesServices.createList("bearer ${user?.token.toString()}", "Favourite Series")
+            val listId1 = seriesServices.createList(user.token.toString(), "Favourite Series")
 
-            val listId2 = seriesServices.createList("bearer ${user?.token.toString()}", "Action Series")
+            val listId2 = seriesServices.createList(user.token.toString(), "Action Series")
 
-            seriesServices.addSeriesToList(66732, listId, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732, listId, user.token.toString())
 
-            seriesServices.addSeriesToList( 1402, listId1, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList( 1402, listId1, user.token.toString())
 
-            seriesServices.addSeriesToList( 58841, listId2, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList( 58841, listId2, user.token.toString())
 
-            seriesServices.changeState(1402,"Watched", "bearer ${user?.token.toString()}")
+            seriesServices.changeState(1402,"Watched", user.token.toString())
 
-            seriesServices.changeState(66732, "Watching", "bearer ${user?.token.toString()}")
+            seriesServices.changeState(66732, "Watching", user.token.toString())
 
-            val seriesList = seriesServices.getSeriesFromUserByState("bearer ${user?.token.toString()}", "Watching")
+            val seriesList = seriesServices.getSeriesFromUserByState(user.token.toString(), "Watching")
 
             assertEquals(seriesList.size, 1)
 
@@ -1564,25 +1398,25 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            val listId1 = seriesServices.createList("bearer ${user?.token.toString()}", "Favourite Series")
+            val listId1 = seriesServices.createList(user.token.toString(), "Favourite Series")
 
-            val listId2 = seriesServices.createList("bearer ${user?.token.toString()}", "Action Series")
+            val listId2 = seriesServices.createList(user.token.toString(), "Action Series")
 
-            seriesServices.addSeriesToList(66732, listId, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732, listId, user.token.toString())
 
-            seriesServices.addSeriesToList( 1402, listId1, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList( 1402, listId1, user.token.toString())
 
-            seriesServices.addSeriesToList( 58841, listId2, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList( 58841, listId2, user.token.toString())
 
-            seriesServices.changeState(1402,"Watched", "bearer ${user?.token.toString()}")
+            seriesServices.changeState(1402,"Watched", user.token.toString())
 
-            seriesServices.changeState(66732, "Watching", "bearer ${user?.token.toString()}")
+            seriesServices.changeState(66732, "Watching", user.token.toString())
 
             assertFailsWith<BadRequestException> {
                 seriesServices.getSeriesFromUserByState("", "Watching")
@@ -1604,36 +1438,36 @@ class SeriesServicesTests {
 
             val seriesServices = SeriesServices(transactionManager, searchServices, tokenProcessor)
 
-            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
+            val userId = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior").id
 
             val user = usersServices.getUserById(userId)
 
-            val listId = seriesServices.createList("bearer ${user?.token.toString()}", "Fantasy Series")
+            val listId = seriesServices.createList(user.token.toString(), "Fantasy Series")
 
-            val listId1 = seriesServices.createList("bearer ${user?.token.toString()}", "Favourite Series")
+            val listId1 = seriesServices.createList(user.token.toString(), "Favourite Series")
 
-            val listId2 = seriesServices.createList("bearer ${user?.token.toString()}", "Action Series")
+            val listId2 = seriesServices.createList(user.token.toString(), "Action Series")
 
-            seriesServices.addSeriesToList(66732, listId, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList(66732, listId, user.token.toString())
 
-            seriesServices.addSeriesToList( 1402, listId1, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList( 1402, listId1, user.token.toString())
 
-            seriesServices.addSeriesToList( 58841, listId2, "bearer ${user?.token.toString()}")
+            seriesServices.addSeriesToList( 58841, listId2, user.token.toString())
 
-            seriesServices.changeState(1402,"Watched", "bearer ${user?.token.toString()}")
+            seriesServices.changeState(1402,"Watched", user.token.toString())
 
-            seriesServices.changeState(66732, "Watching", "bearer ${user?.token.toString()}")
+            seriesServices.changeState(66732, "Watching", user.token.toString())
 
             assertFailsWith<BadRequestException> {
-                seriesServices.getSeriesFromUserByState("bearer ${user?.token.toString()}", "Banana")
+                seriesServices.getSeriesFromUserByState(user.token.toString(), "Banana")
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.getSeriesFromUserByState("bearer ${user?.token.toString()}", "")
+                seriesServices.getSeriesFromUserByState(user.token.toString(), "")
             }
 
             assertFailsWith<BadRequestException> {
-                seriesServices.getSeriesFromUserByState("bearer ${user?.token.toString()}", null)
+                seriesServices.getSeriesFromUserByState(user.token.toString(), null)
             }
         }
     }

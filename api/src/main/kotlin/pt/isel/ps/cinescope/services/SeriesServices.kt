@@ -12,7 +12,7 @@ import pt.isel.ps.cinescope.utils.isNull
 @Component
 class SeriesServices(
     private val transactionManager: TransactionManager,
-    private val searchServices: SearchServices,
+    private val searchServices: SearchServices,             //SearchServices rather than TMDBrepository
     private val tokenProcessor: TokenProcessor
     ) {
 
@@ -145,8 +145,8 @@ class SeriesServices(
         val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
 
         return transactionManager.run {
+            val info = it.seriesRepository.getSeriesListInfo(listId, user.id) ?: throw BadRequestException("List not found")
             val list = it.seriesRepository.getSeriesList(listId, user.id)
-            val info = it.seriesRepository.getSeriesListInfo(listId, user.id)
             return@run ListDetails(info, list)
         }
     }

@@ -28,12 +28,12 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .list()
     }
 
-    override fun getSeriesListInfo(listId: Int?, userId: Int?): ListInfo {
+    override fun getSeriesListInfo(listId: Int?, userId: Int?): ListInfo? {
         return handle.createQuery("select slid as id, name from cinescope.serieslists where slid = :id and userid = :userId")
             .bind("id", listId)
             .bind("userId", userId)
             .mapTo(ListInfo::class.java)
-            .first()
+            .firstOrNull()
     }
 
     override fun deleteSeriesList(listId: Int?, userId: Int?) {
@@ -150,10 +150,11 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
     }
 
     override fun getLists(userId: Int?): List<ListInfo> {
-        return handle.createQuery("select slid as id, name from cinescope.seriesLists where userid = :userId")
+        val q = handle.createQuery("select slid as id, name from cinescope.seriesLists where userid = :userId")
             .bind("userId",userId)
             .mapTo(ListInfo::class.java)
-            .list()
+        return if (q.firstOrNull() == null) emptyList()
+        else q.list()
     }
 
     override fun getSeriesFromUserByState(userId: Int?, state: SeriesState?): List<Series> {
@@ -193,9 +194,5 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
             .bind("stmdbid", seriesId)
             .mapTo<SeriesState>()
             .firstOrNull()
-    }
-
-    override fun getWatchedEpisodeList(userId: Int?, stmdbid: Int?): List<Episode> {
-        TODO("Not yet implemented")
     }
 }

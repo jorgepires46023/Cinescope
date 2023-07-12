@@ -64,49 +64,20 @@ class UsersServicesTests {
     }
 
     @Test
-    fun `remove user with id`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val id = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "SCP é o maior")
-            assertNotNull(id)
-
-            usersServices.removeUser(id)
-
-            val user = usersServices.getUserById(id)
-            assertNotNull(user)
-            assertEquals("Inactive", user?.state.toString())
-        }
-    }
-
-    @Test
-    fun `remove user without id`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            assertFailsWith<BadRequestException> {
-                usersServices.removeUser(null)
-            }
-        }
-    }
-
-    @Test
     fun `Get User By its Id`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
 
-            val id = usersServices.createUser("João Pinto", "joaopinto@scp.pt", "O SCP é o meu amor")
+            val id = usersServices.createUser("João Pinto", "joaopinto@scp.pt", "O SCP é o meu amor").id
             assertNotNull(id)
 
             val user = usersServices.getUserById(id)
 
             assertNotNull(user)
-            assertEquals("João Pinto", user?.name)
-            assertEquals("joaopinto@scp.pt", user?.email)
-            assertTrue(encoder.validateInfo("O SCP é o meu amor", user?.password))
+            assertEquals("João Pinto", user.name)
+            assertEquals("joaopinto@scp.pt", user.email)
+            assertTrue(encoder.validateInfo("O SCP é o meu amor", user.password))
         }
     }
 
@@ -134,169 +105,24 @@ class UsersServicesTests {
         }
     }
 
- /*   @Test
-    fun `Edit the password of an User`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val id = usersServices.createUser("João Balsinha", "joaobalsinha@slb.pt", "O Benfica é o MAIOR")
-
-            assertNotNull(id)
-
-            usersServices.editUser(id, "João Balsinha", "joaobalsinha@slb.pt", "O Benfica é o MAIOR de Portugal")
-
-            val user = usersServices.getUserById(id)
-            assertNotNull(user)
-
-            assertEquals("João Balsinha", user?.name)
-            assertEquals("joaobalsinha@slb.pt", user?.email)
-            assertTrue(encoder.validateInfo("O Benfica é o MAIOR de Portugal", user?.password))
-        }
-    }
-
-    @Test
-    fun `Edit the name of an User`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val id = usersServices.createUser("João Balsinha", "joaobalsinha@slb.pt", "O Benfica é o MAIOR")
-
-            assertNotNull(id)
-
-            usersServices.editUser(id, "JoaoBalsinha", "joaobalsinha@slb.pt", "O Benfica é o MAIOR")
-
-            val user = usersServices.getUserById(id)
-            assertNotNull(user)
-
-            assertEquals("JoaoBalsinha", user?.name)
-            assertEquals("joaobalsinha@slb.pt", user?.email)
-            assertTrue(encoder.validateInfo("O Benfica é o MAIOR", user?.password))
-        }
-    }
-
-    @Test
-    fun `Edit the email of an User`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val id = usersServices.createUser("João Balsinha", "joaobalsinha@slb.pt", "O Benfica é o MAIOR")
-
-            assertNotNull(id)
-
-            usersServices.editUser(id, "João Balsinha", "jbalsinha@slb.pt", "O Benfica é o MAIOR")
-
-            val user = usersServices.getUserById(id)
-            assertNotNull(user)
-
-            assertEquals("João Balsinha", user?.name)
-            assertEquals("jbalsinha@slb.pt", user?.email)
-            assertTrue(encoder.validateInfo("O Benfica é o MAIOR", user?.password))
-        }
-    }
-
-    @Test
-    fun `Edit all Info of an User`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val id = usersServices.createUser("João Balsinha", "joaobalsinha@slb.pt", "O Benfica é o MAIOR")
-
-            assertNotNull(id)
-
-            usersServices.editUser(id, "JoaoBalsinha", "jbalsinha@slb.pt", "O Benfica é o MAIOR de Portugal")
-
-            val user = usersServices.getUserById(id)
-            assertNotNull(user)
-
-            assertEquals("JoaoBalsinha", user?.name)
-            assertEquals("jbalsinha@slb.pt", user?.email)
-
-            assertTrue(encoder.validateInfo("O Benfica é o MAIOR de Portugal", user?.password))
-        }
-    }
-
-    @Test
-    fun `Edit the Info of an User, without a name`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val id = usersServices.createUser("João Balsinha", "joaobalsinha@slb.pt", "O Benfica é o MAIOR")
-
-            assertNotNull(id)
-
-            assertFailsWith<BadRequestException> {
-                usersServices.editUser(id, null,"joaobalsinha@slb.pt" ,"O Benfica é o MAIOR" )
-            }
-
-            assertFailsWith<BadRequestException> {
-                usersServices.editUser(id, "","joaobalsinha@slb.pt" , "O Benfica é o MAIOR")
-            }
-        }
-    }
-
-    @Test
-    fun `Edit the Info of an User, without an email`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val id = usersServices.createUser("João Balsinha", "joaobalsinha@slb.pt", "O Benfica é o MAIOR")
-
-            assertNotNull(id)
-
-            assertFailsWith<BadRequestException> {
-                usersServices.editUser(id, "João Balsinha", null,"O Benfica é o MAIOR" )
-            }
-
-            assertFailsWith<BadRequestException> {
-                usersServices.editUser(id, "João Balsinha", null, "O Benfica é o MAIOR")
-            }
-        }
-    }
-
-    @Test
-    fun `Edit the Info of an User, without a password`() {
-        testWithTransactionManagerAndRollback { transactionManager ->
-
-            val usersServices = UsersServices(encoder, transactionManager)
-
-            val id = usersServices.createUser("João Balsinha", "joaobalsinha@slb.pt", "O Benfica é o MAIOR")
-
-            assertNotNull(id)
-
-            assertFailsWith<BadRequestException> {
-                usersServices.editUser(id, "João Balsinha", "joaobalsinha@slb.pt", null)
-            }
-
-            assertFailsWith<BadRequestException> {
-                usersServices.editUser(id, "João Balsinha", "joaobalsinha@slb.pt", "")
-            }
-        }
-    }*/
-
     @Test
     fun `Get User By Token`() {
         testWithTransactionManagerAndRollback { transactionManager ->
 
             val usersServices = UsersServices(encoder, transactionManager)
 
-            val id = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "Amo o SCP")
+            val id = usersServices.createUser("Jorge Pires", "jorgepires@scp.pt", "Amo o SCP").id
             assertNotNull(id)
 
             val user = usersServices.getUserById(id)
             assertNotNull(user)
 
-            val userByToken = usersServices.getUserByToken(user?.token.toString())
+            val userByToken = usersServices.getUserByToken(user.token.toString())
             assertNotNull(userByToken)
 
-            assertEquals(user?.name, userByToken?.name)
-            assertEquals(user?.email, userByToken?.email)
-            assertEquals(user?.password, userByToken?.password)
+            assertEquals(user.name, userByToken?.name)
+            assertEquals(user.email, userByToken?.email)
+            assertEquals(user.password, userByToken?.password)
         }
     }
 
