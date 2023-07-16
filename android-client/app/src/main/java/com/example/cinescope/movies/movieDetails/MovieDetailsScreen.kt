@@ -26,13 +26,13 @@ import com.example.cinescope.ui.topbar.TopBar
 import com.example.cinescope.ui.providers.WatchProviders
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.dropdown.Dropdown
+import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.floatingbutton.FloatingButton
 import com.example.cinescope.ui.theme.CinescopeTheme
 
 data class MovieDetailsState(
     val movie: MovieInfo?,
-    val loading: Boolean,
-    val error: String?
+    val loading: Boolean
 )
 data class MovieUserData(
     val movieData : UserDataContent?,
@@ -46,6 +46,8 @@ fun MovieDetailsScreen(
     state: MovieDetailsState,
     userData: MovieUserData,
     navController: NavController,
+    error: String?,
+    onError: () -> Unit,
     onSearchRequested: () -> Unit,
     loggedIn: Boolean,
     onChangeState: (String) -> Unit
@@ -103,6 +105,7 @@ fun MovieDetailsScreen(
                             Text(text = "Loading...")
                         }
                     }
+                    if(error != null) AlertError(error = error, dismiss = onError)
                 }
             }
         }

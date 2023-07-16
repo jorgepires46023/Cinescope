@@ -15,6 +15,7 @@ import com.example.cinescope.series.seriesDetails.SeriesUserData
 
 @Composable
 fun SeriesDetailsTabs(
+    error: String?,
     onError: () -> Unit,
     onTabChanged: (String) -> Unit,
     seasonData: SeasonData,
@@ -39,7 +40,19 @@ fun SeriesDetailsTabs(
         }
     }
     when(tabIdx){
-        0 -> SeriesDetailsTab(onError, seriesDetails, userData, loggedIn)
-        1 -> SeriesSeasonsTab(seasonData, onError, onNavigateToEpisode, loading)
+        0 -> SeriesDetailsTab(
+            error = error,
+            onError = onError,
+            seriesDetails = seriesDetails,
+            userData = userData,
+            loggedIn = loggedIn
+        )
+        1 -> SeriesSeasonsTab(
+            seasonData = seasonData,
+            error = error,
+            onError = onError,
+            onNavigateToEpisode = onNavigateToEpisode,
+            loading = loading
+        )
     }
 }

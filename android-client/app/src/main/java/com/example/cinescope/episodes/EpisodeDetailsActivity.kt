@@ -88,7 +88,9 @@ class EpisodeDetailsActivity: ComponentActivity() {
                 loggedIn = cookie != null,
                 onSearchRequested = { SearchActivity.navigate(this)},
                 navController = dependencies.navController,
-                isLoading = viewModel.loading
+                isLoading = viewModel.loading,
+                onError = { viewModel.clearError() },
+                error = viewModel.error
             )
         }
     }

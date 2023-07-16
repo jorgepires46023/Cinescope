@@ -45,10 +45,10 @@ class MovieDetailsActivity: ComponentActivity() {
             MovieDetailsScreen(
                 state = MovieDetailsState(
                     movie = viewModel.movie,
-                    loading = viewModel.loading,
-                    error = viewModel.error,
-
+                    loading = viewModel.loading
                 ),
+                error = viewModel.error,
+                onError = { viewModel.clearError() },
                 userData = MovieUserData(
                     movieData = viewModel.userData,
                     lists = viewModel.lists,

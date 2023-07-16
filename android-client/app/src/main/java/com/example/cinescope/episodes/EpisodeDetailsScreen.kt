@@ -19,6 +19,7 @@ import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
 import com.example.cinescope.ui.cards.DescriptionCard
+import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.floatingbutton.FloatingButton
 import com.example.cinescope.ui.images.ContentPoster
 import com.example.cinescope.ui.theme.CinescopeTheme
@@ -33,7 +34,9 @@ fun EpisodeDetailsScreen(
     onDeleteWatchedEpisode: () -> Unit,
     loggedIn: Boolean,
     onSearchRequested: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    onError: () -> Unit,
+    error: String?
 ) {
     CinescopeTheme {
         Scaffold(
@@ -79,6 +82,7 @@ fun EpisodeDetailsScreen(
                             Text(text = "Loading...")
                         }
                     }
+                    if(error != null) AlertError(error = error, dismiss = onError)
                 }
             }
         }

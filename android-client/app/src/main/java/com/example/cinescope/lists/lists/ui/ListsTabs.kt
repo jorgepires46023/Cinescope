@@ -13,6 +13,7 @@ import com.example.cinescope.lists.lists.SeriesActions
 data class ListsTabsInfo(val title: String, val onUpdate: () -> Unit)
 @Composable
 fun ListsTabs(
+    error: String?,
     onError: () -> Unit = { },
     movieActions: MovieActions,
     seriesActions: SeriesActions,
@@ -39,12 +40,16 @@ fun ListsTabs(
     when(tabIdx){
         0 -> { MoviesListsTab(
             movieActions,
-            onGetListDetails = { listId -> onGetListDetails(listId, "Movies") }
+            onGetListDetails = { listId -> onGetListDetails(listId, "Movies") },
+            error = error,
+            onError = onError
         )
         }
         1 -> { SeriesListsTab(
             seriesActions,
-            onGetListDetails = { listId -> onGetListDetails(listId, "Series") }
+            onGetListDetails = { listId -> onGetListDetails(listId, "Series") },
+            error = error,
+            onError = onError
         )
         }
     }

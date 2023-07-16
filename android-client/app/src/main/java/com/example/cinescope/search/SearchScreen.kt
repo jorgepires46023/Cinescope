@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.example.cinescope.domain.MediaType
 import com.example.cinescope.domain.searches.MediaContent
 import com.example.cinescope.domain.searches.SearchContent
+import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.grid.MediaContentGrid
 import com.example.cinescope.ui.theme.CinescopeTheme
 import com.example.cinescope.ui.topbar.SearchTopBar
@@ -24,6 +25,8 @@ fun SearchScreen(
     onSearch: (String) -> Unit,
     results: List<MediaContent>?,
     loading: Boolean,
+    error: String?,
+    onError: () -> Unit,
     onGetDetails: (Int, MediaType) -> Unit
 ) {
     CinescopeTheme {
@@ -53,6 +56,7 @@ fun SearchScreen(
                 } else {
                     Text(text = "Loading....")
                 }
+                if(error != null) AlertError(error = error, dismiss = onError)
             }
         }
     }

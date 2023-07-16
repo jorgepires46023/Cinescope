@@ -69,4 +69,8 @@ class EpisodeDetailsViewModel(
         }
     }
 
+    fun clearError(){
+        error = null
+    }
+
 }

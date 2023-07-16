@@ -27,8 +27,7 @@ import com.example.cinescope.ui.theme.CinescopeTheme
 
 data class SeriesDetailsState(
     val series: SeriesInfo?,
-    val loading: Boolean,
-    val error: String?,
+    val loading: Boolean
 )
 data class SeriesUserData(
     val seriesData : UserDataContent?,
@@ -57,6 +56,7 @@ fun SeriesDetailsScreen(
     seriesDetails: SeriesDetailsState,
     userData: SeriesUserData,
     seasonData: SeasonData,
+    error: String?,
     onError: () -> Unit = {},
     onNavigateToEpisode: (Int, Int, Boolean) -> Unit,
     loading: Boolean
@@ -93,8 +93,9 @@ fun SeriesDetailsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     SeriesDetailsTabs(
-                        onError,
-                        onTabChanged,
+                        error = error,
+                        onError = onError,
+                        onTabChanged = onTabChanged,
                         loggedIn = loggedIn,
                         seriesDetails = seriesDetails,
                         userData = userData,

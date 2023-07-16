@@ -21,7 +21,9 @@ fun ListsScreen(
     movieActions: MovieActions,
     seriesActions: SeriesActions,
     onSearchRequest: () -> Unit,
-    onGetListDetails: (Int, String) -> Unit
+    onGetListDetails: (Int, String) -> Unit,
+    error: String?,
+    onError: () -> Unit
 ) {
     CinescopeTheme {
         Scaffold(
@@ -48,7 +50,9 @@ fun ListsScreen(
                     ListsTabs(
                         movieActions = movieActions,
                         seriesActions = seriesActions,
-                        onGetListDetails = onGetListDetails
+                        onGetListDetails = onGetListDetails,
+                        error = error,
+                        onError = onError
                     )
                 }
             }

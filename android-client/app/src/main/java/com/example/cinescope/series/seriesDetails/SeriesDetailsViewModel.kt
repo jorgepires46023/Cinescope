@@ -164,4 +164,8 @@ class SeriesDetailsViewModel(
             }
         }
     }
+
+    fun clearError(){
+        error = null
+    }
 }

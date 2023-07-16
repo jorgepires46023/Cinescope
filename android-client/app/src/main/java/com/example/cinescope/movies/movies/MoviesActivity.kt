@@ -35,10 +35,10 @@ class MoviesActivity: ComponentActivity() {
                     state = MoviesScreenState(
                         ptwMovies = viewModel.ptwList,
                         watchedMovies = viewModel.watchedList,
-                        error = viewModel.error,
                         loading = viewModel.loading
                     ),
                     navController = dependencies.navController,
+                    error = viewModel.error,
                     onError = { viewModel.clearError() },
                     onTabChanged = {state -> viewModel.getMoviesByState(state, cookie) },
                     onGetDetails = { moviesId ->

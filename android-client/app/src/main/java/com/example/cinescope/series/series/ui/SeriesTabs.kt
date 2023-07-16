@@ -15,6 +15,7 @@ data class SeriesTabsInfo(val title: String, val state: String)
 @Composable
 fun SeriesTabs(
     state: SeriesScreenState,
+    error: String?,
     onError: () -> Unit,
     onGetDetails: (Int) -> Unit,
     onTabChanged: (String) -> Unit
@@ -39,8 +40,8 @@ fun SeriesTabs(
         }
     }
     when(tabIdx){
-        0 -> SeriesPTWTab(state, onError, onGetDetails)
-        1 -> SeriesWatchingTab(state, onError, onGetDetails)
-        2 -> SeriesWatchedTab(state, onError, onGetDetails)
+        0 -> SeriesPTWTab(state, error, onError, onGetDetails)
+        1 -> SeriesWatchingTab(state, error, onError, onGetDetails)
+        2 -> SeriesWatchedTab(state, error, onError, onGetDetails)
     }
 }

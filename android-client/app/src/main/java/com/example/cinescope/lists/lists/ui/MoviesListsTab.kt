@@ -8,6 +8,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.example.cinescope.lists.lists.MovieActions
 import com.example.cinescope.ui.DeleteDialog
+import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.list.ContentListItem
 import com.example.cinescope.ui.inputs.CreateListDialog
 import com.example.cinescope.ui.list.CreateListItem
@@ -15,7 +16,9 @@ import com.example.cinescope.ui.list.CreateListItem
 @Composable
 fun MoviesListsTab(
     movieActions: MovieActions,
-    onGetListDetails: (Int) -> Unit
+    onGetListDetails: (Int) -> Unit,
+    error: String?,
+    onError: () -> Unit
 ) {
     var dialog by rememberSaveable{ mutableStateOf(false) }
     var deleteListDialog by rememberSaveable{ mutableStateOf(false) }
@@ -57,4 +60,5 @@ fun MoviesListsTab(
             message = "Do you want to delete ${movieActions.moviesLists?.find { it.id == listId }?.name} list?"
         )
     }
+    if(error != null) AlertError(error = error, dismiss = onError)
 }

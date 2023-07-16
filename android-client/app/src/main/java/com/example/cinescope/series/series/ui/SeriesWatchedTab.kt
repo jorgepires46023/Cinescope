@@ -17,6 +17,7 @@ import com.example.cinescope.ui.grid.SeriesDataGrid
 @Composable
 fun SeriesWatchedTab(
     state: SeriesScreenState,
+    error: String?,
     onError: () -> Unit,
     onGetDetails: (Int) -> Unit
 ) {
@@ -36,8 +37,8 @@ fun SeriesWatchedTab(
         } else {
             Text(text = "Loading...")
         }
-        if(state.error != null){
-            AlertError(error = state.error, onError)
+        if(error != null){
+            AlertError(error = error, dismiss = onError)
         }
     }
 }

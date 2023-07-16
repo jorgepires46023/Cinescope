@@ -18,7 +18,6 @@ import com.example.cinescope.ui.theme.CinescopeTheme
 data class MoviesScreenState(
     val ptwMovies: List<MovieData>?,
     val watchedMovies: List<MovieData>?,
-    val error: String?,
     val loading: Boolean
 )
 
@@ -27,6 +26,7 @@ fun MoviesScreen(
     state: MoviesScreenState,
     navController: NavController,
     onSearchRequested: () -> Unit,
+    error: String?,
     onError: () -> Unit = {},
     onTabChanged: (String) -> Unit,
     onGetDetails: (Int) -> Unit
@@ -51,7 +51,7 @@ fun MoviesScreen(
                     .fillMaxSize()
             ) {
                 Column {
-                    MoviesTabs(state = state, onError, onGetDetails, onTabChanged)
+                    MoviesTabs(state = state, error, onError, onGetDetails, onTabChanged)
                 }
             }
         }

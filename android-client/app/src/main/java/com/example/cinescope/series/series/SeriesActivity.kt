@@ -37,10 +37,10 @@ class SeriesActivity: ComponentActivity() {
                         ptwSeries = viewModel.ptwList,
                         watchingSeries = viewModel.watchingList,
                         watchedSeries = viewModel.watchedList,
-                        error = viewModel.error,
                         loading = viewModel.loading
                     ),
                     navController = dependencies.navController,
+                    error = viewModel.error,
                     onError = { viewModel.clearError() },
                     onTabChanged = {state -> viewModel.getSeriesByState(state, cookie) },
                     onGetDetails = { seriesId ->

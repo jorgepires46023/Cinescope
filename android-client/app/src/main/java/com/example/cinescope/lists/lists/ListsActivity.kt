@@ -52,6 +52,8 @@ class ListsActivity: ComponentActivity() {
                             viewModel.deleteSeriesList(listId, cookie)
                         }
                     ),
+                    error = viewModel.error,
+                    onError = { viewModel.clearError() },
                     onGetListDetails = { listId, type ->
                         ListDetailsActivity.navigate(this, listId, type)
                     },

@@ -19,7 +19,6 @@ data class SeriesScreenState(
     val ptwSeries: List<SeriesData>?,
     val watchingSeries: List<SeriesData>?,
     val watchedSeries: List<SeriesData>?,
-    val error: String?,
     val loading: Boolean
 )
 
@@ -28,6 +27,7 @@ fun SeriesScreen(
     state: SeriesScreenState,
     navController: NavController,
     onSearchRequested: () -> Unit,
+    error: String?,
     onError: () -> Unit = {},
     onTabChanged: (String) -> Unit,
     onGetDetails: (Int) -> Unit
@@ -52,7 +52,7 @@ fun SeriesScreen(
                     .fillMaxSize()
             ) {
                 Column {
-                    SeriesTabs(state = state, onError, onGetDetails, onTabChanged)
+                    SeriesTabs(state = state, error, onError, onGetDetails, onTabChanged)
                 }
             }
         }

@@ -9,10 +9,12 @@ import com.example.cinescope.series.seriesDetails.SeriesUserData
 import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.cards.DescriptionCard
 import com.example.cinescope.ui.dropdown.Dropdown
+import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.images.ContentPoster
 
 @Composable
 fun SeriesDetailsTab(
+    error: String?,
     onError: () -> Unit,
     seriesDetails: SeriesDetailsState,
     userData: SeriesUserData,
@@ -37,4 +39,5 @@ fun SeriesDetailsTab(
             Text(text = "Loading...")
         }
     }
+    if(error != null) AlertError(error = error, dismiss = onError)
 }

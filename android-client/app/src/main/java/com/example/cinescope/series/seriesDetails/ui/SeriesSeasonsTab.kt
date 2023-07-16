@@ -22,10 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.example.cinescope.series.seriesDetails.SeasonData
+import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.providers.WatchProviders
 
 @Composable
 fun SeriesSeasonsTab(
+    error: String?,
     seasonData: SeasonData,
     onError: () -> Unit,
     onNavigateToEpisode: (Int, Int, Boolean) -> Unit,
@@ -78,6 +80,7 @@ fun SeriesSeasonsTab(
                     else Text(text = "Loading")
                 }
             }
+            if(error != null) AlertError(error = error, dismiss = onError)
         }
     }
 }

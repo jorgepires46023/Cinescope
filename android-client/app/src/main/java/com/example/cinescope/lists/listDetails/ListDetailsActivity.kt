@@ -65,7 +65,9 @@ class ListDetailsActivity: ComponentActivity() {
                         }
                     },
                     onSearchRequest = { SearchActivity.navigate(this) },
-                    navController = dependencies.navController
+                    navController = dependencies.navController,
+                    error = viewModel.error,
+                    onError = { viewModel.clearError() }
                 )
             } else {
                 SeriesListDetailsScreen(
@@ -78,7 +80,9 @@ class ListDetailsActivity: ComponentActivity() {
                         }
                     },
                     onSearchRequest = { SearchActivity.navigate(this) },
-                    navController = dependencies.navController
+                    navController = dependencies.navController,
+                    error = viewModel.error,
+                    onError = { viewModel.clearError() }
                 )
             }
         }

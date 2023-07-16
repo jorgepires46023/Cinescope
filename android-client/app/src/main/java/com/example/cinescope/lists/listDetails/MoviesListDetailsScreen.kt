@@ -20,6 +20,7 @@ import com.example.cinescope.domain.content.MovieListDetails
 import com.example.cinescope.ui.Title
 import com.example.cinescope.ui.bottombar.BottomBar
 import com.example.cinescope.ui.bottombar.NavController
+import com.example.cinescope.ui.errors.AlertError
 import com.example.cinescope.ui.grid.MovieDataGrid
 import com.example.cinescope.ui.topbar.TopBar
 
@@ -29,7 +30,9 @@ fun MoviesListDetailsScreen(
     onGetDetails: (Int) -> Unit,
     onDeleteFromList: (Int) -> Unit,
     onSearchRequest: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    error: String?,
+    onError: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -80,6 +83,7 @@ fun MoviesListDetailsScreen(
                             )
                         }
                     }
+                    if(error != null) AlertError(error = error, dismiss = onError)
                 }
             }
         }

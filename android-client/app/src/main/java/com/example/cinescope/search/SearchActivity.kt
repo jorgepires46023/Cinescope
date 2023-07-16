@@ -49,7 +49,9 @@ class SearchActivity: ComponentActivity() {
                         SeriesDetailsActivity.navigate(this, id)
                     }
                 },
-                results = viewModel.searchContent
+                results = viewModel.searchContent,
+                error = viewModel.error,
+                onError = { viewModel.clearError() }
             )
         }
     }

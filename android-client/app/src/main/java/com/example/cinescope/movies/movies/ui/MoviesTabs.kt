@@ -16,6 +16,7 @@ data class MoviesTabsInfo(val title: String, val state: String)
 @Composable
 fun MoviesTabs(
     state: MoviesScreenState,
+    error: String?,
     onError: () -> Unit,
     onGetDetails: (Int) -> Unit,
     onTabChanged: (String) -> Unit
@@ -39,7 +40,7 @@ fun MoviesTabs(
         }
     }
     when(tabIdx){
-        0 -> MoviesPTWTab(state, onError, onGetDetails)
-        1 -> MoviesWatchedTab(state, onError, onGetDetails)
+        0 -> MoviesPTWTab(state, error, onError, onGetDetails)
+        1 -> MoviesWatchedTab(state, error, onError, onGetDetails)
     }
 }

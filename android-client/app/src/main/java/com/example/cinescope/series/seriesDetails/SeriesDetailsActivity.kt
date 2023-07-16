@@ -47,8 +47,7 @@ class SeriesDetailsActivity: ComponentActivity() {
             SeriesDetailsScreen(
                 seriesDetails = SeriesDetailsState(
                     series = viewModel.series,
-                    loading = viewModel.loading,
-                    error = viewModel.error
+                    loading = viewModel.loading
                 ),
                 userData = SeriesUserData(
                     seriesData = viewModel.userData,
@@ -94,7 +93,9 @@ class SeriesDetailsActivity: ComponentActivity() {
                 onNavigateToEpisode = {seasonNr, episodeNr, isWatched ->
                     EpisodeDetailsActivity.navigate(this, seriesId, seasonNr, episodeNr, isWatched)
                 },
-                loading = viewModel.loading
+                loading = viewModel.loading,
+                error = viewModel.error,
+                onError = { viewModel.clearError() }
             )
         }
     }
