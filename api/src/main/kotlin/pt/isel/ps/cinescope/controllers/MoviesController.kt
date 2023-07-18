@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.cinescope.controllers.models.ListOutput
 import pt.isel.ps.cinescope.controllers.models.MoviesModel
+import pt.isel.ps.cinescope.controllers.models.newListOutput
 import pt.isel.ps.cinescope.services.MoviesServices
 
 @RestController
@@ -55,7 +56,7 @@ class MoviesController(val moviesServices: MoviesServices) {
         val list = moviesServices.createList(token = token, name = info.name)
         return ResponseEntity
             .status(200)
-            .body(list)
+            .body(newListOutput(list))
     }
 
     @DeleteMapping(Movies.DELETE_LIST)

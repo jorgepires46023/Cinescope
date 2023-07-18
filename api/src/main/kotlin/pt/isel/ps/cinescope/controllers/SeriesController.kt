@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.cinescope.controllers.models.ListOutput
 import pt.isel.ps.cinescope.controllers.models.SeriesModel
+import pt.isel.ps.cinescope.controllers.models.newListOutput
 import pt.isel.ps.cinescope.services.SeriesServices
 
 @RestController
@@ -79,7 +80,7 @@ class SeriesController(val seriesServices: SeriesServices) {
         val list = seriesServices.createList(token = token, name = info.name)
         return ResponseEntity
             .status(200)
-            .body(list)
+            .body(newListOutput(list))
     }
 
     @DeleteMapping(Series.DELETE_LIST)
