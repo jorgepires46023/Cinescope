@@ -50,7 +50,7 @@ fun MediaContentRow(content1: MediaContent, content2: MediaContent?, content3: M
         }
         if(content2 != null){
             Card(
-                onClick = { navigate(content2.id, content1.mediaType) },
+                onClick = { navigate(content2.id, content2.mediaType) },
                 shape = CardDefaults.outlinedShape,
                 colors = CardDefaults.outlinedCardColors(
                     containerColor = Color.LightGray
@@ -68,7 +68,7 @@ fun MediaContentRow(content1: MediaContent, content2: MediaContent?, content3: M
         }
         if(content3 != null){
             Card(
-                onClick = { navigate(content3.id, content1.mediaType) },
+                onClick = { navigate(content3.id, content3.mediaType) },
                 shape = CardDefaults.outlinedShape,
                 colors = CardDefaults.outlinedCardColors(
                     containerColor = Color.LightGray
