@@ -28,8 +28,10 @@ fun SearchDTO?.toSearch(adult: Boolean): Search?{
 }
 
 fun ResultDTO.toResult(): Result?{
-    return if(this.media_type == TVMEDIATYPE || this.media_type == MOVIEMEDIATYPE)
+    return if(this.media_type == TVMEDIATYPE)
         Result(this.poster_path, this.id, this.name, this.media_type, this.popularity, this.adult)
+    else if (this.media_type == MOVIEMEDIATYPE)
+        Result(this.poster_path, this.id, this.title, this.media_type, this.popularity, this.adult)
     else null
 }
 
