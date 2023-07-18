@@ -20,8 +20,8 @@ class JdbiSeriesRepository(private val handle: Handle): SeriesRepository {
         return handle.createQuery("select sd.simdbid as imdbId, sd.stmdbid as tmdbId, sd.name, sd.image as img, sud.eplid as epListId, sud.state " +
                 "from cinescope.serieslists sls inner join cinescope.serielist sl on sl.slid = sls.slid " +
                 "inner join cinescope.seriesuserdata sud on sud.stmdbid = sl.stmdbid " +
-                "inner join cinescope.seriesdata sd on sd.stmdbid = sud.stmdbid " +
-                "where sls.slid = :listId and sls.userId = :userId")
+                "inner join cinescope.seriesdata sd on (sd.stmdbid = sud.stmdbid and sud.userid =:userId)" +
+                "where sls.slid = :listId")
             .bind("listId", listId)
             .bind("userId", userId)
             .mapTo(Series::class.java)

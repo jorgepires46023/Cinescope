@@ -21,8 +21,8 @@ class JdbiMoviesRepository(private val handle: Handle): MoviesRepository {
        return handle.createQuery("select md.mimdbid as imdbid, md.mtmdbId as tmdbId, md.name, md.image as img, state " +
                 "from cinescope.movieslists mls inner join cinescope.movielist ml on ml.mlid = mls.mlid " +
                 "inner join cinescope.moviesdata md on md.mtmdbid = ml.mtmdbid " +
-                "inner join cinescope.movieuserdata mud on mud.mtmdbid = md.mtmdbid " +
-                "where mls.mlid = :id and mls.userid = :userId")
+                "inner join cinescope.movieuserdata mud on (mud.mtmdbid = md.mtmdbid and mud.userid = :userId)" +
+                "where mls.mlid = :id")
             .bind("id",id)
             .bind("userId", userId)
             .mapTo(Movie::class.java)

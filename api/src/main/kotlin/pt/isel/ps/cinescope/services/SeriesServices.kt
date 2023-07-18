@@ -121,10 +121,11 @@ class SeriesServices(
         if(token.isNullOrBlank()) throw BadRequestException("Token cannot be null or Blank")
 
         val user = tokenProcessor.processToken(token) ?: throw NotFoundException("User not found")
-
         return transactionManager.run {
-            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)?.epListId ?: throw NotFoundException("Series Not Found")
-            ListOutput(it.seriesRepository.getWatchedEpList(epListId))
+            val epListId = it.seriesRepository.getSeriesFromSeriesUserData(seriesId, user.id)?.epListId
+                ?: return@run ListOutput(emptyList())
+                return@run ListOutput(it.seriesRepository.getWatchedEpList(epListId))
+
         }
     }
 
